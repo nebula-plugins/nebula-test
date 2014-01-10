@@ -1,13 +1,11 @@
-
 buildscript {
     repositories {
         mavenLocal()
         jcenter()
     }
 
-
     dependencies {
-        classpath "com.netflix.nebula:nebula-plugin-plugin:1.0-SNAPSHOT"
+        classpath "com.netflix.nebula:nebula-plugin-plugin:1.9.+"
     }
 
     configurations.all {
@@ -24,7 +22,7 @@ apply plugin: 'nebula-plugin' // applying to even nebula-test since it had 99% o
 
 dependencies {
     compile ('org.spockframework:spock-core:0.7-groovy-1.8') { exclude group: 'org.codehaus.groovy' }
-    // testCompile ('com.energizedwork:spock-extensions:1.0-SNAPSHOT') { exclude group: 'org.codehaus.groovy' } // Waiting for this to be published
+    // testCompile ('com.energizedwork:spock-extensions:1.0') { exclude group: 'org.codehaus.groovy' } // Waiting for this to be published to jcenter
     compile 'cglib:cglib-nodep:2.2.2' // For Mocking classes with Spock
 }
 
