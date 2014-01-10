@@ -27,3 +27,28 @@ dependencies {
     // testCompile ('com.energizedwork:spock-extensions:1.0-SNAPSHOT') { exclude group: 'org.codehaus.groovy' } // Waiting for this to be published
     compile 'cglib:cglib-nodep:2.2.2' // For Mocking classes with Spock
 }
+
+def pomConfig = {
+    inceptionYear '2014'
+
+    developers {
+        developer {
+            id 'quidryan'
+            name 'Justin Ryan'
+            email 'justin@halfempty.org'
+            roles{
+                role 'Developer'
+            }
+            timezone '-8'
+        }
+    }
+}
+
+import nebula.plugin.publishing.NebulaBaseMavenPublishingPlugin
+plugins.withType(NebulaBaseMavenPublishingPlugin) {
+    withMavenPublication {
+        pom.withXml {
+            asNode().children().last() + pomConfig
+        }
+    }
+}
