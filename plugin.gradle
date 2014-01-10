@@ -1,0 +1,29 @@
+
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+
+
+    dependencies {
+        classpath "com.netflix.nebula:nebula-plugin-plugin:1.0-SNAPSHOT"
+    }
+
+    configurations.all {
+        resolutionStrategy.cacheChangingModulesFor 0, 'hours'
+    }
+}
+
+repositories {
+    mavenLocal()
+}
+
+description 'Test harness for Gradle plugins'
+apply plugin: 'nebula-plugin' // applying to even nebula-test since it had 99% of the characterizes of a nebula-plugin
+
+dependencies {
+    compile ('org.spockframework:spock-core:0.7-groovy-1.8') { exclude group: 'org.codehaus.groovy' }
+    // testCompile ('com.energizedwork:spock-extensions:1.0-SNAPSHOT') { exclude group: 'org.codehaus.groovy' } // Waiting for this to be published
+    compile 'cglib:cglib-nodep:2.2.2' // For Mocking classes with Spock
+}
