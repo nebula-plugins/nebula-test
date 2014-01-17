@@ -15,6 +15,7 @@
  */
 package nebula.test
 
+import org.apache.commons.io.FileUtils
 import org.gradle.BuildAdapter
 import org.gradle.BuildResult
 import org.gradle.GradleLauncher
@@ -73,7 +74,7 @@ abstract class IntegrationSpec extends Specification {
 
     protected GradleLauncher launcher(String... args) {
         StartParameter startParameter = GradleLauncher.createStartParameter(args)
-        startParameter.setProjectDir(projectDir)
+        startParameter.projectDir = projectDir
         startParameter.buildFile = buildFile
         startParameter.settingsFile = settingsFile
         startParameter.logLevel = getLogLevel()
@@ -112,6 +113,10 @@ abstract class IntegrationSpec extends Specification {
 
     String[] getAllowedResources() { [] }
 
+    /**
+     * Override to alter its value
+     * @return
+     */
     LogLevel getLogLevel() {
         return LogLevel.INFO
     }
