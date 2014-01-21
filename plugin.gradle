@@ -1,6 +1,6 @@
 buildscript {
     repositories { jcenter() }
-    dependencies { classpath 'com.netflix.nebula:nebula-plugin-plugin:1.9.3' }
+    dependencies { classpath 'com.netflix.nebula:nebula-plugin-plugin:1.9.5' }
 }
 
 description 'Test harness for Gradle plugins'
