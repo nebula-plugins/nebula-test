@@ -39,7 +39,6 @@ import com.energizedwork.spock.extensions.TempDirectory
 /**
  * @author Marcin Erdmann
  */
-@Use(UpToDateCategory)
 abstract class IntegrationSpec extends Specification {
     @TempDirectory(clean=false) File projectDir
 
@@ -199,7 +198,8 @@ abstract class IntegrationSpec extends Specification {
     }
 
     boolean wasUpToDate(String taskPath) {
-        executedTasks.find { it.task.path == taskPath }?.state?.upToDate
+        def taskstate = executedTasks.find { it.task.path == taskPath }?.state
+        return taskstate?.skipped && taskstate?.skipMessage == 'UP-TO-DATE'
     }
 
     String getStandardError() {
