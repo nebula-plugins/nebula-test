@@ -44,7 +44,7 @@ abstract class IntegrationSpec extends Specification {
 
     // Holds State of last run
     // TODO Put these in their own data structure along with BuildResult
-	private final StringBuilder captureError = new StringBuilder()
+    private final StringBuilder captureError = new StringBuilder()
     private final StringBuilder captureOutput = new StringBuilder()
     protected List<ExecutedTask> executedTasks = []
 
