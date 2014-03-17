@@ -198,8 +198,11 @@ abstract class IntegrationSpec extends Specification {
     }
 
     boolean wasUpToDate(String taskPath) {
-        def taskstate = executedTasks.find { it.task.path == taskPath }?.state
-        return taskstate?.skipped && taskstate?.skipMessage == 'UP-TO-DATE'
+        def task = executedTasks.find { it.task.path == taskPath }
+        if (task == null) {
+            throw RuntimeException("Task with path $taskPath was not found")
+        }
+        return task.state?.skipped && task.state?.skipMessage == 'UP-TO-DATE'
     }
 
     String getStandardError() {
@@ -219,15 +222,15 @@ abstract class IntegrationSpec extends Specification {
         result
     }
 
-	protected BuildResult runTasksWithFailure(String... tasks) {
-		BuildResult result = runTasks(tasks)
-		assert result.failure
-		result
-	}
+    protected BuildResult runTasksWithFailure(String... tasks) {
+        BuildResult result = runTasks(tasks)
+        assert result.failure
+        result
+    }
 
-	protected BuildResult runTasks(String... tasks) {
-		launcher(tasks).run()
-	}
+    protected BuildResult runTasks(String... tasks) {
+        launcher(tasks).run()
+    }
 
     protected BuildResult analyze(String... tasks) {
         BuildResult result = launcher(tasks).buildAndRunAnalysis
