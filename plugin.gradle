@@ -25,6 +25,15 @@ def pomConfig = {
             }
             timezone '-8'
         }
+        developer {
+            id 'rspieldenner'
+            name 'Rob Spieldenner'
+            email 'rob.spieldenner@gmail.com'
+            roles{
+                role 'Developer'
+            }
+            timezone '-8'
+        }
     }
 }
 
