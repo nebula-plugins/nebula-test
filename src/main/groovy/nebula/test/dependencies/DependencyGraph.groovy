@@ -26,12 +26,9 @@ class DependencyGraph {
         def parts = s.tokenize('->')
         def (group, artifact, version) = parts[0].trim().tokenize(':')
         def coordinate = new Coordinate(group: group, artifact: artifact, version: version)
-        def node = new DependencyGraphNode(coordinate: coordinate)
-        if (parts.size() > 1) {
-            node.dependencies = parseDependencies(parts[1])
-        }
+        def dependencies = (parts.size() > 1) ? parseDependencies(parts[1]) : []
 
-        node
+        new DependencyGraphNode(coordinate: coordinate, dependencies: dependencies)
     }
 
     private List<Coordinate> parseDependencies(String s) {

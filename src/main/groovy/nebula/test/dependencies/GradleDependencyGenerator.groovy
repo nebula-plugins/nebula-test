@@ -18,7 +18,7 @@ package nebula.test.dependencies
 import org.gradle.tooling.GradleConnector
 import org.gradle.tooling.ProjectConnection
 
-class GradleDependencyProject {
+class GradleDependencyGenerator {
     static final String STANDARD_SUBPROJECT_BLOCK = '''\
         subprojects {
             apply plugin: 'maven-publish'
@@ -28,10 +28,10 @@ class GradleDependencyProject {
             publishing {
                 repositories {
                     maven {
-                        url "${rootProject.buildDir}/mavenrepo"
+                        url "../mavenrepo"
                     }
                     ivy {
-                        url "${rootProject.buildDir}/ivyrepo"
+                        url "../ivyrepo"
                         layout('pattern') {
                             ivy '[organisation]/[module]/[revision]/[module]-[revision]-ivy.[ext]'
                             artifact '[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]'
@@ -41,16 +41,12 @@ class GradleDependencyProject {
                 }
                 publications {
                     maven(MavenPublication) {
-                        //groupId {  }
-                        artifactId { artifactName }
-                        //version {  }
+                        artifactId artifactName
 
                         from components.java
                     }
                     ivy(IvyPublication) {
-                        //organisation {  }
-                        module { artifactName }
-                        //revision {  }
+                        module artifactName
 
                         from components.java
                     }
@@ -63,9 +59,9 @@ class GradleDependencyProject {
     DependencyGraph graph
     File gradleRoot
 
-    GradleDependencyProject(DependencyGraph graph) {
+    GradleDependencyGenerator(DependencyGraph graph, String directory = 'build/testrepogen') {
         this.graph = graph
-        this.gradleRoot = new File('build/testrepogen')
+        this.gradleRoot = new File(directory)
         generateGradleFiles()
     }
 
@@ -78,21 +74,23 @@ class GradleDependencyProject {
     }
 
     private void generateGradleFiles() {
+        gradleRoot.mkdirs()
         def rootBuildGradle = new File(gradleRoot, BUILD_GRADLE)
         rootBuildGradle.text = STANDARD_SUBPROJECT_BLOCK
         def includes = []
         graph.nodes.each { DependencyGraphNode n ->
-            String subName = "${n.group}${n.artifact}_${n.version.replaceAll('.', '_')}"
+            String subName = "${n.group}.${n.artifact}_${n.version.replaceAll(/\./, '_')}"
             includes << subName
             def subfolder = new File(gradleRoot, subName)
+            subfolder.mkdir()
             def subBuildGradle = new File(subfolder, BUILD_GRADLE)
-            subBuildGradle.text = subBuildGradle(n)
+            subBuildGradle.text = generateSubBuildGradle(n)
         }
         def settingsGradle = new File(gradleRoot, 'settings.gradle')
         settingsGradle.text = 'include ' + includes.collect { "'${it}'"}.join(', ')
     }
 
-    private String subBuildGradle(DependencyGraphNode node) {
+    private String generateSubBuildGradle(DependencyGraphNode node) {
         String dependencies = ''
         if (node.dependencies) {
             dependencies + 'dependencies {'
@@ -100,7 +98,7 @@ class GradleDependencyProject {
             dependencies + '}'
         }
 
-        """\
+        def x = """\
             group = '${node.group}'
             version = '${node.version}'
             ext {

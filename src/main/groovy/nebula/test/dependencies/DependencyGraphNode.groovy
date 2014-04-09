@@ -15,9 +15,11 @@
  */
 package nebula.test.dependencies
 
+import groovy.transform.Immutable
+
+@Immutable
 class DependencyGraphNode {
-    @Delegate
-    Coordinate coordinate
+    @Delegate Coordinate coordinate
     List<Coordinate> dependencies = []
 
     @Override

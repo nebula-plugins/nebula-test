@@ -15,6 +15,9 @@
  */
 package nebula.test.dependencies
 
+import groovy.transform.Immutable
+
+@Immutable
 class Coordinate {
     String group
     String artifact
