@@ -1,4 +1,4 @@
-1.9.5 / 2014-04-09
+1.9.5 / 2014-04-10
 ==================
 * Add nebula.test.dependencies package to allow users to create local ivy and maven repositories
 
