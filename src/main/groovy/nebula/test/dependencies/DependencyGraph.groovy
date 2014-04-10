@@ -21,6 +21,10 @@ class DependencyGraph {
     DependencyGraph(List<String> graph) {
         graph.each { nodes << parseNode(it) }
     }
+
+    DependencyGraph(String... graph) {
+        this(graph as List)
+    }
     
     private DependencyGraphNode parseNode(String s) {
         def parts = s.tokenize('->')

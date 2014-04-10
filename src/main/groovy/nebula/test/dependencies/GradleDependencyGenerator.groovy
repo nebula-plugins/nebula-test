@@ -91,22 +91,23 @@ class GradleDependencyGenerator {
     }
 
     private String generateSubBuildGradle(DependencyGraphNode node) {
-        String dependencies = ''
+
+        StringWriter block = new StringWriter()
         if (node.dependencies) {
-            dependencies + 'dependencies {'
-            node.dependencies.each { dependencies + "    compile '${it}'"}
-            dependencies + '}'
+            block.withPrintWriter { writer ->
+                writer.println 'dependencies {'
+                node.dependencies.each { writer.println "    compile '${it}'" }
+                writer.println '}'
+            }
         }
 
-        def x = """\
+        """\
             group = '${node.group}'
             version = '${node.version}'
             ext {
                 artifactName = '${node.artifact}'
             }
-
-            ${dependencies}
-        """.stripIndent()
+        """.stripIndent() + block.toString()
     }
 
     private void runTasks(String tasks) {

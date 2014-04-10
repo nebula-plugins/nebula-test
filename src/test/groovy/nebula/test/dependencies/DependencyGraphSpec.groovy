@@ -61,4 +61,12 @@ class DependencyGraphSpec extends Specification {
         dependencies.contains 'g:a:[1.0.0,2.0.0)'
         dependencies.contains 'g1:a1:1.1.1'
     }
+
+    def 'check var arg constructor'() {
+        when:
+        def graph = new DependencyGraph('test:foo:1.0.0', 'test:bar:1.1.1')
+
+        then:
+        graph.nodes.size() == 2
+    }
 }

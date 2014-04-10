@@ -26,8 +26,4 @@ class DependencyGraphNode {
     String toString() {
         "${group}:${artifact}:${version}"
     }
-
-    Boolean coordinateMatch(DependencyGraphNode other) {
-        other.group == group && other.artifact == artifact
-    }
 }
