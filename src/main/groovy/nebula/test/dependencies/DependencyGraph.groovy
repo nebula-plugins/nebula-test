@@ -27,7 +27,9 @@ class DependencyGraph {
     }
     
     private DependencyGraphNode parseNode(String s) {
-        def parts = s.tokenize('->')
+        // Don't use tokenize, it'll make each character a possible delimeter, e.g. \t\n would tokenize on both
+        // \t OR \n, not the combination of \t\n.
+        def parts = s.split('->')
         def (group, artifact, version) = parts[0].trim().tokenize(':')
         def coordinate = new Coordinate(group: group, artifact: artifact, version: version)
         def dependencies = (parts.size() > 1) ? parseDependencies(parts[1]) : []
