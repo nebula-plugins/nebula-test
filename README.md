@@ -115,6 +115,62 @@ class ConcreteIntegrationSpec extends IntegrationSpec {
 }
 ```
 
+Generating Test Maven and Ivy Repos
+-----------------------------------
+More detailed information can be found on our [wiki](https://github.com/nebula-plugins/nebula-test/wiki/Maven-and-Ivy-Test-Repository-Generation). 
+
+Caveats:
+* this will not check whether the dependency graph you describe is valid
+* all listed dependencies will be in the runtime scope of the generated library
+
+### Describing a Dependency Graph
+
+*Simple Library with no Dependencies*
+
+If i want to create a fake library with group: `test.example`, artifactName: `foo`, and version: `1.0.0`
+
+    String myGraph = 'test.example:foo:1.0.0'
+
+*Library with One Dependency*
+
+To have `test.example:foo:1.0.0` depend on the most recent version in the `1.+` series of `bar:baz`
+
+    String myGraph = 'test.example:foo:1.0.0 -> bar:baz:1.+'
+
+*Library with Multiple Dependencies*
+
+To have `test.example:foo:1.0.0` depend on `bar:baz:1.+`, `g:a:[1.0.0,2.0.0)`, and `g1:a1:3.1.2`
+
+    String myGraph = 'test.example:foo:1.0.0 -> bar:baz:1.+|g:a:[1.0.0,2.0.0)|g1:a1:3.1.2'
+
+#### Creating the Graph
+
+    import nebula.test.dependencies.DependencyGraph
+    def graph = new DependencyGraph(['g:a:1.0.0', 'g1:a1:0.9.0 -> g:a:1.+'])
+    // or
+    def graph = new DependencyGraph('g:a:1.0.0', 'g1:a1:0.9.0 -> g:a:1.+')
+
+### Generating A Repository
+
+* ivy repos will be at: `<projectdir>/build/testrepogen/ivyrepo`
+* maven repos will be at: `<projectdir>/build/testrepogen/mavenrepo`
+
+Code example:
+
+    import nebula.test.dependencies.GradleDependencyGenerator
+    def graph = new DependencyGraph(['g:a:1.0.0', 'g1:a1:0.9.0 -> g:a:1.+'])
+    def generator = new GradleDependencyGenerator(graph)
+    // or to specify directory of repos
+    def generator = new GradleDependencyGenerator(graph, 'build/testrepos')
+
+To create a maven repo
+
+    generator.generateTestMavenRepo()
+
+To create an ivy repo
+
+    generator.generateTestIvyRepo()
+
 Caveat
 ------
 * This would have been in nebula-core, but via POMs you can't get dependencies just for tests.
