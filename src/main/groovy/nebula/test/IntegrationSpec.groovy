@@ -146,7 +146,7 @@ abstract class IntegrationSpec extends Specification {
     }
 
     def writeHelloWorld(String packageDotted) {
-        def path = 'src/main/java/' + packageDotted.replaceAll('.', '/') + '/HelloWorld.java'
+        def path = 'src/main/java/' + packageDotted.replace('.', '/') + '/HelloWorld.java'
         def javaFile = createFile(path)
         javaFile << """package ${packageDotted};
 
