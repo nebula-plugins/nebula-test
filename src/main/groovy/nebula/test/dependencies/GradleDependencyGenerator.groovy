@@ -15,6 +15,7 @@
  */
 package nebula.test.dependencies
 
+import org.gradle.api.invocation.Gradle
 import org.gradle.tooling.GradleConnector
 import org.gradle.tooling.ProjectConnection
 
@@ -65,12 +66,12 @@ class GradleDependencyGenerator {
         generateGradleFiles()
     }
 
-    void generateTestMavenRepo() {
-        runTasks('publishMavenPublicationToMavenRepository')    
+    void generateTestMavenRepo(URI gradleDistribution = null) {
+        runTasks('publishMavenPublicationToMavenRepository', gradleDistribution)
     }
 
-    void generateTestIvyRepo() {
-        runTasks('publishIvyPublicationToIvyRepository')
+    void generateTestIvyRepo(URI gradleDistribution = null) {
+        runTasks('publishIvyPublicationToIvyRepository', gradleDistribution)
     }
 
     private void generateGradleFiles() {
@@ -110,8 +111,13 @@ class GradleDependencyGenerator {
         """.stripIndent() + block.toString()
     }
 
-    private void runTasks(String tasks) {
-        ProjectConnection connection = GradleConnector.newConnector().forProjectDirectory(gradleRoot).connect()
+    private void runTasks(String tasks, URI distribution = null) {
+        GradleConnector connector = GradleConnector.newConnector()
+                .forProjectDirectory(gradleRoot)
+        if (distribution) {
+            connector.useDistribution(distribution)
+        }
+        ProjectConnection connection = connector.connect()
 
         try {
             connection.newBuild().forTasks(tasks).run()
