@@ -158,6 +158,30 @@ abstract class IntegrationSpec extends Specification {
         """.stripIndent()
     }
 
+    def writeUnitTest(String packageDotted) {
+        writeTest('src/test/java',packageDotted)
+    }
+
+    def writeTest(String srcDir, String packageDotted) {
+        def path = srcDir + packageDotted.replaceAll('.', '/') + '/HelloWorldTest.java'
+        def javaFile = createFile(path)
+        javaFile << """package ${packageDotted};
+            import org.junit.Test;
+
+            public class HelloWorldTest {
+                @Test public void doesSomething() {
+                    assert true;
+                }
+            }
+        """.stripIndent()
+    }
+
+    def writeResource(String srcDir, String name) {
+        def path = "$srcDir/$name"
+        def resourceFile = createFile(path)
+        resourceFile << """firstProperty=foo.bar"""
+    }
+
     String copyResources(String srcDir, String destination) {
         ClassLoader classLoader = getClass().getClassLoader();
         URL resource = classLoader.getResource(srcDir);
