@@ -32,6 +32,21 @@ class GradleDependencyGeneratorSpec extends Specification {
         new File(mavenRepo, 'test/maven/foo/1.0.0/foo-1.0.0.jar').exists()
     }
 
+    def 'generate a maven repo with a SNAPSHOT'() {
+        def directory = 'build/testdependencies/testmavenreposnapshot'
+        def graph = ['test.maven:foo:1.0.1-SNAPSHOT']
+        def generator = new GradleDependencyGenerator(new DependencyGraph(graph), directory)
+
+        when:
+        generator.generateTestMavenRepo()
+
+        then:
+        def mavenRepo = new File(directory + '/mavenrepo')
+        new File(mavenRepo, 'test/maven/foo/1.0.1-SNAPSHOT/').listFiles().find {
+            it.name =~ /foo-1\.0\.1-\d{8}\.\d{6}-\d?\.pom/
+        }
+    }
+
     def 'generate an ivy repo'() {
         def directory = 'build/testdependencies/testivyrepo'
         def graph = ['test.ivy:foo:1.0.0']

@@ -12,36 +12,13 @@ dependencies {
     compile 'cglib:cglib-nodep:2.2.2' // For Mocking classes with Spock
 }
 
-def pomConfig = {
-    inceptionYear '2014'
-
-    developers {
-        developer {
-            id 'quidryan'
-            name 'Justin Ryan'
-            email 'justin@halfempty.org'
-            roles{
-                role 'Developer'
-            }
-            timezone '-8'
-        }
-        developer {
-            id 'rspieldenner'
-            name 'Rob Spieldenner'
-            email 'rob.spieldenner@gmail.com'
-            roles{
-                role 'Developer'
-            }
-            timezone '-8'
-        }
+contacts {
+    'justin@halfempty.org' {
+        moniker 'Justin Ryan'
+        github 'quidryan'
     }
-}
-
-import nebula.plugin.publishing.maven.NebulaBaseMavenPublishingPlugin
-plugins.withType(NebulaBaseMavenPublishingPlugin) {
-    withMavenPublication {
-        pom.withXml {
-            asNode().children().last() + pomConfig
-        }
+    'rob.spieldenner@gmail.com' {
+        moniker 'Rob Spieldenner'
+        github 'rspieldenner'
     }
 }
