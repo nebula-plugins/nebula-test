@@ -158,28 +158,44 @@ abstract class IntegrationSpec extends Specification {
         """.stripIndent()
     }
 
-    def writeUnitTest(String packageDotted) {
-        writeTest('src/test/java',packageDotted)
+    /**
+     * Creates a unit test for testing your plugin.
+     * @param failTest true if you want the test to fail, false if the test should pass
+     */
+    def writeUnitTest(boolean failTest) {
+        writeTest('src/test/java', 'nebula', failTest)
     }
 
-    def writeTest(String srcDir, String packageDotted) {
-        def path = srcDir + packageDotted.replaceAll('.', '/') + '/HelloWorldTest.java'
+    /**
+     *
+     * Creates a unit test for testing your plugin.
+     * @param srcDir the directory in the project where the source file should be created.
+     * @param packageDotted the package for the unit test class, written in dot notation (ex. - nebula.integration)
+     * @param failTest true if you want the test to fail, false if the test should pass
+     */
+    def writeTest(String srcDir, String packageDotted, boolean failTest) {
+        def path = srcDir + packageDotted.replace('.', '/') + '/HelloWorldTest.java'
         def javaFile = createFile(path)
         javaFile << """package ${packageDotted};
             import org.junit.Test;
 
             public class HelloWorldTest {
                 @Test public void doesSomething() {
-                    assert true;
+                    assertFalse( $failTest ); 
                 }
             }
         """.stripIndent()
     }
 
-    def writeResource(String srcDir, String name) {
-        def path = "$srcDir/$name"
+    /**
+     * Creates a properties file to included as project resource.
+     * @param srcDir the directory in the project where the source file should be created.
+     * @param fileName to be used for the file, sans extension.  The .properties extension will be added to the name.
+     */
+    def writeResource(String srcDir, String fileName) {
+        def path = "$srcDir/${fileName}.properties"
         def resourceFile = createFile(path)
-        resourceFile << """firstProperty=foo.bar"""
+        resourceFile.text = "firstProperty=foo.bar"
     }
 
     String copyResources(String srcDir, String destination) {
