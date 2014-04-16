@@ -163,7 +163,7 @@ abstract class IntegrationSpec extends Specification {
      * @param failTest true if you want the test to fail, false if the test should pass
      */
     def writeUnitTest(boolean failTest) {
-        writeTest('src/test/java', 'nebula', failTest)
+        writeTest('src/test/java/', 'nebula', failTest)
     }
 
     /**
@@ -178,6 +178,7 @@ abstract class IntegrationSpec extends Specification {
         def javaFile = createFile(path)
         javaFile << """package ${packageDotted};
             import org.junit.Test;
+            import static org.junit.Assert.assertFalse;
 
             public class HelloWorldTest {
                 @Test public void doesSomething() {
