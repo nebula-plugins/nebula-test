@@ -13,16 +13,21 @@ class ConcreteIntegrationSpec extends IntegrationSpec {
     }
 
     def 'setup and run build'() {
-        writeHelloWorld('nebula.hello')
         buildFile << '''
             apply plugin: 'java'
         '''.stripIndent()
 
         when:
+        writeHelloWorld('nebula.test.hello')
+
+        then:
+        fileExists('src/main/java/nebula/test/hello/HelloWorld.java')
+
+        when:
         runTasksSuccessfully('build')
 
         then:
-        fileExists('build/classes/main/nebula/hello/HelloWorld.class')
+        fileExists('build/classes/main/nebula/test/hello/HelloWorld.class')
         getStandardOutput().contains(':compileTestJava')
     }
 }
