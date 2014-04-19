@@ -2,13 +2,11 @@ import org.gradle.api.publish.maven.MavenPublication
 
 buildscript {
     repositories {
-        mavenLocal()
         jcenter()
     }
 }
 
 repositories {
-    mavenLocal()
     jcenter()
 }
 
@@ -45,5 +43,5 @@ dependencies {
 }
 
 task createWrapper(type: Wrapper) {
-    gradleVersion = '1.12-rc-1'
+    gradleVersion = '1.11'
 }
