@@ -22,3 +22,5 @@ contacts {
         github 'rspieldenner'
     }
 }
+
+createWrapper.gradleVersion='1.12-rc-1'
