@@ -17,23 +17,26 @@ package nebula.test
 
 import org.apache.commons.io.FileUtils
 import org.gradle.BuildAdapter
+import org.gradle.BuildListener
 import org.gradle.BuildResult
 import org.gradle.GradleLauncher
 import org.gradle.StartParameter
 import org.gradle.api.Task
 import org.gradle.api.execution.TaskExecutionListener
+import org.gradle.api.initialization.Settings
+import org.gradle.api.internal.initialization.DefaultClassLoaderScope
 import org.gradle.api.invocation.Gradle
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.TaskState
 import org.gradle.initialization.ClassLoaderRegistry
 import org.gradle.initialization.DefaultGradleLauncher
 import org.gradle.internal.classloader.FilteringClassLoader
-import org.gradle.invocation.BuildClassLoaderRegistry
+import org.gradle.internal.classpath.ClassPath
+import org.gradle.internal.classpath.DefaultClassPath
 import org.gradle.invocation.DefaultGradle
 import org.gradle.logging.ShowStacktrace
 import org.gradle.logging.internal.StreamBackedStandardOutputListener
 import spock.lang.Specification
-import spock.util.mop.Use
 import com.energizedwork.spock.extensions.TempDirectory
 
 /**
@@ -88,8 +91,19 @@ abstract class IntegrationSpec extends Specification {
         launcher.addStandardOutputListener(new StreamBackedStandardOutputListener(captureOutput))
 
         // Inject our classpath
-        ((DefaultGradle) launcher.gradle).getServices().get(BuildClassLoaderRegistry).addRootClassLoader(getClass().classLoader)
+        launcher.gradle.settingsEvaluated { Settings settings ->
+            DefaultClassLoaderScope scope = settings.classLoaderScope // private field
 
+//            def launcherJar = new File(settings.gradle.gradleHomeDir, "lib/gradle-launcher-${settings.gradle.getGradleVersion()}.jar")
+//            ClassPath launcherClassPath = new DefaultClassPath(launcherJar)
+//            scope.addLocal(launcherClassPath) // Locked :-(
+
+            scope.createFlexibleLoaderStructure()
+            scope.addLocal(getClass().classLoader)
+        }
+        def classLoaderScope = launcher.gradle.getClassLoaderScope()
+        println classLoaderScope
+        
         // Allowing packages and resources from our classpath, might be moot given above line
         launcher.addListener(new AllowListener(getAllowedPackages(), getAllowedResources()))
 
@@ -108,7 +122,7 @@ abstract class IntegrationSpec extends Specification {
     }
 
     /* Override to customize */
-    String[] getAllowedPackages() { [] }
+    String[] getAllowedPackages() { ['org.gradle'] }
 
     String[] getAllowedResources() { [] }
 
@@ -300,7 +314,8 @@ abstract class IntegrationSpec extends Specification {
             // (a 'buildscript { ... }' section in test buildscript isn't enough, something is missing...). So I simply
             // adjust the Gradle filtering classloader to allow access to Gradle Android Plugin. It is not a public API,
             // but it's highly unlikely that it will change before we switch to using Gradle Tooling API. See TestProject too.
-            FilteringClassLoader rootClassloader = (FilteringClassLoader) ((DefaultGradle) gradle).rootProject.services.get(ClassLoaderRegistry.class).getGradleApiClassLoader()
+            ClassLoaderRegistry registry = ((DefaultGradle) gradle).rootProject.services.get(ClassLoaderRegistry.class)
+            FilteringClassLoader rootClassloader = (FilteringClassLoader) registry.getGradleApiClassLoader().parent
             allowedPackages.each {
                 rootClassloader.allowPackage(it)
             }
