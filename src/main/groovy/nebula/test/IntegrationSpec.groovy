@@ -15,6 +15,7 @@
  */
 package nebula.test
 
+import nebula.test.functional.internal.classpath.ClasspathAddingInitScriptBuilder
 import org.apache.commons.io.FileUtils
 import org.gradle.BuildAdapter
 import org.gradle.BuildResult
@@ -28,12 +29,10 @@ import org.gradle.api.tasks.TaskState
 import org.gradle.initialization.ClassLoaderRegistry
 import org.gradle.initialization.DefaultGradleLauncher
 import org.gradle.internal.classloader.FilteringClassLoader
-import org.gradle.invocation.BuildClassLoaderRegistry
 import org.gradle.invocation.DefaultGradle
 import org.gradle.logging.ShowStacktrace
 import org.gradle.logging.internal.StreamBackedStandardOutputListener
 import spock.lang.Specification
-import spock.util.mop.Use
 import com.energizedwork.spock.extensions.TempDirectory
 
 /**
@@ -49,6 +48,7 @@ abstract class IntegrationSpec extends Specification {
     protected List<ExecutedTask> executedTasks = []
 
     String moduleName
+    File initFile
     File settingsFile
     File buildFile
 
@@ -66,6 +66,12 @@ abstract class IntegrationSpec extends Specification {
         if (!buildFile) {
             buildFile = new File(projectDir, 'build.gradle')
         }
+
+        if (!initFile) {
+            initFile = new File(projectDir, 'init.gradle')
+            new ClasspathAddingInitScriptBuilder().build(initFile, getClass().classLoader);
+        }
+
         println "Running test from ${projectDir}"
 
         buildFile << "// Running test for ${moduleName}\n"
@@ -78,6 +84,7 @@ abstract class IntegrationSpec extends Specification {
         startParameter.settingsFile = settingsFile
         startParameter.logLevel = getLogLevel()
         startParameter.showStacktrace = ShowStacktrace.ALWAYS
+        startParameter.initScripts = [initFile]
 
         DefaultGradleLauncher launcher = GradleLauncher.newInstance(startParameter)
 
@@ -86,9 +93,6 @@ abstract class IntegrationSpec extends Specification {
         launcher.addStandardErrorListener(new StreamBackedStandardOutputListener(captureError))
         captureOutput.setLength(0)
         launcher.addStandardOutputListener(new StreamBackedStandardOutputListener(captureOutput))
-
-        // Inject our classpath
-        ((DefaultGradle) launcher.gradle).getServices().get(BuildClassLoaderRegistry).addRootClassLoader(getClass().classLoader)
 
         // Allowing packages and resources from our classpath, might be moot given above line
         launcher.addListener(new AllowListener(getAllowedPackages(), getAllowedResources()))

@@ -10,6 +10,7 @@ dependencies {
     compile ('org.spockframework:spock-core:0.7-groovy-1.8') { exclude group: 'org.codehaus.groovy' }
     // testCompile ('com.energizedwork:spock-extensions:1.0') { exclude group: 'org.codehaus.groovy' } // Waiting for this to be published to jcenter
     compile 'cglib:cglib-nodep:2.2.2' // For Mocking classes with Spock
+    compile "org.gradle:gradle-tooling-api:${gradle.gradleVersion}" // might not be needed
 }
 
 contacts {

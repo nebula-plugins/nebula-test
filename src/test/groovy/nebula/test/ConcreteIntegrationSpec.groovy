@@ -1,6 +1,7 @@
 package nebula.test
 
 import org.gradle.BuildResult
+import spock.lang.Ignore
 
 class ConcreteIntegrationSpec extends IntegrationSpec {
     def 'runs build'() {
