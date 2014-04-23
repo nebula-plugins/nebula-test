@@ -20,68 +20,63 @@ import nebula.test.functional.ExecutionResult;
 import nebula.test.functional.internal.DefaultExecutionResult;
 import nebula.test.functional.internal.GradleHandle;
 import org.gradle.tooling.BuildLauncher;
-import org.gradle.tooling.GradleConnectionException;
-import org.gradle.tooling.ResultHandler;
+import org.gradle.tooling.ProgressEvent;
+import org.gradle.tooling.ProgressListener;
 
 import java.io.ByteArrayOutputStream;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BuildLauncherBackedGradleHandle implements GradleHandle {
 
     final private ByteArrayOutputStream standardOutput = new ByteArrayOutputStream();
     final private ByteArrayOutputStream standardError = new ByteArrayOutputStream();
-
-    private final CountDownLatch runningLatch = new CountDownLatch(1);
-    private final AtomicBoolean running = new AtomicBoolean(true);
-
-    private RuntimeException exception;
+    final private BuildLauncher launcher;
+    final private List<String> tasksExecuted;
+    public static final String PROGRESS_TASK_PREFIX = "Execute :";
 
     public BuildLauncherBackedGradleHandle(BuildLauncher launcher) {
         launcher.setStandardOutput(standardOutput);
         launcher.setStandardError(standardError);
 
-        launcher.run(new ResultHandler<Void>() {
-            public void onComplete(Void result) {
-                finish();
-            }
-
-            public void onFailure(GradleConnectionException failure) {
-                exception = failure;
-                finish();
+        tasksExecuted = new ArrayList<String>();
+        launcher.addProgressListener(new ProgressListener() {
+            @Override
+            public void statusChanged(ProgressEvent event) {
+                // These are free form strings, :-(
+                if (event.getDescription().startsWith(PROGRESS_TASK_PREFIX)) { // E.g. "Execute :echo"
+                    String taskName = event.getDescription().substring(PROGRESS_TASK_PREFIX.length() - 1);
+                    tasksExecuted.add(taskName);
+                }
             }
         });
+        this.launcher = launcher;
     }
 
-    private void finish() {
-        running.set(false);
-        runningLatch.countDown();
-    }
-
-    public String getStandardOutput() {
+    private String getStandardOutput() {
         return standardOutput.toString();
     }
 
-    public String getStandardError() {
+    private String getStandardError() {
         return standardError.toString();
     }
 
-    public ExecutionResult waitForFinish() {
+    public ExecutionResult run() {
+        Throwable failure = null;
         try {
-            runningLatch.await();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            launcher.run();
+        } catch(Exception e) {
+            failure = e;
         }
 
-        if (exception == null) {
-            return new DefaultExecutionResult(getStandardOutput(), getStandardError());
-        } else {
-            throw exception;
+        String stdout = getStandardOutput();
+        List<MinimalExecutedTask> tasks = new ArrayList<MinimalExecutedTask>();
+        for (String taskName: tasksExecuted) {
+            // Scan stdout for task's up to date
+            boolean upToDate = stdout.contains(taskName + " UP-TO-DATE");
+            tasks.add( new MinimalExecutedTask(taskName, upToDate) );
         }
-    }
-
-    public boolean isRunning() {
-        return running.get();
+        return new DefaultExecutionResult(stdout, getStandardError(), tasks, failure);
     }
 
 }

@@ -16,17 +16,27 @@
 
 package nebula.test.functional;
 
+import nebula.test.functional.internal.GradleHandle;
+
 import java.io.File;
 import java.util.List;
 
 public interface GradleRunner {
 
-    File getDirectory();
-    void setDirectory(File directory);
+    /**
+     * Create handle and run build
+     * @param directory
+     * @param args
+     * @return results from execution
+     */
+    ExecutionResult run(File directory, List<String> args);
 
-    List<String> getArguments();
-    void setArguments(List<String> string);
-
-    ExecutionResult run();
+    /**
+     * Handle on instance of Gradle that can be run.
+     * @param directory
+     * @param args
+     * @return handle
+     */
+    GradleHandle handle(File directory, List<String> args);
 
 }

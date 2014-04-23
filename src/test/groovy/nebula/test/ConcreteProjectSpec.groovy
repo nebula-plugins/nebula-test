@@ -1,7 +1,5 @@
 package nebula.test
 
-import spock.lang.Ignore
-
 import java.util.concurrent.atomic.AtomicBoolean
 
 class ConcreteProjectSpec extends ProjectSpec {

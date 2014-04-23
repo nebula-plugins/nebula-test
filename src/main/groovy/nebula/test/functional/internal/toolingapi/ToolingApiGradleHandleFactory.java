@@ -16,6 +16,7 @@ public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
         connector.forProjectDirectory(directory);
         ProjectConnection connection = connector.connect();
         BuildLauncher launcher = connection.newBuild();
+        // TODO Deal with connection.close()
         String[] argumentArray = new String[arguments.size()];
         arguments.toArray(argumentArray);
         launcher.withArguments(argumentArray);

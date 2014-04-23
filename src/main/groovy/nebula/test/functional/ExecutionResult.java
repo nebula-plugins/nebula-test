@@ -22,4 +22,12 @@ public interface ExecutionResult {
 
     String getStandardError();
 
+    boolean wasExecuted(String taskPath);
+
+    boolean wasUpToDate(String taskPath);
+
+    Throwable getFailure();
+
+    ExecutionResult rethrowFailure();
+
 }

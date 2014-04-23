@@ -15,40 +15,35 @@
  */
 package nebula.test
 
-import nebula.test.functional.internal.classpath.ClasspathAddingInitScriptBuilder
+import com.energizedwork.spock.extensions.TempDirectory
+import nebula.test.functional.ExecutionResult
+import nebula.test.functional.GradleRunner
+import nebula.test.functional.GradleRunnerFactory
+import nebula.test.functional.internal.GradleHandle
+import nebula.test.functional.internal.launcherapi.StateExecutedTask
 import org.apache.commons.io.FileUtils
 import org.gradle.BuildAdapter
-import org.gradle.BuildResult
-import org.gradle.GradleLauncher
-import org.gradle.StartParameter
-import org.gradle.api.Task
-import org.gradle.api.execution.TaskExecutionListener
 import org.gradle.api.invocation.Gradle
 import org.gradle.api.logging.LogLevel
-import org.gradle.api.tasks.TaskState
 import org.gradle.initialization.ClassLoaderRegistry
-import org.gradle.initialization.DefaultGradleLauncher
 import org.gradle.internal.classloader.FilteringClassLoader
 import org.gradle.invocation.DefaultGradle
-import org.gradle.logging.ShowStacktrace
-import org.gradle.logging.internal.StreamBackedStandardOutputListener
 import spock.lang.Specification
-import com.energizedwork.spock.extensions.TempDirectory
 
 /**
+ * @author Justin Ryan
  * @author Marcin Erdmann
  */
 abstract class IntegrationSpec extends Specification {
     @TempDirectory(clean=false) File projectDir
 
     // Holds State of last run
-    // TODO Put these in their own data structure along with BuildResult
-    private final StringBuilder captureError = new StringBuilder()
-    private final StringBuilder captureOutput = new StringBuilder()
-    protected List<ExecutedTask> executedTasks = []
+    private ExecutionResult result
+
+    boolean useToolingApi = true
+    LogLevel logLevel = LogLevel.INFO
 
     String moduleName
-    File initFile
     File settingsFile
     File buildFile
 
@@ -67,48 +62,34 @@ abstract class IntegrationSpec extends Specification {
             buildFile = new File(projectDir, 'build.gradle')
         }
 
-        if (!initFile) {
-            initFile = new File(projectDir, 'init.gradle')
-            new ClasspathAddingInitScriptBuilder().build(initFile, getClass().classLoader);
-        }
-
         println "Running test from ${projectDir}"
 
         buildFile << "// Running test for ${moduleName}\n"
     }
 
-    protected GradleLauncher launcher(String... args) {
-        StartParameter startParameter = GradleLauncher.createStartParameter(args)
-        startParameter.projectDir = projectDir
-        startParameter.buildFile = buildFile
-        startParameter.settingsFile = settingsFile
-        startParameter.logLevel = getLogLevel()
-        startParameter.showStacktrace = ShowStacktrace.ALWAYS
-        startParameter.initScripts = [initFile]
+    protected GradleHandle launcher(String... args) {
+        List<String> arguments = []
+        // Gradle will use these files name from the PWD, instead of the project directory. It's easier to just leave
+        // them out and let the default find them, since we're not changing their default names.
+        //arguments += '--build-file'
+        //arguments += (buildFile.canonicalPath - projectDir.canonicalPath).substring(1)
+        //arguments += '--settings-file'
+        //arguments += (settingsFile.canonicalPath - projectDir.canonicalPath).substring(1)
+        //arguments += '--no-daemon'
 
-        DefaultGradleLauncher launcher = GradleLauncher.newInstance(startParameter)
+        switch(getLogLevel()) {
+            case LogLevel.INFO:
+                arguments += '--info'
+                break
+            case LogLevel.DEBUG:
+                arguments += '--debug'
+                break
+        }
+        arguments += '--stacktrace'
+        arguments.addAll(args)
 
-        // Stdin/StdOut
-        captureError.setLength(0)
-        launcher.addStandardErrorListener(new StreamBackedStandardOutputListener(captureError))
-        captureOutput.setLength(0)
-        launcher.addStandardOutputListener(new StreamBackedStandardOutputListener(captureOutput))
-
-        // Allowing packages and resources from our classpath, might be moot given above line
-        launcher.addListener(new AllowListener(getAllowedPackages(), getAllowedResources()))
-
-        // Executed Tasks
-        executedTasks.clear()
-        launcher.addListener(new TaskExecutionListener() {
-            void beforeExecute(Task task) {
-                executedTasks << new ExecutedTask(task: task)
-            }
-
-            void afterExecute(Task task, TaskState taskState) {
-                executedTasks.last().state = taskState
-            }
-        })
-        launcher
+        GradleRunner runner = useToolingApi?GradleRunnerFactory.createTooling():GradleRunnerFactory.createLauncher()
+        runner.handle(projectDir, arguments)
     }
 
     /* Override to customize */
@@ -121,7 +102,7 @@ abstract class IntegrationSpec extends Specification {
      * @return
      */
     LogLevel getLogLevel() {
-        return LogLevel.INFO
+        return logLevel
     }
 
     /* Setup */
@@ -228,62 +209,57 @@ abstract class IntegrationSpec extends Specification {
         new File(projectDir, path).exists()
     }
 
-    ExecutedTask task(String name) {
-        executedTasks.find { it.task.name == name }
+    @Deprecated
+    StateExecutedTask task(String name) {
+        result.task(name)
     }
 
-    Collection<ExecutedTask> tasks(String... names) {
-        def tasks = executedTasks.findAll { it.task.name in names }
-        assert tasks.size() == names.size()
-        tasks
+    @Deprecated
+    Collection<StateExecutedTask> tasks(String... names) {
+        result.tasks(names)
     }
 
+    @Deprecated
     boolean wasExecuted(String taskPath) {
-        executedTasks.any { it.task.path == taskPath }
+        result.wasExecuted(taskPath)
     }
 
+    @Deprecated
     boolean wasUpToDate(String taskPath) {
-        def task = executedTasks.find { it.task.path == taskPath }
-        if (task == null) {
-            throw RuntimeException("Task with path $taskPath was not found")
-        }
-        return task.state?.skipped && task.state?.skipMessage == 'UP-TO-DATE'
+        result.wasUpToDate(taskPath)
     }
 
+    @Deprecated
     String getStandardError() {
-        captureError.toString()
+        result.standardError
     }
 
+    @Deprecated
     String getStandardOutput() {
-        captureOutput.toString()
+        result.standardOutput
     }
 
     /* Execution */
-    protected BuildResult runTasksSuccessfully(String... tasks) {
-        BuildResult result = runTasks(tasks)
+    protected ExecutionResult runTasksSuccessfully(String... tasks) {
+        ExecutionResult result = runTasks(tasks)
         if (result.failure) {
             result.rethrowFailure()
         }
         result
     }
 
-    protected BuildResult runTasksWithFailure(String... tasks) {
-        BuildResult result = runTasks(tasks)
+    protected ExecutionResult runTasksWithFailure(String... tasks) {
+        ExecutionResult result = runTasks(tasks)
         assert result.failure
         result
     }
 
-    protected BuildResult runTasks(String... tasks) {
-        launcher(tasks).run()
+    protected ExecutionResult runTasks(String... tasks) {
+        ExecutionResult result = launcher(tasks).run()
+        this.result = result
+        return result
     }
 
-    protected BuildResult analyze(String... tasks) {
-        BuildResult result = launcher(tasks).buildAndRunAnalysis
-        if(result.failure) {
-            result.rethrowFailure()
-        }
-        result
-    }
     /**
      * Via: https://github.com/jvoegele/gradle-android-plugin/blob/master/src/integTest/groovy/com/jvoegele/gradle/android/support/MyBuildListener.groovy
      */

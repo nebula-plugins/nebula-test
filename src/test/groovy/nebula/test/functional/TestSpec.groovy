@@ -26,21 +26,32 @@ import spock.lang.Specification
 class TestSpec extends Specification {
 
     @Rule TemporaryFolder tmp
-    def runner = GradleRunnerFactory.create()
+    def runner = GradleRunnerFactory.createTooling()
 
     def "test thing"() {
         given:
         tmp.newFile("build.gradle") << """
             apply plugin: ${SomePlugin.name}
+            echo.outputs.upToDateWhen { true }
         """
 
         when:
-        runner.directory = tmp.root
-        runner.arguments << "echo"
+        ExecutionResult result = runner.run(tmp.root, ["echo"])
+        !result.wasExecuted(":hush")
+        result.wasExecuted(":echo")
+        result.wasUpToDate(":echo")
 
         then:
-        ExecutionResult result = runner.run()
         result.standardOutput.contains("I ran!")
+
+        when:
+        ExecutionResult result2 = runner.run(tmp.root, ["echo"])
+
+        then:
+        !result2.standardOutput.contains("I ran!")
+        result.wasExecuted(":echo")
+        !result.wasUpToDate(":echo")
+
     }
 }
 
@@ -55,6 +66,5 @@ class SomePlugin implements Plugin<Project> {
                 println "I ran!"
             }
         }
-
     }
 }

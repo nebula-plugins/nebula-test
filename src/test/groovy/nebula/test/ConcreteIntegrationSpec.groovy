@@ -1,16 +1,32 @@
 package nebula.test
 
-import org.gradle.BuildResult
-import spock.lang.Ignore
+import nebula.test.functional.ExecutionResult
+import nebula.test.functional.internal.launcherapi.LauncherExecutionResult
+import org.gradle.api.logging.LogLevel
 
 class ConcreteIntegrationSpec extends IntegrationSpec {
     def 'runs build'() {
         when:
-        BuildResult buildResult = runTasks('dependencies')
+        ExecutionResult buildResult = runTasks('dependencies')
+
+        then:
+        useToolingApi
+        buildResult.failure == null
+    }
+
+    def 'runs build with Launcher'() {
+        when:
+        useToolingApi = false
+        logLevel = LogLevel.DEBUG
+        ExecutionResult buildResult = runTasks('dependencies')
 
         then:
         buildResult.failure == null
-        buildResult.gradle != null
+        buildResult instanceof LauncherExecutionResult
+        ((LauncherExecutionResult) buildResult).gradle != null
+
+        cleanup:
+        useToolingApi = true
     }
 
     def 'setup and run build'() {
@@ -25,10 +41,10 @@ class ConcreteIntegrationSpec extends IntegrationSpec {
         fileExists('src/main/java/nebula/test/hello/HelloWorld.java')
 
         when:
-        runTasksSuccessfully('build')
+        def result = runTasksSuccessfully('build')
 
         then:
         fileExists('build/classes/main/nebula/test/hello/HelloWorld.class')
-        getStandardOutput().contains(':compileTestJava')
+        result.getStandardOutput().contains(':compileTestJava')
     }
 }

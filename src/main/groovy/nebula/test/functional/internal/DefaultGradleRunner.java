@@ -20,13 +20,9 @@ import nebula.test.functional.ExecutionResult;
 import nebula.test.functional.GradleRunner;
 
 import java.io.File;
-import java.util.LinkedList;
 import java.util.List;
 
 public class DefaultGradleRunner implements GradleRunner {
-
-    private File directory;
-    private List<String> arguments = new LinkedList<String>();
 
     private final GradleHandleFactory handleFactory;
 
@@ -34,29 +30,12 @@ public class DefaultGradleRunner implements GradleRunner {
         this.handleFactory = handleFactory;
     }
 
-    public File getDirectory() {
-        return directory;
+    public ExecutionResult run(File directory, List<String> arguments) {
+        return handle(directory, arguments).run();
     }
 
-    public void setDirectory(File directory) {
-        this.directory = directory;
-    }
-
-    public List<String> getArguments() {
-        return arguments;
-    }
-
-    public void setArguments(List<String> arguments) {
-        this.arguments = arguments;
-    }
-
-    public ExecutionResult run() {
-        return start().waitForFinish();
-    }
-
-    private GradleHandle start() {
+    public GradleHandle handle(File directory, List<String> arguments) {
         return handleFactory.start(directory, arguments);
     }
-
 
 }
