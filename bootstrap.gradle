@@ -24,6 +24,7 @@ publishing {
 }
 
 apply plugin: 'bintray'
+def packageName = name
 bintray {
     user = bintrayUser
     key = bintrayKey
@@ -31,11 +32,12 @@ bintray {
     pkg {
         repo = 'gradle-plugins'
         userOrg = 'nebula'
-        name = name
+        name = packageName
         licenses = ['Apache-2.0']
     }
     // Will have to manually publish on bintray.com
 }
+bintrayUpload.dependsOn(build)
 
 task install(dependsOn: 'publishMavenJavaPublicationToMavenLocal') << {
     logger.info "Installed $project.name"
