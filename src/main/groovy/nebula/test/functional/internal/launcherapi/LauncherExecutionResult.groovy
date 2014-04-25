@@ -17,11 +17,11 @@ class LauncherExecutionResult extends DefaultExecutionResult {
     }
 
     StateExecutedTask task(String name) {
-        executedTasks.find { it.task.name == name }
+        executedTasks.find { ((StateExecutedTask) it).task.path == name }
     }
 
     Collection<StateExecutedTask> tasks(String... names) {
-        def tasks = executedTasks.findAll { it.task.name in names }
+        def tasks = executedTasks.findAll { ((StateExecutedTask) it).task.path in names }
         assert tasks.size() == names.size()
         tasks
     }

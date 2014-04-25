@@ -20,6 +20,7 @@ import nebula.test.functional.ExecutionResult
 import nebula.test.functional.GradleRunner
 import nebula.test.functional.GradleRunnerFactory
 import nebula.test.functional.internal.GradleHandle
+import nebula.test.functional.internal.launcherapi.LauncherExecutionResult
 import nebula.test.functional.internal.launcherapi.StateExecutedTask
 import org.apache.commons.io.FileUtils
 import org.gradle.BuildAdapter
@@ -212,12 +213,14 @@ abstract class IntegrationSpec extends Specification {
 
     @Deprecated
     StateExecutedTask task(String name) {
-        result.task(name)
+        assert useToolingApi == false
+        ((LauncherExecutionResult) result).task(name)
     }
 
     @Deprecated
     Collection<StateExecutedTask> tasks(String... names) {
-        result.tasks(names)
+        assert useToolingApi == false
+        ((LauncherExecutionResult) result).tasks(names)
     }
 
     @Deprecated
