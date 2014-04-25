@@ -23,4 +23,4 @@ contacts {
     }
 }
 
-createWrapper.gradleVersion='1.12-rc-1'
+createWrapper.gradleVersion='1.11'
