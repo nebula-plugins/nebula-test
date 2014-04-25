@@ -19,7 +19,7 @@ package nebula.test.functional.internal;
 import nebula.test.functional.ExecutionResult
 import org.gradle.api.GradleException;
 
-public class DefaultExecutionResult implements ExecutionResult {
+public abstract class DefaultExecutionResult implements ExecutionResult {
 
     private final String standardOutput;
     private final String standardError;
