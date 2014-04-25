@@ -3,6 +3,7 @@ package nebula.test
 import nebula.test.functional.ExecutionResult
 import nebula.test.functional.internal.launcherapi.LauncherExecutionResult
 import org.gradle.api.logging.LogLevel
+import spock.lang.Unroll
 
 class ConcreteIntegrationSpec extends IntegrationSpec {
     def 'runs build'() {
@@ -46,5 +47,27 @@ class ConcreteIntegrationSpec extends IntegrationSpec {
         then:
         fileExists('build/classes/main/nebula/test/hello/HelloWorld.class')
         result.getStandardOutput().contains(':compileTestJava')
+    }
+
+
+    @Unroll
+    def 'can import from classpath using #desc #testTooling'(String desc, boolean testTooling) {
+        useToolingApi = testTooling
+
+        buildFile << '''
+            import nebula.test.FakePlugin
+            apply plugin: FakePlugin
+        '''.stripIndent()
+
+        when:
+        runTasksSuccessfully('tasks')
+
+        then:
+        noExceptionThrown()
+
+        where:
+        desc       | testTooling
+        "Tooling"  | true
+        "Launcher" | false
     }
 }
