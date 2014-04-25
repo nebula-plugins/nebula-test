@@ -22,11 +22,11 @@ import nebula.test.functional.internal.ExecutedTask
  */
 class MinimalExecutedTask implements ExecutedTask {
 
-    String name
+    String path
     boolean upToDate
 
-    MinimalExecutedTask(String name, boolean upToDate) {
-        this.name = name
+    MinimalExecutedTask(String path, boolean upToDate) {
+        this.path = path
         this.upToDate = upToDate
     }
 

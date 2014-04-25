@@ -26,8 +26,8 @@ class StateExecutedTask implements ExecutedTask {
     Task task
     TaskStateInternal state
 
-    public String getName() {
-        return task.name
+    public String getPath() {
+        return task.path
     }
 
     public boolean isUpToDate() {
