@@ -1,6 +1,6 @@
 buildscript {
     repositories { jcenter() }
-    dependencies { classpath "com.netflix.nebula:nebula-plugin-plugin:${gradle.gradleVersion}.+" }
+    dependencies { classpath "com.netflix.nebula:nebula-plugin-plugin:1.12.+" }
 }
 
 description 'Test harness for Gradle plugins'
@@ -23,6 +23,6 @@ contacts {
     }
 }
 
-createWrapper.gradleVersion='1.11'
+createWrapper.gradleVersion='1.12-rc-2'
 
 tasks.release.inputs.file('build.gradle')
