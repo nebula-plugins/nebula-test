@@ -15,7 +15,6 @@
  */
 package nebula.test.dependencies
 
-import org.gradle.api.invocation.Gradle
 import org.gradle.tooling.GradleConnector
 import org.gradle.tooling.ProjectConnection
 
