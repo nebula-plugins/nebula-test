@@ -1,3 +1,9 @@
+1.11.1 / 2014-04-25
+===================
+* Under lying implementation of IntegrationSpec can now be backed by the Tooling API or a GradleLauncher.
+* BREAKING: Return type from runTask* is now ExecutionResult. And depending on the implemention it might not support 
+  additional insight, like the Gradle object or the task state.
+  
 1.9.8 / 2014-04-16
 ==================
 * Added helper methods to IntegrationSpec class

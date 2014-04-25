@@ -13,17 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nebula.test
+package nebula.test.functional.internal.launcherapi
 
+import nebula.test.functional.internal.ExecutedTask
 import org.gradle.api.Task
 import org.gradle.api.internal.tasks.TaskStateInternal
 
 /**
  * @author Marcin Erdmann
  */
-class ExecutedTask {
+class StateExecutedTask implements ExecutedTask {
     Task task
     TaskStateInternal state
+
+    public String getName() {
+        return task.name
+    }
+
+    public boolean isUpToDate() {
+        task.state?.skipped && task.state?.skipMessage == 'UP-TO-DATE'
+    }
 
     String toString() {
         "executed $task"
