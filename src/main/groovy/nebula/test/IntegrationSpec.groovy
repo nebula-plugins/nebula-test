@@ -202,7 +202,7 @@ abstract class IntegrationSpec extends Specification {
     }
 
     String applyPlugin(Class pluginClass) {
-        "apply plugin: project.class.classLoader.loadClass('$pluginClass.name')"
+        "apply plugin: $pluginClass.name"
     }
 
     /* Checks */
