@@ -25,5 +25,3 @@ contacts {
 }
 
 createWrapper.gradleVersion='1.11'
-
-tasks.release.inputs.file('build.gradle')
