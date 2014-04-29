@@ -19,6 +19,7 @@ package nebula.test.functional.internal.toolingapi;
 import nebula.test.functional.ExecutionResult;
 import nebula.test.functional.internal.DefaultExecutionResult;
 import nebula.test.functional.internal.GradleHandle;
+import org.gradle.tooling.BuildException;
 import org.gradle.tooling.BuildLauncher;
 import org.gradle.tooling.ProgressEvent;
 import org.gradle.tooling.ProgressListener;
@@ -65,6 +66,8 @@ public class BuildLauncherBackedGradleHandle implements GradleHandle {
         Throwable failure = null;
         try {
             launcher.run();
+        } catch(BuildException e) {
+            failure = e.getCause();
         } catch(Exception e) {
             failure = e;
         }
