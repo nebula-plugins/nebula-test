@@ -15,8 +15,8 @@
  */
 package nebula.test.dependencies
 
-import org.gradle.tooling.GradleConnector
-import org.gradle.tooling.ProjectConnection
+import nebula.test.functional.GradleRunnerFactory
+import nebula.test.functional.internal.GradleHandle
 
 class GradleDependencyGenerator {
     static final String STANDARD_SUBPROJECT_BLOCK = '''\
@@ -110,18 +110,9 @@ class GradleDependencyGenerator {
         """.stripIndent() + block.toString()
     }
 
-    private void runTasks(String tasks, URI distribution = null) {
-        GradleConnector connector = GradleConnector.newConnector()
-                .forProjectDirectory(gradleRoot)
-        if (distribution) {
-            connector.useDistribution(distribution)
-        }
-        ProjectConnection connection = connector.connect()
-
-        try {
-            connection.newBuild().forTasks(tasks).run()
-        } finally {
-            connection.close()
-        }
+    private void runTasks(String tasks) {
+        def runner = GradleRunnerFactory.createTooling() // Could optionally use Launcher
+        GradleHandle handle = runner.handle(gradleRoot, tasks.split())
+        handle.run().rethrowFailure()
     }
 }
