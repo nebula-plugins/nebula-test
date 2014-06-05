@@ -65,12 +65,12 @@ class GradleDependencyGenerator {
         generateGradleFiles()
     }
 
-    void generateTestMavenRepo(URI gradleDistribution = null) {
-        runTasks('publishMavenPublicationToMavenRepository', gradleDistribution)
+    void generateTestMavenRepo() {
+        runTasks('publishMavenPublicationToMavenRepository')
     }
 
-    void generateTestIvyRepo(URI gradleDistribution = null) {
-        runTasks('publishIvyPublicationToIvyRepository', gradleDistribution)
+    void generateTestIvyRepo() {
+        runTasks('publishIvyPublicationToIvyRepository')
     }
 
     private void generateGradleFiles() {
@@ -112,7 +112,7 @@ class GradleDependencyGenerator {
 
     private void runTasks(String tasks) {
         def runner = GradleRunnerFactory.createTooling() // Could optionally use Launcher
-        GradleHandle handle = runner.handle(gradleRoot, tasks.split())
+        GradleHandle handle = runner.handle(gradleRoot, tasks.tokenize())
         handle.run().rethrowFailure()
     }
 }
