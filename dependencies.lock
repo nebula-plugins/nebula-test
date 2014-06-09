@@ -1,0 +1,4 @@
+{
+  "cglib:cglib-nodep": { "locked": "2.2.2", "requested": "2.2.2" },
+  "org.spockframework:spock-core": { "locked": "0.7-groovy-1.8", "requested": "0.7-groovy-1.8" }
+}
