@@ -28,16 +28,9 @@ public class ClasspathAddingInitScriptBuilder {
                 writer.write("allprojects {\n");
                 writer.write("  buildscript {\n");
                 writer.write("    dependencies {\n");
-                writer.write("      classpath files(\n");
-                int i = 0;
                 for (File file : classpath) {
-                    writer.write(String.format("        '%s'", TextUtil.escapeString(file.getAbsolutePath())));
-                    if (++i != classpath.size()) {
-                        writer.write(",\n");
-                    }
+                    writer.write(String.format("      classpath file('%s')\n", TextUtil.escapeString(file.getAbsolutePath()));
                 }
-                writer.write("\n");
-                writer.write("      )\n");
                 writer.write("    }\n");
                 writer.write("  }\n");
                 writer.write("}\n");
