@@ -42,11 +42,12 @@ class ConcreteIntegrationSpec extends IntegrationSpec {
         fileExists('src/main/java/nebula/test/hello/HelloWorld.java')
 
         when:
-        def result = runTasksSuccessfully('build')
+        def result = runTasksSuccessfully('build', '--info')
 
         then:
         fileExists('build/classes/main/nebula/test/hello/HelloWorld.class')
-        result.getStandardOutput().contains(':compileTestJava')
+        result.wasExecuted(':compileTestJava')
+        result.getStandardOutput().contains('Skipping task \':compileTestJava\' as it has no source files.')
     }
 
 
