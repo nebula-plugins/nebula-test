@@ -17,6 +17,7 @@
 package nebula.test.functional;
 
 public interface ExecutionResult {
+    Boolean getSuccess();
 
     String getStandardOutput();
 

@@ -15,14 +15,31 @@ class ConcreteIntegrationSpec extends IntegrationSpec {
         buildResult.failure == null
     }
 
-    def 'runs build with Launcher'() {
+    def 'runs successful build with Launcher'() {
         when:
         useToolingApi = false
         logLevel = LogLevel.DEBUG
         ExecutionResult buildResult = runTasks('dependencies')
 
         then:
+        buildResult.success
         buildResult.failure == null
+        buildResult instanceof LauncherExecutionResult
+        ((LauncherExecutionResult) buildResult).gradle != null
+
+        cleanup:
+        useToolingApi = true
+    }
+
+    def 'runs failed build with Launcher'() {
+        when:
+        useToolingApi = false
+        logLevel = LogLevel.DEBUG
+        ExecutionResult buildResult = runTasks('unknown')
+
+        then:
+        !buildResult.success
+        buildResult.failure
         buildResult instanceof LauncherExecutionResult
         ((LauncherExecutionResult) buildResult).gradle != null
 

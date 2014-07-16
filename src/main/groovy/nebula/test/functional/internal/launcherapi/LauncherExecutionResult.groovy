@@ -11,8 +11,8 @@ class LauncherExecutionResult extends DefaultExecutionResult {
 
     BuildResult buildResult
 
-    LauncherExecutionResult(String standardOutput, String standardError, Throwable failure, List<StateExecutedTask> executedTasks, BuildResult buildResult) {
-        super(standardOutput, standardError, executedTasks, failure)
+    LauncherExecutionResult(Boolean success, String standardOutput, String standardError, Throwable failure, List<StateExecutedTask> executedTasks, BuildResult buildResult) {
+        super(success, standardOutput, standardError, executedTasks, failure)
         this.buildResult = buildResult
     }
 

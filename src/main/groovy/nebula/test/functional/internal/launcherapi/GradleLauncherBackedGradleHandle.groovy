@@ -72,7 +72,10 @@ public class GradleLauncherBackedGradleHandle implements GradleHandle {
         } catch(Exception e) {
             failure = e
         }
-        return new LauncherExecutionResult(getStandardOutput(), getStandardError(), failure?:buildResult.failure, executedTasks, buildResult);
+
+        Throwable determinedFailure = failure ?: buildResult.failure
+        boolean success = determinedFailure == null
+        return new LauncherExecutionResult(success, getStandardOutput(), getStandardError(), determinedFailure, executedTasks, buildResult);
     }
 
 }

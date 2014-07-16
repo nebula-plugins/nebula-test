@@ -14,33 +14,42 @@
  * limitations under the License.
  */
 
-package nebula.test.functional.internal;
+package nebula.test.functional.internal
 
 import nebula.test.functional.ExecutionResult
-import org.gradle.api.GradleException;
+import org.gradle.api.GradleException
 
 public abstract class DefaultExecutionResult implements ExecutionResult {
-
-    private final String standardOutput;
-    private final String standardError;
+    private final Boolean success
+    private final String standardOutput
+    private final String standardError
     private final List<? extends ExecutedTask> executedTasks
     private final Throwable failure
 
-    public DefaultExecutionResult(String standardOutput, String standardError, List<? extends ExecutedTask> executedTasks, Throwable failure) {
+    public DefaultExecutionResult(Boolean success, String standardOutput, String standardError, List<? extends ExecutedTask> executedTasks, Throwable failure) {
+        this.success = success
         this.standardOutput = standardOutput
         this.standardError = standardError
         this.executedTasks = executedTasks
         this.failure = failure
     }
 
+    @Override
+    Boolean getSuccess() {
+        success
+    }
+
+    @Override
     public String getStandardOutput() {
-        return standardOutput;
+        standardOutput
     }
 
+    @Override
     public String getStandardError() {
-        return standardError;
+        standardError
     }
 
+    @Override
     boolean wasExecuted(String taskPath) {
         executedTasks.any {
             taskPath = normalizeTaskPath(taskPath)
@@ -49,6 +58,7 @@ public abstract class DefaultExecutionResult implements ExecutionResult {
         }
     }
 
+    @Override
     boolean wasUpToDate(String taskPath) {
         taskPath = normalizeTaskPath(taskPath)
         def task = executedTasks.find { it.path == taskPath }
@@ -62,18 +72,20 @@ public abstract class DefaultExecutionResult implements ExecutionResult {
         taskPath.startsWith(':') ? taskPath : ":$taskPath"
     }
 
+    @Override
     public Throwable getFailure() {
-        return failure
+        failure
     }
 
+    @Override
     public ExecutionResult rethrowFailure() {
         if (failure instanceof GradleException) {
-            throw (GradleException) failure;
+            throw (GradleException) failure
         }
         if (failure != null) {
-            throw new GradleException("Build aborted because of an internal error.", failure);
+            throw new GradleException("Build aborted because of an internal error.", failure)
         }
-        return this;
+        this
     }
 
 }

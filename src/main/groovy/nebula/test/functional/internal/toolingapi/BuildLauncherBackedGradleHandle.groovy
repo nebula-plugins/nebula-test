@@ -79,7 +79,8 @@ public class BuildLauncherBackedGradleHandle implements GradleHandle {
             boolean upToDate = stdout.contains(taskName + " UP-TO-DATE");
             tasks.add( new MinimalExecutedTask(taskName, upToDate) );
         }
-        return new ToolingExecutionResult(stdout, getStandardError(), tasks, failure);
+        boolean success = failure == null
+        return new ToolingExecutionResult(success, stdout, getStandardError(), tasks, failure);
     }
 
 }

@@ -7,8 +7,8 @@ import nebula.test.functional.internal.DefaultExecutionResult
  */
 class ToolingExecutionResult extends DefaultExecutionResult {
 
-    ToolingExecutionResult(String standardOutput, String standardError,  List<MinimalExecutedTask> executedTasks, Throwable failure) {
-        super(standardOutput, standardError, executedTasks, failure)
+    ToolingExecutionResult(Boolean success, String standardOutput, String standardError,  List<MinimalExecutedTask> executedTasks, Throwable failure) {
+        super(success, standardOutput, standardError, executedTasks, failure)
     }
 
 }
