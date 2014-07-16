@@ -43,17 +43,23 @@ public abstract class DefaultExecutionResult implements ExecutionResult {
 
     boolean wasExecuted(String taskPath) {
         executedTasks.any {
+            taskPath = normalizeTaskPath(taskPath)
             def match = it.path == taskPath
             return match
         }
     }
 
     boolean wasUpToDate(String taskPath) {
+        taskPath = normalizeTaskPath(taskPath)
         def task = executedTasks.find { it.path == taskPath }
         if (task == null) {
             throw RuntimeException("Task with path $taskPath was not found")
         }
         return task.upToDate
+    }
+
+    String normalizeTaskPath(String taskPath) {
+        taskPath.startsWith(':') ? taskPath : ":$taskPath"
     }
 
     public Throwable getFailure() {

@@ -53,6 +53,21 @@ class TestSpec extends Specification {
         !result.wasUpToDate(":echo")
 
     }
+
+    def "Task path doesn't need to start with colon"() {
+        given:
+        tmp.newFile("build.gradle") << """
+            apply plugin: ${SomePlugin.name}
+        """
+
+        when:
+        ExecutionResult result = runner.run(tmp.root, ["echo"])
+        result.wasExecuted("echo")
+        result.wasUpToDate("echo")
+
+        then:
+        result.standardOutput.contains("I ran!")
+    }
 }
 
 class SomePlugin implements Plugin<Project> {
