@@ -23,14 +23,8 @@ import nebula.test.functional.internal.GradleHandle
 import nebula.test.functional.internal.launcherapi.LauncherExecutionResult
 import nebula.test.functional.internal.launcherapi.StateExecutedTask
 import org.apache.commons.io.FileUtils
-import org.gradle.BuildAdapter
-import org.gradle.api.invocation.Gradle
 import org.gradle.api.logging.LogLevel
-import org.gradle.initialization.ClassLoaderRegistry
-import org.gradle.internal.classloader.FilteringClassLoader
-import org.gradle.invocation.DefaultGradle
 import spock.lang.Specification
-import com.energizedwork.spock.extensions.TempDirectory
 
 /**
  * @author Justin Ryan
@@ -93,11 +87,6 @@ abstract class IntegrationSpec extends Specification {
         GradleRunner runner = useToolingApi?GradleRunnerFactory.createTooling():GradleRunnerFactory.createLauncher()
         runner.handle(projectDir, arguments)
     }
-
-    /* Override to customize */
-    String[] getAllowedPackages() { ['org.gradle'] }
-
-    String[] getAllowedResources() { [] }
 
     /**
      * Override to alter its value
@@ -262,37 +251,5 @@ abstract class IntegrationSpec extends Specification {
         ExecutionResult result = launcher(tasks).run()
         this.result = result
         return result
-    }
-
-    /**
-     * Via: https://github.com/jvoegele/gradle-android-plugin/blob/master/src/integTest/groovy/com/jvoegele/gradle/android/support/MyBuildListener.groovy
-     */
-    class AllowListener extends BuildAdapter {
-        String[] allowedPackages
-        String[] allowedResources
-
-        AllowListener(String[] allowedPackages, String[] allowedResources = []) {
-            this.allowedPackages = allowedPackages
-            this.allowedResources = allowedResources
-        }
-
-        @Override
-        void projectsLoaded(Gradle gradle) {
-            // This is a hack: Gradle Android Plugin integration tests have Gradle Android Plugin itself on their classpath,
-            // but Gradle lets the buildscript only access a few selected packages, not the full classpath. That is a good
-            // idea per se, as we should make the test buildscripts self-contained anyway, but I wasn't able to make it work
-            // (a 'buildscript { ... }' section in test buildscript isn't enough, something is missing...). So I simply
-            // adjust the Gradle filtering classloader to allow access to Gradle Android Plugin. It is not a public API,
-            // but it's highly unlikely that it will change before we switch to using Gradle Tooling API. See TestProject too.
-            ClassLoaderRegistry registry = ((DefaultGradle) gradle).rootProject.services.get(ClassLoaderRegistry.class)
-            FilteringClassLoader rootClassloader = (FilteringClassLoader) registry.getGradleApiClassLoader().parent
-            allowedPackages.each {
-                rootClassloader.allowPackage(it)
-            }
-            allowedResources.each {
-                rootClassloader.allowResources(it)
-            }
-        }
-
     }
 }
