@@ -29,7 +29,7 @@ public class ClasspathAddingInitScriptBuilder {
                 writer.write("  buildscript {\n");
                 writer.write("    dependencies {\n");
                 for (File file : classpath) {
-                    writer.write(String.format("      classpath file('%s')\n", TextUtil.escapeString(file.getAbsolutePath()));
+                    writer.write(String.format("      classpath file('%s')\n", TextUtil.escapeString(file.getAbsolutePath())));
                 }
                 writer.write("    }\n");
                 writer.write("  }\n");
