@@ -17,6 +17,7 @@ import spock.lang.Specification
  * finding basic compiler like issues.
  */
 public abstract class ProjectSpec extends Specification {
+    static final String CLEAN_PROJECT_DIR_SYS_PROP = 'cleanProjectDir'
     @TempDirectory File projectDir
 
     @Rule TestName name = new TestName()
@@ -29,8 +30,22 @@ public abstract class ProjectSpec extends Specification {
     }
 
     def cleanup() {
-        // TODO Optionally not-delete directory for debugging
-        new AntBuilder().delete(dir: projectDir)
+        if(deleteProjectDir()) {
+            new AntBuilder().delete(dir: projectDir)
+        }
+    }
+
+    /**
+     * Determines if project directory should be deleted after a test was executed. By default the logic checks for
+     * the system property "cleanProjectDir". If the system property is provided and has the value "true", the project
+     * directory is deleted. If this system property is not provided, the project directory is always deleted. Test
+     * classes that inherit from this class, can override the method to provide custom logic.
+     *
+     * @return Flag
+     */
+    boolean deleteProjectDir() {
+        String cleanProjectDirSystemProperty = System.getProperty(CLEAN_PROJECT_DIR_SYS_PROP)
+        cleanProjectDirSystemProperty ? cleanProjectDirSystemProperty.toBoolean() : true
     }
 }
 

@@ -1,19 +1,12 @@
-package nebula.test.functional.internal.classpath;
+package nebula.test.functional.internal.classpath
 
-import org.gradle.api.Transformer;
-import org.gradle.internal.ErroringAction;
-import org.gradle.internal.IoActions;
-import org.gradle.internal.UncheckedException;
-import org.gradle.internal.classloader.ClasspathUtil;
-import org.gradle.util.CollectionUtils;
-import org.gradle.util.TextUtil;
-
-import java.io.File;
-import java.io.Writer;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import org.gradle.api.Transformer
+import org.gradle.internal.ErroringAction
+import org.gradle.internal.IoActions
+import org.gradle.internal.UncheckedException
+import org.gradle.internal.classloader.ClasspathUtil
+import org.gradle.util.CollectionUtils
+import org.gradle.util.TextUtil
 
 public class ClasspathAddingInitScriptBuilder {
 
@@ -22,20 +15,33 @@ public class ClasspathAddingInitScriptBuilder {
     }
 
     public void build(File initScriptFile, final List<File> classpath) {
+        def commaSeparatedClasspathFiles = commaSeparateFiles(classpath)
+
         IoActions.writeTextFile(initScriptFile, new ErroringAction<Writer>() {
             @Override
             protected void doExecute(Writer writer) throws Exception {
-                writer.write("allprojects {\n");
-                writer.write("  buildscript {\n");
-                writer.write("    dependencies {\n");
-                for (File file : classpath) {
-                    writer.write(String.format("      classpath file('%s')\n", TextUtil.escapeString(file.getAbsolutePath()));
-                }
-                writer.write("    }\n");
-                writer.write("  }\n");
-                writer.write("}\n");
+                writer.write("""
+allprojects {
+    buildscript {
+        dependencies {
+            classpath files($commaSeparatedClasspathFiles)
+        }
+    }
+}
+""")
             }
         });
+    }
+
+    /**
+     * Turn a list of File instances into a comma-separated list of file paths represented as single String.
+     *
+     * @param files Files
+     * @return Comma-separated files
+     */
+    private String commaSeparateFiles(List<File> files) {
+        def classpathFiles = files.collect { file -> "'${TextUtil.escapeString(file.getAbsolutePath())}'" }
+        classpathFiles.join(', ')
     }
 
     public List<File> getClasspathAsFiles(ClassLoader classLoader) {

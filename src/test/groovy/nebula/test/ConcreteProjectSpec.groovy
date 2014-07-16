@@ -6,6 +6,7 @@ class ConcreteProjectSpec extends ProjectSpec {
     def 'has Project'() {
         expect:
         project != null
+        projectDir.exists()
     }
 
     def 'can evaluate'() {

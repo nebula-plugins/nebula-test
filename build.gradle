@@ -5,6 +5,7 @@ buildscript {
 
 description 'Test harness for Gradle plugins'
 apply plugin: 'nebula-plugin' // applying to even nebula-test since it had 99% of the characterizes of a nebula-plugin
+apply plugin: 'idea'
 
 dependencies {
     compile ('org.spockframework:spock-core:0.7-groovy-1.8') { exclude group: 'org.codehaus.groovy' }
