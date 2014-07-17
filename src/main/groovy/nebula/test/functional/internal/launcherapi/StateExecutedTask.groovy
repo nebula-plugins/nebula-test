@@ -34,6 +34,11 @@ class StateExecutedTask implements ExecutedTask {
         task.state?.skipped && task.state?.skipMessage == 'UP-TO-DATE'
     }
 
+    @Override
+    boolean isSkipped() {
+        task.state.skipped
+    }
+
     String toString() {
         "executed $task"
     }

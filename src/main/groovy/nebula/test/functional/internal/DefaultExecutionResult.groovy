@@ -60,16 +60,25 @@ public abstract class DefaultExecutionResult implements ExecutionResult {
 
     @Override
     boolean wasUpToDate(String taskPath) {
+        getExecutedTaskByPath(taskPath).upToDate
+    }
+
+    @Override
+    boolean wasSkipped(String taskPath) {
+        getExecutedTaskByPath(taskPath).skipped
+    }
+
+    String normalizeTaskPath(String taskPath) {
+        taskPath.startsWith(':') ? taskPath : ":$taskPath"
+    }
+
+    private ExecutedTask getExecutedTaskByPath(String taskPath) {
         taskPath = normalizeTaskPath(taskPath)
         def task = executedTasks.find { it.path == taskPath }
         if (task == null) {
             throw RuntimeException("Task with path $taskPath was not found")
         }
-        return task.upToDate
-    }
-
-    String normalizeTaskPath(String taskPath) {
-        taskPath.startsWith(':') ? taskPath : ":$taskPath"
+        task
     }
 
     @Override

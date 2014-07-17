@@ -27,6 +27,8 @@ public interface ExecutionResult {
 
     boolean wasUpToDate(String taskPath);
 
+    boolean wasSkipped(String taskPath)
+
     Throwable getFailure();
 
     ExecutionResult rethrowFailure();

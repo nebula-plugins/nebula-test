@@ -28,30 +28,34 @@ class TestSpec extends Specification {
     @Rule TemporaryFolder tmp
     def runner = GradleRunnerFactory.createTooling()
 
-    def "test thing"() {
+    def "Check up-to-date and skipped task states"() {
         given:
         tmp.newFile("build.gradle") << """
             apply plugin: ${SomePlugin.name}
-            echo.outputs.upToDateWhen { true }
         """
 
         when:
-        ExecutionResult result = runner.run(tmp.root, ["echo"])
+        ExecutionResult result = runner.run(tmp.root, ["echo", "doIt", "-PupToDate=false", "-Pskip=false"])
         !result.wasExecuted(":hush")
         result.wasExecuted(":echo")
-        result.wasUpToDate(":echo")
+        !result.wasUpToDate(":echo")
+        result.wasExecuted(":doIt")
+        !result.wasSkipped(":doIt")
 
         then:
         result.standardOutput.contains("I ran!")
+        result.standardOutput.contains("Did it!")
 
         when:
-        ExecutionResult result2 = runner.run(tmp.root, ["echo"])
+        result = runner.run(tmp.root, ["echo", "doIt", "-PupToDate=true", "-Pskip=true"])
 
         then:
-        !result2.standardOutput.contains("I ran!")
+        !result.standardOutput.contains("I ran!")
+        !result.standardOutput.contains("Did it!")
         result.wasExecuted(":echo")
-        !result.wasUpToDate(":echo")
-
+        result.wasUpToDate(":echo")
+        result.wasExecuted(":doIt")
+        result.wasSkipped(":doIt")
     }
 
     def "Task path doesn't need to start with colon"() {
@@ -61,12 +65,14 @@ class TestSpec extends Specification {
         """
 
         when:
-        ExecutionResult result = runner.run(tmp.root, ["echo"])
+        ExecutionResult result = runner.run(tmp.root, ["echo", "doIt"])
         result.wasExecuted("echo")
-        result.wasUpToDate("echo")
+        !result.wasUpToDate("echo")
+        !result.wasSkipped("doIt")
 
         then:
         result.standardOutput.contains("I ran!")
+        result.standardOutput.contains("Did it!")
     }
 }
 
@@ -75,11 +81,22 @@ class SomePlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
         project.task("echo") {
+            outputs.upToDateWhen {
+                project.hasProperty('upToDate') ? project.properties['upToDate'].toBoolean() : false
+            }
+
             doLast {
                 new Thing() // Class in another package
                 spock.lang.Specification // is a compile dependency, test it's available
                 println "I ran!"
             }
+        }
+
+        project.task("doIt") {
+            onlyIf {
+                project.hasProperty('skip') ? !project.properties['skip'].toBoolean() : true
+            }
+            doLast { println 'Did it!' }
         }
     }
 }
