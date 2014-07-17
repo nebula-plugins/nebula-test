@@ -1,13 +1,14 @@
-package nebula.test.functional.internal.toolingapi;
+package nebula.test.functional.internal.toolingapi
 
-import nebula.test.functional.internal.GradleHandle;
+import nebula.test.functional.internal.GradleHandle
+import nebula.test.functional.internal.GradleHandleBuildListener
 import nebula.test.functional.internal.GradleHandleFactory
 import org.gradle.initialization.layout.BuildLayout
-import org.gradle.initialization.layout.BuildLayoutFactory;
-import org.gradle.tooling.BuildLauncher;
-import org.gradle.tooling.GradleConnector;
+import org.gradle.initialization.layout.BuildLayoutFactory
+import org.gradle.tooling.BuildLauncher
+import org.gradle.tooling.GradleConnector
 import org.gradle.tooling.ProjectConnection
-import org.gradle.wrapper.WrapperExecutor;
+import org.gradle.wrapper.WrapperExecutor
 
 public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
 
@@ -24,10 +25,33 @@ public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
 
         ProjectConnection connection = connector.connect();
         BuildLauncher launcher = connection.newBuild();
-        // TODO Deal with connection.close()
         String[] argumentArray = new String[arguments.size()];
         arguments.toArray(argumentArray);
         launcher.withArguments(argumentArray);
-        return new BuildLauncherBackedGradleHandle(launcher);
+        createGradleHandle(connection, launcher)
+    }
+
+    private GradleHandle createGradleHandle(ProjectConnection connection, BuildLauncher launcher) {
+        GradleHandleBuildListener toolingApiBuildListener = new ToolingApiBuildListener(connection)
+        BuildLauncherBackedGradleHandle buildLauncherBackedGradleHandle = new BuildLauncherBackedGradleHandle(launcher)
+        buildLauncherBackedGradleHandle.registerBuildListener(toolingApiBuildListener)
+        buildLauncherBackedGradleHandle
+    }
+
+    private class ToolingApiBuildListener implements GradleHandleBuildListener {
+        private final ProjectConnection connection
+
+        ToolingApiBuildListener(ProjectConnection connection) {
+            assert connection != null, 'Requires a non-null connection'
+            this.connection = connection
+        }
+
+        @Override
+        void buildStarted() {}
+
+        @Override
+        void buildFinished() {
+            connection.close()
+        }
     }
 }
