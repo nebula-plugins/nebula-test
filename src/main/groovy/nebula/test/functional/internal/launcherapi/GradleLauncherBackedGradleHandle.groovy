@@ -39,12 +39,14 @@ public class GradleLauncherBackedGradleHandle implements GradleHandle {
 
         // Executed Tasks
         launcher.addListener(new TaskExecutionListener() {
+            @Override
             void beforeExecute(Task task) {
                 executedTasks << new StateExecutedTask(task: task)
             }
 
+            @Override
             void afterExecute(Task task, TaskState taskState) {
-                executedTasks.last().state = taskState
+                // nothing to be done
             }
         })
         this.launcher = launcher
