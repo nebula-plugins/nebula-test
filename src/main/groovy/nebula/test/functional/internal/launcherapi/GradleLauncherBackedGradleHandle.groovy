@@ -18,6 +18,7 @@ package nebula.test.functional.internal.launcherapi
 
 import nebula.test.functional.ExecutionResult
 import nebula.test.functional.internal.GradleHandle
+import nebula.test.functional.internal.GradleHandleBuildListener
 import org.gradle.BuildResult
 import org.gradle.GradleLauncher
 import org.gradle.api.Task
@@ -32,6 +33,7 @@ public class GradleLauncherBackedGradleHandle implements GradleHandle {
 
     final private GradleLauncher launcher
     final private List<StateExecutedTask> executedTasks = []
+    private GradleHandleBuildListener buildListener
 
     public GradleLauncherBackedGradleHandle(GradleLauncher launcher) {
         launcher.addStandardErrorListener(new StreamBackedStandardOutputListener(standardError));
@@ -39,15 +41,22 @@ public class GradleLauncherBackedGradleHandle implements GradleHandle {
 
         // Executed Tasks
         launcher.addListener(new TaskExecutionListener() {
+            @Override
             void beforeExecute(Task task) {
                 executedTasks << new StateExecutedTask(task: task)
             }
 
+            @Override
             void afterExecute(Task task, TaskState taskState) {
-                executedTasks.last().state = taskState
+                // nothing to be done
             }
         })
         this.launcher = launcher
+    }
+
+    @Override
+    void registerBuildListener(GradleHandleBuildListener buildListener) {
+        this.buildListener = buildListener
     }
 
     private String getStandardOutput() {
@@ -68,11 +77,19 @@ public class GradleLauncherBackedGradleHandle implements GradleHandle {
         standardError.reset()
 
         try {
+            buildListener?.buildStarted()
             buildResult = launcher.run()
-        } catch(Exception e) {
+        }
+        catch(Exception e) {
             failure = e
         }
-        return new LauncherExecutionResult(getStandardOutput(), getStandardError(), failure?:buildResult.failure, executedTasks, buildResult);
+        finally {
+            buildListener?.buildFinished()
+        }
+
+        Throwable determinedFailure = failure ?: buildResult.failure
+        boolean success = determinedFailure == null
+        return new LauncherExecutionResult(success, getStandardOutput(), getStandardError(), determinedFailure, executedTasks, buildResult);
     }
 
 }

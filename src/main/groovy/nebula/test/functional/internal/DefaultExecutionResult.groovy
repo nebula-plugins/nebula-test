@@ -14,60 +14,87 @@
  * limitations under the License.
  */
 
-package nebula.test.functional.internal;
+package nebula.test.functional.internal
 
 import nebula.test.functional.ExecutionResult
-import org.gradle.api.GradleException;
+import org.gradle.api.GradleException
 
 public abstract class DefaultExecutionResult implements ExecutionResult {
-
-    private final String standardOutput;
-    private final String standardError;
+    private final Boolean success
+    private final String standardOutput
+    private final String standardError
     private final List<? extends ExecutedTask> executedTasks
     private final Throwable failure
 
-    public DefaultExecutionResult(String standardOutput, String standardError, List<? extends ExecutedTask> executedTasks, Throwable failure) {
+    public DefaultExecutionResult(Boolean success, String standardOutput, String standardError, List<? extends ExecutedTask> executedTasks, Throwable failure) {
+        this.success = success
         this.standardOutput = standardOutput
         this.standardError = standardError
         this.executedTasks = executedTasks
         this.failure = failure
     }
 
+    @Override
+    Boolean getSuccess() {
+        success
+    }
+
+    @Override
     public String getStandardOutput() {
-        return standardOutput;
+        standardOutput
     }
 
+    @Override
     public String getStandardError() {
-        return standardError;
+        standardError
     }
 
+    @Override
     boolean wasExecuted(String taskPath) {
         executedTasks.any {
+            taskPath = normalizeTaskPath(taskPath)
             def match = it.path == taskPath
             return match
         }
     }
 
+    @Override
     boolean wasUpToDate(String taskPath) {
+        getExecutedTaskByPath(taskPath).upToDate
+    }
+
+    @Override
+    boolean wasSkipped(String taskPath) {
+        getExecutedTaskByPath(taskPath).skipped
+    }
+
+    String normalizeTaskPath(String taskPath) {
+        taskPath.startsWith(':') ? taskPath : ":$taskPath"
+    }
+
+    private ExecutedTask getExecutedTaskByPath(String taskPath) {
+        taskPath = normalizeTaskPath(taskPath)
         def task = executedTasks.find { it.path == taskPath }
         if (task == null) {
             throw RuntimeException("Task with path $taskPath was not found")
         }
-        return task.upToDate
+        task
     }
 
+    @Override
     public Throwable getFailure() {
-        return failure
+        failure
     }
 
+    @Override
     public ExecutionResult rethrowFailure() {
         if (failure instanceof GradleException) {
-            throw (GradleException) failure;
+            throw (GradleException) failure
         }
         if (failure != null) {
-            throw new GradleException("Build aborted because of an internal error.", failure);
+            throw new GradleException("Build aborted because of an internal error.", failure)
         }
-        return this;
+        this
     }
 
 }

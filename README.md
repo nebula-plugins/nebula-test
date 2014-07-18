@@ -12,7 +12,7 @@ afterEvaluate blocks, keeping in mind that still won't generate a task gradle or
 
 Example:
 
-    package nebula.test
+    package nebula.example
 
     import java.util.concurrent.atomic.AtomicBoolean
 
@@ -43,7 +43,7 @@ Small abstraction over ProjectSpec for plugins, adds three tests that ensure the
 
 Example:
 
-    package nebula.test
+    package nebula.example
 
     class PluginProjectExampleSpec extends PluginProjectSpec {
         @Override
@@ -78,25 +78,26 @@ It's up to your test to call the runTask methods. There are a few utility method
 * Validate project after execution
   * _boolean fileExists(String path)_ - Says if a file was created in the project dir
 
-BuildResult provides a few useful methods to test the outcome of a build:
+ExecutionResult provides a few useful methods to test the outcome of a build:
   * _boolean wasExecuted(String taskPath)_ - Says if a task was executed.
   * _boolean wasUpToDate(String taskPath)_ - Says if a task was recorded as UP-TO-DATE.
   * _String getStandardError()_ - Returns System.err, which can be inspected
   * _String getStandardOutput()_ - Returns System.out, which can be inspected
+  * _Throwable getFailure()_ - Returns the Throwable available to failed builds.
 
 Example:
 
-    package nebula.test
+    package nebula.example
 
-    import org.gradle.BuildResult
+    import nebula.test.functional.ExecutionResult
 
     class ConcreteIntegrationSpec extends IntegrationSpec {
         def 'runs build'() {
             when:
-            BuildResult buildResult = runTasks('dependencies')
+            ExecutionResult result = runTasks('dependencies')
 
             then:
-            buildResult.failure == null
+            result.failure == null
         }
 
         def 'setup and run build'() {
@@ -106,11 +107,11 @@ Example:
             '''.stripIndent()
 
             when:
-            BuildResult buildResult = runTasksSuccessfully('build')
+            ExecutionResult result = runTasksSuccessfully('build')
 
             then:
             fileExists('build/classes/main/nebula/hello/HelloWorld.class')
-            buildResult.standardOutput.contains(':compileTestJava')
+            result.standardOutput.contains(':compileTestJava')
         }
     }
 

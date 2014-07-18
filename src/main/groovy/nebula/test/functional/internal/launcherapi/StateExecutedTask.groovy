@@ -17,14 +17,12 @@ package nebula.test.functional.internal.launcherapi
 
 import nebula.test.functional.internal.ExecutedTask
 import org.gradle.api.Task
-import org.gradle.api.internal.tasks.TaskStateInternal
 
 /**
  * @author Marcin Erdmann
  */
 class StateExecutedTask implements ExecutedTask {
     Task task
-    TaskStateInternal state
 
     public String getPath() {
         return task.path
@@ -34,6 +32,12 @@ class StateExecutedTask implements ExecutedTask {
         task.state?.skipped && task.state?.skipMessage == 'UP-TO-DATE'
     }
 
+    @Override
+    boolean isSkipped() {
+        task.state.skipped
+    }
+
+    @Override
     String toString() {
         "executed $task"
     }

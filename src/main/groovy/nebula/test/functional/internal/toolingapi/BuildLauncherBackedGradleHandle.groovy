@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package nebula.test.functional.internal.toolingapi;
+package nebula.test.functional.internal.toolingapi
 
-import nebula.test.functional.ExecutionResult;
-import nebula.test.functional.internal.DefaultExecutionResult;
-import nebula.test.functional.internal.GradleHandle;
-import org.gradle.tooling.BuildException;
-import org.gradle.tooling.BuildLauncher;
-import org.gradle.tooling.ProgressEvent;
-import org.gradle.tooling.ProgressListener;
-
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
+import nebula.test.functional.ExecutionResult
+import nebula.test.functional.internal.GradleHandle
+import nebula.test.functional.internal.GradleHandleBuildListener
+import org.gradle.tooling.BuildException
+import org.gradle.tooling.BuildLauncher
+import org.gradle.tooling.ProgressEvent
+import org.gradle.tooling.ProgressListener
 
 public class BuildLauncherBackedGradleHandle implements GradleHandle {
 
@@ -35,6 +31,7 @@ public class BuildLauncherBackedGradleHandle implements GradleHandle {
     final private BuildLauncher launcher;
     final private List<String> tasksExecuted;
     public static final String PROGRESS_TASK_PREFIX = "Execute :";
+    private GradleHandleBuildListener buildListener
 
     public BuildLauncherBackedGradleHandle(BuildLauncher launcher) {
         launcher.setStandardOutput(standardOutput);
@@ -54,6 +51,11 @@ public class BuildLauncherBackedGradleHandle implements GradleHandle {
         this.launcher = launcher;
     }
 
+    @Override
+    void registerBuildListener(GradleHandleBuildListener buildListener) {
+        this.buildListener = buildListener
+    }
+
     private String getStandardOutput() {
         return standardOutput.toString();
     }
@@ -65,21 +67,38 @@ public class BuildLauncherBackedGradleHandle implements GradleHandle {
     public ExecutionResult run() {
         Throwable failure = null;
         try {
+            buildListener?.buildStarted()
             launcher.run();
         } catch(BuildException e) {
             failure = e.getCause();
         } catch(Exception e) {
             failure = e;
         }
+        finally {
+            buildListener?.buildFinished()
+        }
 
         String stdout = getStandardOutput();
         List<MinimalExecutedTask> tasks = new ArrayList<MinimalExecutedTask>();
         for (String taskName: tasksExecuted) {
             // Scan stdout for task's up to date
-            boolean upToDate = stdout.contains(taskName + " UP-TO-DATE");
-            tasks.add( new MinimalExecutedTask(taskName, upToDate) );
+            boolean upToDate = isTaskUpToDate(stdout, taskName)
+            boolean skipped = isTaskSkipped(stdout, taskName)
+            tasks.add( new MinimalExecutedTask(taskName, upToDate, skipped) );
         }
-        return new ToolingExecutionResult(stdout, getStandardError(), tasks, failure);
+        boolean success = failure == null
+        return new ToolingExecutionResult(success, stdout, getStandardError(), tasks, failure);
     }
 
+    private isTaskUpToDate(String stdout, String taskName) {
+        containsOutput(stdout, taskName, 'UP-TO-DATE')
+    }
+
+    private isTaskSkipped(String stdout, String taskName) {
+        containsOutput(stdout, taskName, 'SKIPPED')
+    }
+
+    private boolean containsOutput(String stdout, String taskName, String stateIdentifier) {
+        stdout.contains("$taskName $stateIdentifier".toString())
+    }
 }

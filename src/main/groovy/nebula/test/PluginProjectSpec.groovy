@@ -15,6 +15,7 @@
  */
 package nebula.test
 
+import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 
 /**
@@ -41,7 +42,7 @@ abstract class PluginProjectSpec extends ProjectSpec {
     }
 
     def 'apply is fine on all levels of multiproject'() {
-        def sub = ProjectBuilder.builder().withName('sub').withProjectDir(new File(projectDir, 'sub')).withParent(project).build()
+        def sub = createSubproject(project, 'sub')
         project.subprojects.add(sub)
 
         when:
@@ -50,5 +51,29 @@ abstract class PluginProjectSpec extends ProjectSpec {
 
         then:
         noExceptionThrown()
+    }
+
+    def 'apply to multiple subprojects'() {
+        def subprojectNames = ['sub1', 'sub2', 'sub3']
+
+        subprojectNames.each { subprojectName ->
+            def subproject = createSubproject(project, subprojectName)
+            project.subprojects.add(subproject)
+        }
+
+        when:
+        project.apply plugin: pluginName
+
+        subprojectNames.each { subprojectName ->
+            def subproject = project.subprojects.find { it.name == subprojectName }
+            subproject.apply plugin: pluginName
+        }
+
+        then:
+        noExceptionThrown()
+    }
+
+    Project createSubproject(Project parentProject, String name) {
+        ProjectBuilder.builder().withName(name).withProjectDir(new File(projectDir, name)).withParent(parentProject).build()
     }
 }

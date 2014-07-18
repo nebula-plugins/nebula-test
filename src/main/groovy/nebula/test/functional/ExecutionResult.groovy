@@ -17,6 +17,7 @@
 package nebula.test.functional;
 
 public interface ExecutionResult {
+    Boolean getSuccess();
 
     String getStandardOutput();
 
@@ -25,6 +26,8 @@ public interface ExecutionResult {
     boolean wasExecuted(String taskPath);
 
     boolean wasUpToDate(String taskPath);
+
+    boolean wasSkipped(String taskPath)
 
     Throwable getFailure();
 

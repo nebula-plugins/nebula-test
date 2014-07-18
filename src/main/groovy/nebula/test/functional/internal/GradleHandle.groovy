@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package nebula.test.functional.internal;
+package nebula.test.functional.internal
 
-
-import nebula.test.functional.ExecutionResult;
+import nebula.test.functional.ExecutionResult
 
 /**
  * Runs a Gradle build, orchestrating the execution so that it can return a result object.
  */
-public interface GradleHandle {
-
-  ExecutionResult run();
-
+interface GradleHandle {
+    ExecutionResult run()
+    void registerBuildListener(GradleHandleBuildListener buildListener)
 }
