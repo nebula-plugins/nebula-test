@@ -33,6 +33,6 @@ class MinimalExecutedTask implements ExecutedTask {
     }
 
     String toString() {
-        "executed $task"
+        "executed $path"
     }
 }
