@@ -1,10 +1,9 @@
-package nebula.test.functional;
+package nebula.test.functional
 
-import nebula.test.functional.internal.DefaultGradleRunner;
-import nebula.test.functional.internal.GradleHandleFactory;
-import nebula.test.functional.internal.classpath.ClasspathInjectingGradleHandleFactory;
-import nebula.test.functional.internal.launcherapi.LauncherGradleHandleFactory;
-import nebula.test.functional.internal.toolingapi.ToolingApiGradleHandleFactory;
+import nebula.test.functional.internal.DefaultGradleRunner
+import nebula.test.functional.internal.GradleHandleFactory
+import nebula.test.functional.internal.classpath.ClasspathInjectingGradleHandleFactory
+import nebula.test.functional.internal.toolingapi.ToolingApiGradleHandleFactory
 
 public class GradleRunnerFactory {
 
@@ -13,12 +12,6 @@ public class GradleRunnerFactory {
         GradleHandleFactory toolingApiHandleFactory = new ToolingApiGradleHandleFactory();
 
         return create(toolingApiHandleFactory);
-    }
-
-    public static GradleRunner createLauncher() {
-        GradleHandleFactory launcherHandleFactory = new LauncherGradleHandleFactory();
-
-        return create(launcherHandleFactory);
     }
 
     public static GradleRunner create(GradleHandleFactory handleFactory) {

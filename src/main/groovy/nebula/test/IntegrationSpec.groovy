@@ -20,8 +20,6 @@ import nebula.test.functional.ExecutionResult
 import nebula.test.functional.GradleRunner
 import nebula.test.functional.GradleRunnerFactory
 import nebula.test.functional.internal.GradleHandle
-import nebula.test.functional.internal.launcherapi.LauncherExecutionResult
-import nebula.test.functional.internal.launcherapi.StateExecutedTask
 import org.apache.commons.io.FileUtils
 import org.gradle.api.logging.LogLevel
 import spock.lang.Specification
@@ -36,7 +34,6 @@ abstract class IntegrationSpec extends Specification {
     // Holds State of last run
     private ExecutionResult result
 
-    boolean useToolingApi = true
     LogLevel logLevel = LogLevel.INFO
 
     String moduleName
@@ -84,7 +81,7 @@ abstract class IntegrationSpec extends Specification {
         arguments += '--stacktrace'
         arguments.addAll(args)
 
-        GradleRunner runner = useToolingApi?GradleRunnerFactory.createTooling():GradleRunnerFactory.createLauncher()
+        GradleRunner runner = GradleRunnerFactory.createTooling()
         runner.handle(projectDir, arguments)
     }
 
@@ -198,18 +195,6 @@ abstract class IntegrationSpec extends Specification {
     /* Checks */
     boolean fileExists(String path) {
         new File(projectDir, path).exists()
-    }
-
-    @Deprecated
-    StateExecutedTask task(String name) {
-        assert useToolingApi == false
-        ((LauncherExecutionResult) result).task(name)
-    }
-
-    @Deprecated
-    Collection<StateExecutedTask> tasks(String... names) {
-        assert useToolingApi == false
-        ((LauncherExecutionResult) result).tasks(names)
     }
 
     @Deprecated
