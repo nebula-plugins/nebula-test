@@ -51,7 +51,7 @@ abstract class IntegrationSpec extends Specification {
         moduleName = findModuleName()
         if (!settingsFile) {
             settingsFile = new File(projectDir, 'settings.gradle')
-            settingsFile.text = "rootProject.name='${moduleName}'"
+            settingsFile.text = "rootProject.name='${moduleName}'\n"
         }
 
         if (!buildFile) {
@@ -97,23 +97,23 @@ abstract class IntegrationSpec extends Specification {
     }
 
     /* Setup */
-    File directory(String path) {
-        new File(projectDir, path).with {
+    File directory(String path, File baseDir = projectDir) {
+        new File(baseDir, path).with {
             mkdirs()
             it
         }
     }
 
-    protected File file(String path) {
+    protected File file(String path, File baseDir = projectDir) {
         def splitted = path.split('/')
-        def directory = splitted.size() > 1 ? directory(splitted[0..-2].join('/')) : projectDir
+        def directory = splitted.size() > 1 ? directory(splitted[0..-2].join('/'), baseDir) : baseDir
         def file = new File(directory, splitted[-1])
         file.createNewFile()
         file
     }
 
-    File createFile(String path) {
-        File file = file(path)
+    File createFile(String path, File baseDir = projectDir) {
+        File file = file(path, baseDir)
         if (!file.exists()) {
             assert file.parentFile.mkdirs() || file.parentFile.exists()
             file.createNewFile()
@@ -121,9 +121,9 @@ abstract class IntegrationSpec extends Specification {
         file
     }
 
-    def writeHelloWorld(String packageDotted) {
+    def writeHelloWorld(String packageDotted, File baseDir = projectDir) {
         def path = 'src/main/java/' + packageDotted.replace('.', '/') + '/HelloWorld.java'
-        def javaFile = createFile(path)
+        def javaFile = createFile(path, baseDir)
         javaFile << """package ${packageDotted};
 
             public class HelloWorld {
@@ -137,9 +137,10 @@ abstract class IntegrationSpec extends Specification {
     /**
      * Creates a unit test for testing your plugin.
      * @param failTest true if you want the test to fail, false if the test should pass
+     * @param baseDir the directory to begin creation from, defaults to projectDir
      */
-    def writeUnitTest(boolean failTest) {
-        writeTest('src/test/java/', 'nebula', failTest)
+    def writeUnitTest(boolean failTest, File baseDir = projectDir) {
+        writeTest('src/test/java/', 'nebula', failTest, baseDir)
     }
 
     /**
@@ -148,10 +149,11 @@ abstract class IntegrationSpec extends Specification {
      * @param srcDir the directory in the project where the source file should be created.
      * @param packageDotted the package for the unit test class, written in dot notation (ex. - nebula.integration)
      * @param failTest true if you want the test to fail, false if the test should pass
+     * @param baseDir the directory to begin creation from, defaults to projectDir
      */
-    def writeTest(String srcDir, String packageDotted, boolean failTest) {
+    def writeTest(String srcDir, String packageDotted, boolean failTest, File baseDir = projectDir) {
         def path = srcDir + packageDotted.replace('.', '/') + '/HelloWorldTest.java'
-        def javaFile = createFile(path)
+        def javaFile = createFile(path, baseDir)
         javaFile << """package ${packageDotted};
             import org.junit.Test;
             import static org.junit.Assert.assertFalse;
@@ -168,10 +170,11 @@ abstract class IntegrationSpec extends Specification {
      * Creates a properties file to included as project resource.
      * @param srcDir the directory in the project where the source file should be created.
      * @param fileName to be used for the file, sans extension.  The .properties extension will be added to the name.
+     * @param baseDir the directory to begin creation from, defaults to projectDir
      */
-    def writeResource(String srcDir, String fileName) {
+    def writeResource(String srcDir, String fileName, File baseDir = projectDir) {
         def path = "$srcDir/${fileName}.properties"
-        def resourceFile = createFile(path)
+        def resourceFile = createFile(path, baseDir)
         resourceFile.text = "firstProperty=foo.bar"
     }
 

@@ -1,3 +1,24 @@
+1.12.3 / 2014-09-xx
+===================
+
+* Add multi-project helpers
+
+1.12.2 / 2014-07-31
+===================
+
+* Bug fixes
+
+1.12.1 / 2014-07-31
+===================
+
+* Methods to gain more insight into what tasks were run
+* Ability to configure if an integration project should clean it self up
+
+1.12.0 / 2014-06-09
+===================
+
+* Move to gradle 1.12
+
 1.11.1 / 2014-04-25
 ===================
 * Under lying implementation of IntegrationSpec can now be backed by the Tooling API or a GradleLauncher.
