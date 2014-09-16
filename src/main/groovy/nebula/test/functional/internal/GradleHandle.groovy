@@ -24,4 +24,5 @@ import nebula.test.functional.ExecutionResult
 interface GradleHandle {
     ExecutionResult run()
     void registerBuildListener(GradleHandleBuildListener buildListener)
+    boolean isForkedProcess()
 }

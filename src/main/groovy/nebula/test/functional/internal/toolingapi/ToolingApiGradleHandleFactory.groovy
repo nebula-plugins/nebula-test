@@ -11,29 +11,45 @@ import org.gradle.tooling.ProjectConnection
 import org.gradle.wrapper.WrapperExecutor
 
 public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
+    static final String FORK_SYS_PROP = 'nebula.test.functional.fork'
 
     public GradleHandle start(File directory, List<String> arguments) {
-        GradleConnector connector = GradleConnector.newConnector();
-        connector.forProjectDirectory(directory);
+        GradleConnector connector = createGradleConnector(directory)
+        boolean forkedProcess = isForkedProcess()
 
-        // Try to set distribution, in case a custom distribution is used.
-        BuildLayout layout = new BuildLayoutFactory().getLayoutFor(new File('.'), true)
-        WrapperExecutor wrapper = WrapperExecutor.forProjectDirectory(layout.rootDirectory, System.out)
-        if (wrapper.getDistribution()) {
-            connector.useDistribution(wrapper.getDistribution())
-        }
+        // Allow for in-process debugging
+        connector.embedded(!forkedProcess)
 
         ProjectConnection connection = connector.connect();
         BuildLauncher launcher = connection.newBuild();
         String[] argumentArray = new String[arguments.size()];
         arguments.toArray(argumentArray);
         launcher.withArguments(argumentArray);
-        createGradleHandle(connection, launcher)
+        createGradleHandle(connection, launcher, forkedProcess)
     }
 
-    private GradleHandle createGradleHandle(ProjectConnection connection, BuildLauncher launcher) {
+    private GradleConnector createGradleConnector(File directory) {
+        GradleConnector connector = GradleConnector.newConnector()
+        connector.forProjectDirectory(directory)
+
+        // Try to set distribution, in case a custom distribution is used.
+        BuildLayout layout = new BuildLayoutFactory().getLayoutFor(new File('.'), true)
+        WrapperExecutor wrapper = WrapperExecutor.forProjectDirectory(layout.rootDirectory, System.out)
+
+        if (wrapper.getDistribution()) {
+            connector.useDistribution(wrapper.getDistribution())
+        }
+
+        connector
+    }
+
+    private boolean isForkedProcess() {
+        Boolean.parseBoolean(System.getProperty(FORK_SYS_PROP, Boolean.FALSE.toString()))
+    }
+
+    private GradleHandle createGradleHandle(ProjectConnection connection, BuildLauncher launcher, boolean forkedProcess) {
         GradleHandleBuildListener toolingApiBuildListener = new ToolingApiBuildListener(connection)
-        BuildLauncherBackedGradleHandle buildLauncherBackedGradleHandle = new BuildLauncherBackedGradleHandle(launcher)
+        BuildLauncherBackedGradleHandle buildLauncherBackedGradleHandle = new BuildLauncherBackedGradleHandle(launcher, forkedProcess)
         buildLauncherBackedGradleHandle.registerBuildListener(toolingApiBuildListener)
         buildLauncherBackedGradleHandle
     }

@@ -88,7 +88,7 @@ class SomePlugin implements Plugin<Project> {
             doLast {
                 new Thing() // Class in another package
                 spock.lang.Specification // is a compile dependency, test it's available
-                println "I ran!"
+                project.logger.quiet "I ran!"
             }
         }
 
@@ -96,7 +96,7 @@ class SomePlugin implements Plugin<Project> {
             onlyIf {
                 project.hasProperty('skip') ? !project.properties['skip'].toBoolean() : true
             }
-            doLast { println 'Did it!' }
+            doLast { project.logger.quiet 'Did it!' }
         }
     }
 }

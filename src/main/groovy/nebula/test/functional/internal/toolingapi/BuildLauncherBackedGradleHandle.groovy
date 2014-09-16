@@ -29,11 +29,13 @@ public class BuildLauncherBackedGradleHandle implements GradleHandle {
     final private ByteArrayOutputStream standardOutput = new ByteArrayOutputStream();
     final private ByteArrayOutputStream standardError = new ByteArrayOutputStream();
     final private BuildLauncher launcher;
+    final private boolean forkedProcess
     final private List<String> tasksExecuted;
     public static final String PROGRESS_TASK_PREFIX = "Execute :";
     private GradleHandleBuildListener buildListener
 
-    public BuildLauncherBackedGradleHandle(BuildLauncher launcher) {
+    public BuildLauncherBackedGradleHandle(BuildLauncher launcher, boolean forkedProcess) {
+        this.forkedProcess = forkedProcess
         launcher.setStandardOutput(standardOutput);
         launcher.setStandardError(standardError);
 
@@ -54,6 +56,11 @@ public class BuildLauncherBackedGradleHandle implements GradleHandle {
     @Override
     void registerBuildListener(GradleHandleBuildListener buildListener) {
         this.buildListener = buildListener
+    }
+
+    @Override
+    boolean isForkedProcess() {
+        forkedProcess
     }
 
     private String getStandardOutput() {
