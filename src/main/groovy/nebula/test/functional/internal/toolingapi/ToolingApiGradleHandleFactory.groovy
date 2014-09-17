@@ -12,6 +12,11 @@ import org.gradle.wrapper.WrapperExecutor
 
 public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
     static final String FORK_SYS_PROP = 'nebula.test.functional.fork'
+    private final boolean fork
+
+    ToolingApiGradleHandleFactory(boolean fork) {
+        this.fork = fork
+    }
 
     public GradleHandle start(File directory, List<String> arguments) {
         GradleConnector connector = createGradleConnector(directory)
@@ -44,6 +49,10 @@ public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
     }
 
     private boolean isForkedProcess() {
+        if(fork) {
+            return true
+        }
+
         Boolean.parseBoolean(System.getProperty(FORK_SYS_PROP, Boolean.FALSE.toString()))
     }
 

@@ -7,10 +7,10 @@ import spock.lang.Specification
 
 class ToolingApiGradleHandleFactorySpec extends Specification {
     File projectDir = new File('myProject')
-    GradleHandleFactory gradleHandleFactory = new ToolingApiGradleHandleFactory()
 
-    def "Creates in-process handle by default"() {
+    def "Creates embedded handle if requested through constructor"() {
         when:
+        GradleHandleFactory gradleHandleFactory = new ToolingApiGradleHandleFactory(false)
         GradleHandle gradleHandle = gradleHandleFactory.start(projectDir, [])
 
         then:
@@ -18,11 +18,22 @@ class ToolingApiGradleHandleFactorySpec extends Specification {
         !gradleHandle.forkedProcess
     }
 
-    def "Creates embedded handle if requested"() {
+    def "Creates forked handle if requested through constructor"() {
+        when:
+        GradleHandleFactory gradleHandleFactory = new ToolingApiGradleHandleFactory(true)
+        GradleHandle gradleHandle = gradleHandleFactory.start(projectDir, [])
+
+        then:
+        gradleHandle
+        gradleHandle.forkedProcess
+    }
+
+    def "Creates forked handle if requested through system property"() {
         setup:
         System.setProperty(ToolingApiGradleHandleFactory.FORK_SYS_PROP, Boolean.TRUE.toString())
 
         when:
+        GradleHandleFactory gradleHandleFactory = new ToolingApiGradleHandleFactory(false)
         GradleHandle gradleHandle = gradleHandleFactory.start(projectDir, [])
 
         then:

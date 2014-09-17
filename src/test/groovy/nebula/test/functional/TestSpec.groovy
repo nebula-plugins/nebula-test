@@ -22,14 +22,16 @@ import org.gradle.api.Project
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
+import spock.lang.Unroll
 
 class TestSpec extends Specification {
 
     @Rule TemporaryFolder tmp
-    def runner = GradleRunnerFactory.createTooling()
 
-    def "Check up-to-date and skipped task states"() {
+    @Unroll
+    def "Check up-to-date and skipped task states for #type GradleRunner"() {
         given:
+        GradleRunner runner = GradleRunnerFactory.createTooling(forked)
         tmp.newFile("build.gradle") << """
             apply plugin: ${SomePlugin.name}
         """
@@ -56,10 +58,17 @@ class TestSpec extends Specification {
         result.wasUpToDate(":echo")
         result.wasExecuted(":doIt")
         result.wasSkipped(":doIt")
+
+        where:
+        type         | forked
+        'in-process' | false
+        'forked'     | true
     }
 
-    def "Task path doesn't need to start with colon"() {
+    @Unroll
+    def "Task path doesn't need to start with colon for #type GradleRunner"() {
         given:
+        GradleRunner runner = GradleRunnerFactory.createTooling(false)
         tmp.newFile("build.gradle") << """
             apply plugin: ${SomePlugin.name}
         """
@@ -73,6 +82,11 @@ class TestSpec extends Specification {
         then:
         result.standardOutput.contains("I ran!")
         result.standardOutput.contains("Did it!")
+
+        where:
+        type         | forked
+        'in-process' | false
+        'forked'     | true
     }
 }
 

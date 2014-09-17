@@ -12,10 +12,12 @@ class ConcreteIntegrationSpec extends IntegrationSpec {
         buildResult.failure == null
     }
 
-    def 'setup and run build'() {
+    @Unroll
+    def 'setup and run build for #type execution'() {
         buildFile << '''
             apply plugin: 'java'
         '''.stripIndent()
+        fork = forked
 
         when:
         writeHelloWorld('nebula.test.hello')
@@ -30,6 +32,11 @@ class ConcreteIntegrationSpec extends IntegrationSpec {
         fileExists('build/classes/main/nebula/test/hello/HelloWorld.class')
         result.wasExecuted(':compileTestJava')
         result.getStandardOutput().contains('Skipping task \':compileTestJava\' as it has no source files.')
+
+        where:
+        type         | forked
+        'in-process' | false
+        'forked'     | true
     }
 
 
