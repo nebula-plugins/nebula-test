@@ -39,6 +39,7 @@ abstract class IntegrationSpec extends Specification {
     String moduleName
     File settingsFile
     File buildFile
+    boolean fork = false
 
     String findModuleName() {
         projectDir.getName().replaceAll(/_\d+/, '')
@@ -81,7 +82,7 @@ abstract class IntegrationSpec extends Specification {
         arguments += '--stacktrace'
         arguments.addAll(args)
 
-        GradleRunner runner = GradleRunnerFactory.createTooling()
+        GradleRunner runner = GradleRunnerFactory.createTooling(fork)
         runner.handle(projectDir, arguments)
     }
 
