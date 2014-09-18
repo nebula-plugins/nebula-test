@@ -22,6 +22,7 @@ import nebula.test.functional.GradleRunnerFactory
 import nebula.test.functional.internal.GradleHandle
 import nebula.test.functional.internal.launcherapi.LauncherExecutionResult
 import nebula.test.functional.internal.launcherapi.StateExecutedTask
+import nebula.test.multiproject.MultiProjectIntegrationHelper
 import org.apache.commons.io.FileUtils
 import org.gradle.api.logging.LogLevel
 import spock.lang.Specification
@@ -42,6 +43,7 @@ abstract class IntegrationSpec extends Specification {
     String moduleName
     File settingsFile
     File buildFile
+    MultiProjectIntegrationHelper helper
 
     String findModuleName() {
         projectDir.getName().replaceAll(/_\d+/, '')
@@ -61,6 +63,8 @@ abstract class IntegrationSpec extends Specification {
         println "Running test from ${projectDir}"
 
         buildFile << "// Running test for ${moduleName}\n"
+
+        helper = new MultiProjectIntegrationHelper(projectDir, settingsFile)
     }
 
     protected GradleHandle launcher(String... args) {
@@ -254,5 +258,13 @@ abstract class IntegrationSpec extends Specification {
         ExecutionResult result = launcher(tasks).run()
         this.result = result
         return result
+    }
+
+    File addSubproject(String subprojectName) {
+        helper.addSubproject(subprojectName)
+    }
+
+    File addSubproject(String subprojectName, String subBuildGradleText) {
+        helper.addSubproject(subprojectName, subBuildGradleText)
     }
 }

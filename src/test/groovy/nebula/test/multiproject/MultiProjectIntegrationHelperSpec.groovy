@@ -3,13 +3,6 @@ package nebula.test.multiproject
 import nebula.test.IntegrationSpec
 
 class MultiProjectIntegrationHelperSpec extends IntegrationSpec {
-    MultiProjectIntegrationHelper helper
-
-    @Override
-    def setup() {
-        helper = new MultiProjectIntegrationHelper(projectDir, settingsFile)
-    }
-
     def 'create multi-project'() {
         when:
         helper.create(['sub'])

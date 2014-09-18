@@ -4,12 +4,6 @@ import nebula.test.ProjectSpec
 import org.gradle.api.Project
 
 class MultiProjectHelperSpec extends ProjectSpec {
-    MultiProjectHelper helper
-
-    def setup() {
-        helper = new MultiProjectHelper(project)
-    }
-
     def 'create single subproject in multiproject'() {
         when:
         Map<String, MultiProjectInfo> info = helper.create(['sub'])
@@ -22,7 +16,7 @@ class MultiProjectHelperSpec extends ProjectSpec {
 
     def 'create single subproject with directory in multiproject'() {
         when:
-        Map<String, MultiProjectInfo> info = helper.createWithDirectories(project, ['sub'])
+        Map<String, MultiProjectInfo> info = helper.createWithDirectories(['sub'])
 
         then:
         info['sub'].directory == new File(project.projectDir, 'sub')
