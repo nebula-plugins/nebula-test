@@ -37,10 +37,20 @@ class MultiProjectHelperSpec extends ProjectSpec {
 
     def 'add a subproject'() {
         when:
-        Project sub = helper.addSubproject('sub')
+        Project sub = addSubproject('sub')
 
         then:
         sub.parent == project
         project.subprojects.find { it == sub } != null
+    }
+
+    def 'add a subproject with directory'() {
+        when:
+        Project sub = addSubprojectWithDirectory('sub')
+
+        then:
+        sub.parent == project
+        project.subprojects.find { it == sub } != null
+        sub.projectDir == new File(projectDir, 'sub')
     }
 }

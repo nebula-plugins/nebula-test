@@ -54,5 +54,9 @@ public abstract class ProjectSpec extends Specification {
     Project addSubproject(String subprojectName) {
         helper.addSubproject(subprojectName)
     }
+
+    Project addSubprojectWithDirectory(String subprojectName) {
+        helper.addSubprojectWithDirectory(subprojectName)
+    }
 }
 

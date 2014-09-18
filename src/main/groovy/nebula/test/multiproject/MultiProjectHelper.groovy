@@ -37,4 +37,10 @@ class MultiProjectHelper {
     Project addSubproject(String name) {
         ProjectBuilder.builder().withName(name).withParent(parent).build()
     }
+
+    Project addSubprojectWithDirectory(String name) {
+        def dir = new File(parent.projectDir, name)
+        dir.mkdirs()
+        ProjectBuilder.builder().withName(name).withProjectDir(dir).withParent(parent).build()
+    }
 }

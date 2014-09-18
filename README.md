@@ -77,6 +77,9 @@ It's up to your test to call the runTask methods. There are a few utility method
   * _BuildResult runTasksWithFailure(String... tasks)_ - Run, and assume that the build will fail.
 * Validate project after execution
   * _boolean fileExists(String path)_ - Says if a file was created in the project dir
+* Create subprojects
+  * _File addSubproject(String subprojectName)_ - Create a subproject, return back the new directory
+  * _File addSubproject(String subprojectName, String subBuildGradleText)_ - Create a subproject setting its build.gradle to the given String
 
 ExecutionResult provides a few useful methods to test the outcome of a build:
   * _boolean wasExecuted(String taskPath)_ - Says if a task was executed.
