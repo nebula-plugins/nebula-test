@@ -1,6 +1,6 @@
 Nebula Test
 ===========
-Classes specific to testing a Gradle project, leveraging <a href="http://spockframework.org">Spock</a>
+Classes specific to testing a Gradle project, leveraging [Spock](http://spockframework.org)
 
 ProjectSpec
 -----------
@@ -77,6 +77,9 @@ It's up to your test to call the runTask methods. There are a few utility method
   * _BuildResult runTasksWithFailure(String... tasks)_ - Run, and assume that the build will fail.
 * Validate project after execution
   * _boolean fileExists(String path)_ - Says if a file was created in the project dir
+* Create subprojects
+  * _File addSubproject(String subprojectName)_ - Create a subproject, return back the new directory
+  * _File addSubproject(String subprojectName, String subBuildGradleText)_ - Create a subproject setting its build.gradle to the given String
 
 ExecutionResult provides a few useful methods to test the outcome of a build:
   * _boolean wasExecuted(String taskPath)_ - Says if a task was executed.
@@ -171,7 +174,44 @@ To create an ivy repo
 
     generator.generateTestIvyRepo()
 
+Multi-project Helpers
+---------------------
+
+### MultiProjectHelper
+
+MultiProjectHelper can create various sub-projects using the ProjectBuilder.
+
+#### Usage for MultiProjectHelper:
+ 
+    def helper = new MultiProjectHelper(project)
+    Project sub = helper.addSubproject('sub')
+
+### MultiProjectIntegrationHelper
+    
+MultiProjectIntegrationHelper can create sub-projects using our IntegrationSpec.
+
+#### Usage for MultiProjectIntegrationHelper:
+ 
+    class MySpec extends IntegrationSpec {
+        def helper = new MultiProjectIntegrationHelper(projectDir, setingsFile)
+        
+        def 'my test method'() {
+            File subDirectory = helper.addSubproject('sub1')
+        }
+    }
+
 Caveat
 ------
 * This would have been in nebula-core, but via POMs you can't get dependencies just for tests.
 * TODO Add links to Javadoc
+
+LICENSE
+-------
+
+Copyright 2014 Netflix, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.

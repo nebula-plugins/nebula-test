@@ -1,6 +1,7 @@
 package nebula.test
 
 import com.energizedwork.spock.extensions.TempDirectory
+import nebula.test.multiproject.MultiProjectHelper
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
@@ -23,10 +24,12 @@ public abstract class ProjectSpec extends Specification {
     @Rule TestName name = new TestName()
     String canonicalName
     Project project
+    MultiProjectHelper helper
 
     def setup() {
         canonicalName = name.getMethodName().replaceAll(' ', '-')
         project = ProjectBuilder.builder().withName(canonicalName).withProjectDir(projectDir).build()
+        helper = new MultiProjectHelper(project)
     }
 
     def cleanup() {
@@ -46,6 +49,14 @@ public abstract class ProjectSpec extends Specification {
     boolean deleteProjectDir() {
         String cleanProjectDirSystemProperty = System.getProperty(CLEAN_PROJECT_DIR_SYS_PROP)
         cleanProjectDirSystemProperty ? cleanProjectDirSystemProperty.toBoolean() : true
+    }
+
+    Project addSubproject(String subprojectName) {
+        helper.addSubproject(subprojectName)
+    }
+
+    Project addSubprojectWithDirectory(String subprojectName) {
+        helper.addSubprojectWithDirectory(subprojectName)
     }
 }
 
