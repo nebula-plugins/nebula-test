@@ -155,8 +155,12 @@ To have `test.example:foo:1.0.0` depend on `bar:baz:1.+`, `g:a:[1.0.0,2.0.0)`, a
 
 ### Generating A Repository
 
-* ivy repos will be at: `<projectdir>/build/testrepogen/ivyrepo`
-* maven repos will be at: `<projectdir>/build/testrepogen/mavenrepo`
+Given
+
+    def generator = new GradleDependencyGenerator(graph)
+
+* ivy repos will be at: generator.ivyRepoDir 
+* maven repos will be at: generator.mavenRepoDir 
 
 Code example:
 
@@ -168,11 +172,11 @@ Code example:
 
 To create a maven repo
 
-    generator.generateTestMavenRepo()
+    File mavenrepo = generator.generateTestMavenRepo()
 
 To create an ivy repo
 
-    generator.generateTestIvyRepo()
+    File ivyrepo = generator.generateTestIvyRepo()
 
 Multi-project Helpers
 ---------------------

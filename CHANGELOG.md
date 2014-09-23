@@ -1,4 +1,10 @@
-1.12.3 / 2014-09-xx
+1.12.4 / 2014-09-23
+===================
+
+* Improve dependency generation
+* 
+
+1.12.3 / 2014-09-22
 ===================
 
 * Add multi-project helpers
