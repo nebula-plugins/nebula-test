@@ -79,6 +79,12 @@ class GradleDependencyGenerator {
         mavenRepoDir.absolutePath
     }
 
+    String getMavenRepositoryBlock() {
+        """\
+            maven { url '${getMavenRepoDirPath()}' }
+        """.stripIndent()
+    }
+
     File generateTestIvyRepo() {
         runTasks('publishIvyPublicationToIvyRepository')
 
@@ -87,6 +93,19 @@ class GradleDependencyGenerator {
 
     String getIvyRepoDirPath() {
         ivyRepoDir.absolutePath
+    }
+
+    String getIvyRepositoryBlock() {
+        """\
+            ivy {
+                url '${getIvyRepoDirPath()}'
+                layout('pattern') {
+                    ivy '[organisation]/[module]/[revision]/[module]-[revision]-ivy.[ext]'
+                    artifact '[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]'
+                    m2compatible = true
+                }
+            }
+        """.stripIndent()
     }
 
     private void generateGradleFiles() {

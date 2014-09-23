@@ -149,6 +149,26 @@ class GradleDependencyGeneratorSpec extends Specification {
         name == new File('build/test/ivyrepo').absolutePath
     }
 
+    def 'integration spec ivy repository block is available'() {
+        def generator = new GradleDependencyGenerator(new DependencyGraph(['test.ivy:foo:1.0.0']), 'build/test')
+        String expectedBlock = """\
+            ivy {
+                url '${generator.ivyRepoDirPath}'
+                layout('pattern') {
+                    ivy '[organisation]/[module]/[revision]/[module]-[revision]-ivy.[ext]'
+                    artifact '[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]'
+                    m2compatible = true
+                }
+            }
+        """.stripIndent()
+
+        when:
+        String block = generator.ivyRepositoryBlock
+
+        then:
+        block == expectedBlock
+    }
+
     def 'generator returns location of the maven repository'() {
         def generator = new GradleDependencyGenerator(new DependencyGraph(['test.maven:foo:1.0.0']))
 
@@ -177,6 +197,19 @@ class GradleDependencyGeneratorSpec extends Specification {
 
         then:
         name == new File('build/testmaven/mavenrepo').absolutePath
+    }
+
+    def 'integration spec maven repository block is available'() {
+        def generator = new GradleDependencyGenerator(new DependencyGraph(['test.maven:foo:1.0.0']), 'build/test')
+        String expectedBlock = """\
+            maven { url '${generator.mavenRepoDirPath}' }
+        """.stripIndent()
+
+        when:
+        String block = generator.mavenRepositoryBlock
+
+        then:
+        block == expectedBlock
     }
 
     private Boolean mavenFilesExist(String group, String artifact, String version, File repository) {
