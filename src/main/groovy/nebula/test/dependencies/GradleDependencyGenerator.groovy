@@ -58,19 +58,35 @@ class GradleDependencyGenerator {
 
     DependencyGraph graph
     File gradleRoot
+    File ivyRepoDir
+    File mavenRepoDir
 
     GradleDependencyGenerator(DependencyGraph graph, String directory = 'build/testrepogen') {
         this.graph = graph
         this.gradleRoot = new File(directory)
+        this.ivyRepoDir = new File(directory, 'ivyrepo')
+        this.mavenRepoDir = new File(directory, 'mavenrepo')
         generateGradleFiles()
     }
 
-    void generateTestMavenRepo() {
+    File generateTestMavenRepo() {
         runTasks('publishMavenPublicationToMavenRepository')
+
+        mavenRepoDir
     }
 
-    void generateTestIvyRepo() {
+    String getMavenRepoDirPath() {
+        mavenRepoDir.absolutePath
+    }
+
+    File generateTestIvyRepo() {
         runTasks('publishIvyPublicationToIvyRepository')
+
+        ivyRepoDir
+    }
+
+    String getIvyRepoDirPath() {
+        ivyRepoDir.absolutePath
     }
 
     private void generateGradleFiles() {

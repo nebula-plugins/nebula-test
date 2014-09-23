@@ -119,6 +119,66 @@ class GradleDependencyGeneratorSpec extends Specification {
         ivyFilesExist(group, 'baz', '0.9.0', ivyRepo)
     }
 
+    def 'generator returns location of the ivy repository'() {
+        def generator = new GradleDependencyGenerator(new DependencyGraph(['test.ivy:foo:1.0.0']))
+
+        when:
+        File dir = generator.generateTestIvyRepo()
+
+        then:
+        dir == new File('build/testrepogen/ivyrepo')
+    }
+
+    def 'ask generator for location of the ivy repository'() {
+        def generator = new GradleDependencyGenerator(new DependencyGraph(['test.ivy:foo:1.0.0']), 'build/test')
+
+        when:
+        File dir = generator.ivyRepoDir
+
+        then:
+        dir == new File('build/test/ivyrepo')
+    }
+
+    def 'ask generator for string location of the ivy repository'() {
+        def generator = new GradleDependencyGenerator(new DependencyGraph(['test.ivy:foo:1.0.0']), 'build/test')
+
+        when:
+        String name = generator.ivyRepoDirPath
+
+        then:
+        name == new File('build/test/ivyrepo').absolutePath
+    }
+
+    def 'generator returns location of the maven repository'() {
+        def generator = new GradleDependencyGenerator(new DependencyGraph(['test.maven:foo:1.0.0']))
+
+        when:
+        File dir = generator.generateTestMavenRepo()
+
+        then:
+        dir == new File('build/testrepogen/mavenrepo')
+    }
+
+    def 'ask generator for location of the maven repository'() {
+        def generator = new GradleDependencyGenerator(new DependencyGraph(['test.maven:foo:1.0.0']), 'build/test')
+
+        when:
+        File dir = generator.mavenRepoDir
+
+        then:
+        dir == new File('build/test/mavenrepo')
+    }
+
+    def 'ask generator for string location of the maven repository'() {
+        def generator = new GradleDependencyGenerator(new DependencyGraph(['test.maven:foo:1.0.0']), 'build/testmaven')
+
+        when:
+        String name = generator.mavenRepoDirPath
+
+        then:
+        name == new File('build/testmaven/mavenrepo').absolutePath
+    }
+
     private Boolean mavenFilesExist(String group, String artifact, String version, File repository) {
         String baseName = artifactPath(group, artifact, version)
         Boolean pomExists = new File(repository, "${baseName}.pom").exists()
