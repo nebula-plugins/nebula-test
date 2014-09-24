@@ -56,6 +56,8 @@ class GradleDependencyGenerator {
     '''.stripIndent()
     static final String BUILD_GRADLE = 'build.gradle'
 
+    private boolean generated = false
+
     DependencyGraph graph
     File gradleRoot
     File ivyRepoDir
@@ -109,6 +111,12 @@ class GradleDependencyGenerator {
     }
 
     private void generateGradleFiles() {
+        if (generated) {
+            return
+        } else {
+            generated = true
+        }
+
         gradleRoot.mkdirs()
         def rootBuildGradle = new File(gradleRoot, BUILD_GRADLE)
         rootBuildGradle.text = STANDARD_SUBPROJECT_BLOCK
