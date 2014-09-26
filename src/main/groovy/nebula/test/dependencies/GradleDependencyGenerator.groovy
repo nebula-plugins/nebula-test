@@ -56,24 +56,67 @@ class GradleDependencyGenerator {
     '''.stripIndent()
     static final String BUILD_GRADLE = 'build.gradle'
 
+    private boolean generated = false
+
     DependencyGraph graph
     File gradleRoot
+    File ivyRepoDir
+    File mavenRepoDir
 
     GradleDependencyGenerator(DependencyGraph graph, String directory = 'build/testrepogen') {
         this.graph = graph
         this.gradleRoot = new File(directory)
+        this.ivyRepoDir = new File(directory, 'ivyrepo')
+        this.mavenRepoDir = new File(directory, 'mavenrepo')
         generateGradleFiles()
     }
 
-    void generateTestMavenRepo() {
+    File generateTestMavenRepo() {
         runTasks('publishMavenPublicationToMavenRepository')
+
+        mavenRepoDir
     }
 
-    void generateTestIvyRepo() {
+    String getMavenRepoDirPath() {
+        mavenRepoDir.absolutePath
+    }
+
+    String getMavenRepositoryBlock() {
+        """\
+            maven { url '${getMavenRepoDirPath()}' }
+        """.stripIndent()
+    }
+
+    File generateTestIvyRepo() {
         runTasks('publishIvyPublicationToIvyRepository')
+
+        ivyRepoDir
+    }
+
+    String getIvyRepoDirPath() {
+        ivyRepoDir.absolutePath
+    }
+
+    String getIvyRepositoryBlock() {
+        """\
+            ivy {
+                url '${getIvyRepoDirPath()}'
+                layout('pattern') {
+                    ivy '[organisation]/[module]/[revision]/[module]-[revision]-ivy.[ext]'
+                    artifact '[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]'
+                    m2compatible = true
+                }
+            }
+        """.stripIndent()
     }
 
     private void generateGradleFiles() {
+        if (generated) {
+            return
+        } else {
+            generated = true
+        }
+
         gradleRoot.mkdirs()
         def rootBuildGradle = new File(gradleRoot, BUILD_GRADLE)
         rootBuildGradle.text = STANDARD_SUBPROJECT_BLOCK

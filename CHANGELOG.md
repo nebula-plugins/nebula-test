@@ -1,4 +1,14 @@
-1.12.3 / 2014-09-xx
+2.0.1 / 2014-09-26
+==================
+
+* Merged in dependency generation improvements from 1.12.4
+
+1.12.4 / 2014-09-25
+===================
+
+* Improve dependency generation, add builder syntax, add useful helpers
+
+1.12.3 / 2014-09-22
 ===================
 
 * Add multi-project helpers

@@ -16,7 +16,7 @@
 package nebula.test.dependencies
 
 class DependencyGraph {
-    List<DependencyGraphNode> nodes = []
+    Collection<DependencyGraphNode> nodes = []
 
     DependencyGraph(List<String> graph) {
         graph.each { nodes << parseNode(it) }
@@ -24,6 +24,10 @@ class DependencyGraph {
 
     DependencyGraph(String... graph) {
         this(graph as List)
+    }
+
+    DependencyGraph(Map tuple) {
+        nodes = tuple.nodes
     }
     
     private DependencyGraphNode parseNode(String s) {

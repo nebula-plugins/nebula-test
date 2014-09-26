@@ -126,7 +126,7 @@ Caveats:
 * this will not check whether the dependency graph you describe is valid
 * all listed dependencies will be in the runtime scope of the generated library
 
-### Describing a Dependency Graph
+### Describing a Dependency Graph (String based)
 
 *Simple Library with no Dependencies*
 
@@ -146,17 +146,69 @@ To have `test.example:foo:1.0.0` depend on `bar:baz:1.+`, `g:a:[1.0.0,2.0.0)`, a
 
     String myGraph = 'test.example:foo:1.0.0 -> bar:baz:1.+|g:a:[1.0.0,2.0.0)|g1:a1:3.1.2'
 
+### Describing a Dependency Graph (Builder based)
+
+    def builder = new DependencyGraphBuilder()
+
+    DependencyGraph graph = builder.build()
+
+*Simple Library with no Dependencies*
+
+If i want to create a fake library with group: `test.example`, artifactName: `foo`, and version: `1.0.0`
+
+    builder.addModule('test.example:foo:1.0.0')
+    //or
+    builder.addModule('test.example', 'foo', '1.0.0')
+    //or
+    def module = new ModuleBuilder('test.example:foo:1.0.0').build()
+    builder.addModule(module)
+
+*Library with One Dependency*
+
+To have `test.example:foo:1.0.0` depend on the most recent version in the `1.+` series of `bar:baz`
+
+    def module = new ModuleBuilder('test.example:foo:1.0.0').addDependency('bar:baz:1.+').build()
+    builder.addModule(module)
+
+*Library with Multiple Dependencies*
+
+To have `test.example:foo:1.0.0` depend on `bar:baz:1.+`, `g:a:[1.0.0,2.0.0)`, and `g1:a1:3.1.2`
+
+    def module = new ModuleBuilder('test.example:foo:1.0.0')
+            .addDependency('bar:baz:1.+')
+            .addDependency('g:a:[1.0.0,2.0.0)').build()
+    builder.addModule(module)
+
 #### Creating the Graph
+
+*String based syntax*
 
     import nebula.test.dependencies.DependencyGraph
     def graph = new DependencyGraph(['g:a:1.0.0', 'g1:a1:0.9.0 -> g:a:1.+'])
     // or
     def graph = new DependencyGraph('g:a:1.0.0', 'g1:a1:0.9.0 -> g:a:1.+')
 
+*Builder based syntax*
+
+    import nebula.test.dependencies.DependencyGraphBuilder
+    import nebula.test.dependencies.ModuleBuilder
+
+    def graph = new DependencyGraphBuilder().addModule('g0:a0:0.0.1')
+            .addModule('g1', 'a1', '1.0.1')
+            .addModule(new ModuleBuilder('g2:a2:2.0.1').build())
+            .addModule(new ModuleBuilder('g3', 'a3', '3.0.1')
+                    .addDependency('g4:a4:4.0.1')
+                    .addDependency('g5', 'a5', '5.0.1').build()
+            ).build()
+
 ### Generating A Repository
 
-* ivy repos will be at: `<projectdir>/build/testrepogen/ivyrepo`
-* maven repos will be at: `<projectdir>/build/testrepogen/mavenrepo`
+Given
+
+    def generator = new GradleDependencyGenerator(graph)
+
+* ivy repos will be at: generator.ivyRepoDir 
+* maven repos will be at: generator.mavenRepoDir 
 
 Code example:
 
@@ -168,11 +220,11 @@ Code example:
 
 To create a maven repo
 
-    generator.generateTestMavenRepo()
+    File mavenrepo = generator.generateTestMavenRepo()
 
 To create an ivy repo
 
-    generator.generateTestIvyRepo()
+    File ivyrepo = generator.generateTestIvyRepo()
 
 Multi-project Helpers
 ---------------------
