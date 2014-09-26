@@ -1,8 +1,7 @@
-1.12.4 / 2014-09-23
+1.12.4 / 2014-09-25
 ===================
 
-* Improve dependency generation
-* 
+* Improve dependency generation, add builder syntax, add useful helpers
 
 1.12.3 / 2014-09-22
 ===================
