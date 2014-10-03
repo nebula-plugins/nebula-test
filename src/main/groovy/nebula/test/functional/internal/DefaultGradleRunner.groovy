@@ -19,9 +19,6 @@ package nebula.test.functional.internal;
 import nebula.test.functional.ExecutionResult;
 import nebula.test.functional.GradleRunner;
 
-import java.io.File;
-import java.util.List;
-
 public class DefaultGradleRunner implements GradleRunner {
 
     private final GradleHandleFactory handleFactory;
@@ -30,12 +27,12 @@ public class DefaultGradleRunner implements GradleRunner {
         this.handleFactory = handleFactory;
     }
 
-    public ExecutionResult run(File directory, List<String> arguments) {
-        return handle(directory, arguments).run();
+    public ExecutionResult run(File projectDir, List<String> arguments) {
+        return handle(projectDir, arguments).run();
     }
 
-    public GradleHandle handle(File directory, List<String> arguments) {
-        return handleFactory.start(directory, arguments);
+    public GradleHandle handle(File projectDir, List<String> arguments) {
+        return handleFactory.start(projectDir, arguments);
     }
 
 }

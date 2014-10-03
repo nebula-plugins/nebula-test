@@ -12,23 +12,48 @@ import org.gradle.wrapper.WrapperExecutor
 
 public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
 
-    public GradleHandle start(File directory, List<String> arguments) {
-        GradleConnector connector = GradleConnector.newConnector();
-        connector.forProjectDirectory(directory);
+    private final String version
 
-        // Try to set distribution, in case a custom distribution is used.
+    ToolingApiGradleHandleFactory(String version) {
+        this.version = version
+    }
+
+    public GradleHandle start(File projectDir, List<String> arguments) {
+        GradleConnector connector = createGradleConnector(projectDir)
+        ProjectConnection connection = connector.connect();
+        BuildLauncher launcher = createBuildLauncher(connection, arguments)
+        createGradleHandle(connection, launcher)
+    }
+
+    private GradleConnector createGradleConnector(File projectDir) {
+        GradleConnector connector = GradleConnector.newConnector();
+        connector.forProjectDirectory(projectDir);
+        configureGradleVersion(connector)
+        connector
+    }
+
+    private void configureGradleVersion(GradleConnector connector) {
+        if (version != null) {
+            connector.useGradleVersion(version)
+        } else {
+            configureWrapperDistributionIfUsed(connector)
+        }
+    }
+
+    private void configureWrapperDistributionIfUsed(GradleConnector connector) {
         BuildLayout layout = new BuildLayoutFactory().getLayoutFor(new File('.'), true)
         WrapperExecutor wrapper = WrapperExecutor.forProjectDirectory(layout.rootDirectory, System.out)
-        if (wrapper.getDistribution()) {
-            connector.useDistribution(wrapper.getDistribution())
+        if (wrapper.distribution) {
+            connector.useDistribution(wrapper.distribution)
         }
+    }
 
-        ProjectConnection connection = connector.connect();
+    private BuildLauncher createBuildLauncher(ProjectConnection connection, List<String> arguments) {
         BuildLauncher launcher = connection.newBuild();
         String[] argumentArray = new String[arguments.size()];
         arguments.toArray(argumentArray);
         launcher.withArguments(argumentArray);
-        createGradleHandle(connection, launcher)
+        launcher
     }
 
     private GradleHandle createGradleHandle(ProjectConnection connection, BuildLauncher launcher) {
