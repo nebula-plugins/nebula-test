@@ -8,9 +8,8 @@ import nebula.test.functional.internal.toolingapi.ToolingApiGradleHandleFactory;
 
 public class GradleRunnerFactory {
 
-    // TODO Easier way to define which implementation to use
-    public static GradleRunner createTooling() {
-        GradleHandleFactory toolingApiHandleFactory = new ToolingApiGradleHandleFactory();
+    public static GradleRunner createTooling(String version) {
+        GradleHandleFactory toolingApiHandleFactory = new ToolingApiGradleHandleFactory(version);
 
         return create(toolingApiHandleFactory);
     }
