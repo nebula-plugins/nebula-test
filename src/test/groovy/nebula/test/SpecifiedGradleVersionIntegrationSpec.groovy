@@ -19,9 +19,7 @@ class SpecifiedGradleVersionIntegrationSpec extends IntegrationSpec {
         when:
             def result = runTasksSuccessfully('build')
         then:
-//            //TODO: How to get output before being connected to the daemon?with "Tooling API is using target Gradle version: 1.XX."?
-//            result.getStandardOutput().contains("Tooling API is using target Gradle version: $requestedGradleVersion")
-            result.getStandardOutput().contains("gradle/$requestedGradleVersion/taskArtifacts")
+            result.standardOutput.contains("gradle/$requestedGradleVersion/taskArtifacts")
         where:
             requestedGradleVersion << ['1.12', '1.6']
     }
