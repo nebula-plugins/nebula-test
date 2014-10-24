@@ -35,6 +35,8 @@ abstract class IntegrationSpec extends Specification {
     // Holds State of last run
     private ExecutionResult result
 
+    boolean useToolingApi = true
+    String gradleVersion
     LogLevel logLevel = LogLevel.INFO
 
     String moduleName
@@ -86,7 +88,7 @@ abstract class IntegrationSpec extends Specification {
         arguments += '--stacktrace'
         arguments.addAll(args)
 
-        GradleRunner runner = GradleRunnerFactory.createTooling(fork)
+        GradleRunner runner = GradleRunnerFactory.createTooling(fork, gradleVersion)
         runner.handle(projectDir, arguments)
     }
 

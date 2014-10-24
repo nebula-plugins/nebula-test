@@ -1,7 +1,17 @@
+2.0.2 / 2014-10-23
+===================
+
+* Add ability to choose Gradle version
+
 2.0.1 / 2014-09-26
 ==================
 
 * Merged in dependency generation improvements from 1.12.4
+
+1.12.5 / 2014-10-23
+===================
+
+* Add ability to choose Gradle version
 
 1.12.4 / 2014-09-25
 ===================

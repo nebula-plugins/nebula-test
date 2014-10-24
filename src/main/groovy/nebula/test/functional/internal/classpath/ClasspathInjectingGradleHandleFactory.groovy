@@ -18,8 +18,8 @@ public class ClasspathInjectingGradleHandleFactory implements GradleHandleFactor
         this.delegateFactory = delegateFactory;
     }
 
-    public GradleHandle start(File directory, List<String> arguments) {
-        File testKitDir = new File(directory, ".gradle-test-kit");
+    public GradleHandle start(File projectDir, List<String> arguments) {
+        File testKitDir = new File(projectDir, ".gradle-test-kit");
         if (!testKitDir.exists()) {
             GFileUtils.mkdirs(testKitDir);
         }
@@ -31,6 +31,6 @@ public class ClasspathInjectingGradleHandleFactory implements GradleHandleFactor
         ammendedArguments.add("--init-script");
         ammendedArguments.add(initScript.getAbsolutePath());
         ammendedArguments.addAll(arguments);
-        return delegateFactory.start(directory, ammendedArguments);
+        return delegateFactory.start(projectDir, ammendedArguments);
     }
 }
