@@ -1,4 +1,4 @@
-2.0.2 / 2014-10-23
+2.0.2 / 2014-10-24
 ===================
 
 * Add ability to choose Gradle version

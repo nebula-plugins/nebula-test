@@ -1,12 +1,8 @@
-package nebula.test.functional.internal.classpath;
+package nebula.test.functional.internal.classpath
 
-import nebula.test.functional.internal.GradleHandle;
-import nebula.test.functional.internal.GradleHandleFactory;
-import org.gradle.util.GFileUtils;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import nebula.test.functional.internal.GradleHandle
+import nebula.test.functional.internal.GradleHandleFactory
+import org.gradle.util.GFileUtils
 
 public class ClasspathInjectingGradleHandleFactory implements GradleHandleFactory {
 

@@ -30,7 +30,7 @@ public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
 
         ProjectConnection connection = connector.connect();
         BuildLauncher launcher = createBuildLauncher(connection, arguments)
-        createGradleHandle(connection, launcher)
+        createGradleHandle(connection, launcher, forkedProcess)
     }
 
     private GradleConnector createGradleConnector(File projectDir) {

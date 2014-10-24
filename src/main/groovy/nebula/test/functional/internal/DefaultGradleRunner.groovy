@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package nebula.test.functional.internal;
+package nebula.test.functional.internal
 
-import nebula.test.functional.ExecutionResult;
-import nebula.test.functional.GradleRunner;
+import nebula.test.functional.ExecutionResult
+import nebula.test.functional.GradleRunner
 
 public class DefaultGradleRunner implements GradleRunner {
 

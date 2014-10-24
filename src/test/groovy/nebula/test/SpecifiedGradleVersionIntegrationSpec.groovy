@@ -4,6 +4,9 @@ import org.gradle.api.logging.LogLevel
 import spock.lang.Unroll
 
 class SpecifiedGradleVersionIntegrationSpec extends IntegrationSpec {
+    def setup() {
+        fork = true
+    }
 
     @Unroll("should use Gradle #requestedGradleVersion when requested")
     def "should allow to run functional tests with different Gradle versions"() {
@@ -21,6 +24,6 @@ class SpecifiedGradleVersionIntegrationSpec extends IntegrationSpec {
         then:
             result.standardOutput.contains("gradle/$requestedGradleVersion/taskArtifacts")
         where:
-            requestedGradleVersion << ['1.12', '1.6']
+            requestedGradleVersion << ['2.0', '2.1']
     }
 }

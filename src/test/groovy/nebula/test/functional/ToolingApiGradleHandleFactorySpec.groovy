@@ -10,7 +10,7 @@ class ToolingApiGradleHandleFactorySpec extends Specification {
 
     def "Creates embedded handle if requested through constructor"() {
         when:
-        GradleHandleFactory gradleHandleFactory = new ToolingApiGradleHandleFactory(false)
+        GradleHandleFactory gradleHandleFactory = new ToolingApiGradleHandleFactory(false, null)
         GradleHandle gradleHandle = gradleHandleFactory.start(projectDir, [])
 
         then:
@@ -20,7 +20,7 @@ class ToolingApiGradleHandleFactorySpec extends Specification {
 
     def "Creates forked handle if requested through constructor"() {
         when:
-        GradleHandleFactory gradleHandleFactory = new ToolingApiGradleHandleFactory(true)
+        GradleHandleFactory gradleHandleFactory = new ToolingApiGradleHandleFactory(true, null)
         GradleHandle gradleHandle = gradleHandleFactory.start(projectDir, [])
 
         then:
@@ -33,7 +33,7 @@ class ToolingApiGradleHandleFactorySpec extends Specification {
         System.setProperty(ToolingApiGradleHandleFactory.FORK_SYS_PROP, Boolean.TRUE.toString())
 
         when:
-        GradleHandleFactory gradleHandleFactory = new ToolingApiGradleHandleFactory(false)
+        GradleHandleFactory gradleHandleFactory = new ToolingApiGradleHandleFactory(false, null)
         GradleHandle gradleHandle = gradleHandleFactory.start(projectDir, [])
 
         then:
