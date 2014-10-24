@@ -24,6 +24,6 @@ class SpecifiedGradleVersionIntegrationSpec extends IntegrationSpec {
         then:
             result.standardOutput.contains("gradle/$requestedGradleVersion/taskArtifacts")
         where:
-            requestedGradleVersion << ['2.0', '2.1']
+            requestedGradleVersion << ['1.12', '1.6', '2.0', '2.1']
     }
 }
