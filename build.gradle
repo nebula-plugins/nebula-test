@@ -9,9 +9,11 @@ apply plugin: 'idea'
 
 dependencies {
     compile ('org.spockframework:spock-core:0.7-groovy-2.0') { exclude group: 'org.codehaus.groovy' }
-    // testCompile ('com.energizedwork:spock-extensions:1.0') { exclude group: 'org.codehaus.groovy' } // Waiting for this to be published to jcenter
+    // Waiting for this to be published to maven central
+    // https://bintray.com/robfletcher/maven/spock-extensions/view
+    // compile ('com.energizedwork:spock-extensions:1.0') { exclude group: 'org.codehaus.groovy' }
     compile 'cglib:cglib-nodep:2.2.2' // For Mocking classes with Spock
-    //compile "org.gradle:gradle-tooling-api:${gradle.gradleVersion}" // might not be needed
+    //compile "org.gradle:gradle-tooling-api:${gradle.gradleVersion}" // Still not in Maven Central...
 }
 
 contacts {

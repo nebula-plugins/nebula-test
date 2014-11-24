@@ -36,23 +36,31 @@ public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
     private GradleConnector createGradleConnector(File projectDir) {
         GradleConnector connector = GradleConnector.newConnector();
         connector.forProjectDirectory(projectDir);
-        configureGradleVersion(connector)
+        configureGradleVersion(connector, projectDir)
         connector
     }
 
-    private void configureGradleVersion(GradleConnector connector) {
+    private void configureGradleVersion(GradleConnector connector, File projectDir) {
         if (version != null) {
             connector.useGradleVersion(version)
         } else {
-            configureWrapperDistributionIfUsed(connector)
+            configureWrapperDistributionIfUsed(connector, projectDir)
         }
     }
 
-    private void configureWrapperDistributionIfUsed(GradleConnector connector) {
-        BuildLayout layout = new BuildLayoutFactory().getLayoutFor(new File('.'), true)
+    private void configureWrapperDistributionIfUsed(GradleConnector connector, File projectDir) {
+        BuildLayout layout = new BuildLayoutFactory().getLayoutFor(projectDir, true)
         WrapperExecutor wrapper = WrapperExecutor.forProjectDirectory(layout.rootDirectory, System.out)
         if (wrapper.distribution) {
+            // This would be in the test project
             connector.useDistribution(wrapper.distribution)
+        } else {
+            // Search above us, in the project that owns the test
+            BuildLayout layoutParent = new BuildLayoutFactory().getLayoutFor(projectDir.parentFile, true)
+            WrapperExecutor wrapperParent = WrapperExecutor.forProjectDirectory(layoutParent.rootDirectory, System.out)
+            if (wrapperParent.distribution) {
+                connector.useDistribution(wrapperParent.distribution)
+            }
         }
     }
 
