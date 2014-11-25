@@ -1,6 +1,7 @@
 buildscript {
     repositories { jcenter() }
     dependencies { classpath "com.netflix.nebula:nebula-plugin-plugin:1.12.+" }
+    dependencies { classpath "org.codehaus.groovy:groovy-backports-compat23:2.3.5" } // Try account for bad bintray plugin
 }
 
 description 'Test harness for Gradle plugins'
