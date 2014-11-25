@@ -1,6 +1,7 @@
 package nebula.test
 
 import org.gradle.api.logging.LogLevel
+import spock.lang.Ignore
 import spock.lang.Unroll
 
 class SpecifiedGradleVersionIntegrationSpec extends IntegrationSpec {
@@ -29,6 +30,7 @@ class SpecifiedGradleVersionIntegrationSpec extends IntegrationSpec {
 
     static final String CUSTOM_DISTRIBUTION = 'http://dl.bintray.com/nebula/gradle-distributions/1.12-20140608201532+0000/gradle-1.12-20140608201532+0000-bin.zip'
 
+    @Ignore("Only works with a custom distribution that is compatible with our runtime, of which 1.12 is not compatible with our spock 2.0 dependency")
     def 'should be able to use custom distribution'() {
         buildFile << '''
                 task showVersion << {
@@ -53,6 +55,7 @@ class SpecifiedGradleVersionIntegrationSpec extends IntegrationSpec {
         result.standardOutput.contains("Gradle Version: 1.12-20140608201532+0000")
     }
 
+    @Ignore("Only works with a custom distribution that is compatible with our runtime, of which 1.12 is not compatible with our spock 2.0 dependency")
     def 'should be able to use custom distribution in a test'() {
         def testFile = new File(projectDir, "src/test/groovy/testing/DistributionTest.groovy")
         testFile.parentFile.mkdirs()
