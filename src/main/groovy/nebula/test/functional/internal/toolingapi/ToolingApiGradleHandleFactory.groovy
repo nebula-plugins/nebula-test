@@ -48,19 +48,17 @@ public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
         }
     }
 
-    private void configureWrapperDistributionIfUsed(GradleConnector connector, File projectDir) {
-        BuildLayout layout = new BuildLayoutFactory().getLayoutFor(projectDir, true)
-        WrapperExecutor wrapper = WrapperExecutor.forProjectDirectory(layout.rootDirectory, System.out)
-        if (wrapper.distribution) {
-            // This would be in the test project
-            connector.useDistribution(wrapper.distribution)
-        } else {
+    private File configureWrapperDistributionIfUsed(GradleConnector connector, File projectDir) {
+        File target = projectDir.absoluteFile
+        while(target!=null) {
             // Search above us, in the project that owns the test
-            BuildLayout layoutParent = new BuildLayoutFactory().getLayoutFor(projectDir.parentFile, true)
+            BuildLayout layoutParent = new BuildLayoutFactory().getLayoutFor(target, true)
             WrapperExecutor wrapperParent = WrapperExecutor.forProjectDirectory(layoutParent.rootDirectory, System.out)
             if (wrapperParent.distribution) {
                 connector.useDistribution(wrapperParent.distribution)
+                return target
             }
+            target = target.parentFile
         }
     }
 
