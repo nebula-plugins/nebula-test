@@ -1,19 +1,12 @@
-package nebula.test.functional.internal.classpath;
+package nebula.test.functional.internal.classpath
 
 import org.gradle.api.Transformer;
 import org.gradle.internal.ErroringAction;
 import org.gradle.internal.IoActions;
 import org.gradle.internal.UncheckedException;
 import org.gradle.internal.classloader.ClasspathUtil;
-import org.gradle.util.CollectionUtils;
+import org.gradle.util.CollectionUtils
 import org.gradle.util.TextUtil;
-
-import java.io.File;
-import java.io.Writer;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ClasspathAddingInitScriptBuilder {
 
@@ -29,6 +22,7 @@ public class ClasspathAddingInitScriptBuilder {
                 writer.write("  buildscript {\n");
                 writer.write("    dependencies {\n");
                 for (File file : classpath) {
+                    // Commons-lang 2.4 does not escape forward slashes correctly, https://issues.apache.org/jira/browse/LANG-421
                     writer.write(String.format("      classpath files('%s')\n", TextUtil.escapeString(file.getAbsolutePath())));
                 }
                 writer.write("    }\n");
