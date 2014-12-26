@@ -89,28 +89,3 @@ class TestSpec extends Specification {
         'forked'     | true
     }
 }
-
-class SomePlugin implements Plugin<Project> {
-
-    @Override
-    void apply(Project project) {
-        project.task("echo") {
-            outputs.upToDateWhen {
-                project.hasProperty('upToDate') ? project.properties['upToDate'].toBoolean() : false
-            }
-
-            doLast {
-                new Thing() // Class in another package
-                spock.lang.Specification // is a compile dependency, test it's available
-                project.logger.quiet "I ran!"
-            }
-        }
-
-        project.task("doIt") {
-            onlyIf {
-                project.hasProperty('skip') ? !project.properties['skip'].toBoolean() : true
-            }
-            doLast { project.logger.quiet 'Did it!' }
-        }
-    }
-}
