@@ -11,7 +11,8 @@ import org.gradle.tooling.ProjectConnection
 import org.gradle.wrapper.WrapperExecutor
 
 public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
-    static final String FORK_SYS_PROP = 'nebula.test.functional.fork'
+    public static final String FORK_SYS_PROP = 'nebula.test.functional.fork'
+
     private final boolean fork
     private final String version
 
