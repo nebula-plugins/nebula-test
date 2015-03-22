@@ -16,10 +16,12 @@
 
 package nebula.test.functional.internal
 
+import groovy.transform.CompileStatic
 import nebula.test.functional.ExecutionResult
 import nebula.test.functional.GradleRunner
 
-public class DefaultGradleRunner implements GradleRunner {
+@CompileStatic
+class DefaultGradleRunner implements GradleRunner {
 
     private final GradleHandleFactory handleFactory;
 

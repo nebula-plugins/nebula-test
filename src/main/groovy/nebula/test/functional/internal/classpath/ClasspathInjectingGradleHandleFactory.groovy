@@ -1,10 +1,12 @@
 package nebula.test.functional.internal.classpath
 
+import groovy.transform.CompileStatic
 import nebula.test.functional.internal.GradleHandle
 import nebula.test.functional.internal.GradleHandleFactory
 import org.gradle.util.GFileUtils
 
-public class ClasspathInjectingGradleHandleFactory implements GradleHandleFactory {
+@CompileStatic
+class ClasspathInjectingGradleHandleFactory implements GradleHandleFactory {
 
     private final ClassLoader classLoader;
     private final GradleHandleFactory delegateFactory;

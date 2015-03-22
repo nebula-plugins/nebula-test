@@ -15,12 +15,14 @@
  */
 package nebula.test
 
+import groovy.transform.CompileStatic
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 
 /**
  * Create some basic tests that all plugins should pass
  */
+@CompileStatic
 abstract class PluginProjectSpec extends ProjectSpec {
     abstract String getPluginName()
 

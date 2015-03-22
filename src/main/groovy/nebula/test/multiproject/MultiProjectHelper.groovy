@@ -1,8 +1,10 @@
 package nebula.test.multiproject
 
+import groovy.transform.CompileStatic
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 
+@CompileStatic
 class MultiProjectHelper {
     Project parent
 

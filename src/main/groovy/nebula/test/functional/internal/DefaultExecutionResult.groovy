@@ -16,10 +16,12 @@
 
 package nebula.test.functional.internal
 
+import groovy.transform.CompileStatic
 import nebula.test.functional.ExecutionResult
 import org.gradle.api.GradleException
 
-public abstract class DefaultExecutionResult implements ExecutionResult {
+@CompileStatic
+abstract class DefaultExecutionResult implements ExecutionResult {
     private final Boolean success
     private final String standardOutput
     private final String standardError
@@ -51,9 +53,9 @@ public abstract class DefaultExecutionResult implements ExecutionResult {
 
     @Override
     boolean wasExecuted(String taskPath) {
-        executedTasks.any {
+        executedTasks.any { ExecutedTask task ->
             taskPath = normalizeTaskPath(taskPath)
-            def match = it.path == taskPath
+            def match = task.path == taskPath
             return match
         }
     }
@@ -74,9 +76,9 @@ public abstract class DefaultExecutionResult implements ExecutionResult {
 
     private ExecutedTask getExecutedTaskByPath(String taskPath) {
         taskPath = normalizeTaskPath(taskPath)
-        def task = executedTasks.find { it.path == taskPath }
+        def task = executedTasks.find { ExecutedTask task -> task.path == taskPath }
         if (task == null) {
-            throw RuntimeException("Task with path $taskPath was not found")
+            throw new RuntimeException("Task with path $taskPath was not found")
         }
         task
     }

@@ -1,5 +1,7 @@
 package nebula.test.functional.internal.toolingapi
 
+import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
 import nebula.test.functional.internal.GradleHandle
 import nebula.test.functional.internal.GradleHandleBuildListener
 import nebula.test.functional.internal.GradleHandleFactory
@@ -10,6 +12,7 @@ import org.gradle.tooling.GradleConnector
 import org.gradle.tooling.ProjectConnection
 import org.gradle.wrapper.WrapperExecutor
 
+@CompileStatic
 public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
     public static final String FORK_SYS_PROP = 'nebula.test.functional.fork'
 
@@ -22,6 +25,7 @@ public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
     }
 
     @Override
+    @CompileStatic(TypeCheckingMode.SKIP)
     public GradleHandle start(File projectDir, List<String> arguments, List<String> jvmArguments = []) {
         GradleConnector connector = createGradleConnector(projectDir)
 

@@ -15,11 +15,13 @@
  */
 package nebula.test.functional.internal.toolingapi
 
+import groovy.transform.CompileStatic
 import nebula.test.functional.internal.ExecutedTask
 
 /**
  * @author Marcin Erdmann
  */
+@CompileStatic
 class MinimalExecutedTask implements ExecutedTask {
 
     String path

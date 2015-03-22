@@ -16,6 +16,8 @@
 package nebula.test
 
 import com.energizedwork.spock.extensions.TempDirectory
+import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
 import nebula.test.functional.ExecutionResult
 import nebula.test.functional.GradleRunner
 import nebula.test.functional.GradleRunnerFactory
@@ -29,6 +31,7 @@ import spock.lang.Specification
  * @author Justin Ryan
  * @author Marcin Erdmann
  */
+@CompileStatic
 abstract class IntegrationSpec extends Specification {
     private static final String DEFAULT_REMOTE_DEBUG_JVM_ARGUMENTS = "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
 
@@ -129,6 +132,7 @@ abstract class IntegrationSpec extends Specification {
         file
     }
 
+    @CompileStatic(TypeCheckingMode.SKIP)
     protected File createFile(String path, File baseDir = projectDir) {
         File file = file(path, baseDir)
         if (!file.exists()) {
@@ -249,6 +253,7 @@ abstract class IntegrationSpec extends Specification {
         result
     }
 
+    @CompileStatic(TypeCheckingMode.SKIP)
     protected ExecutionResult runTasksWithFailure(String... tasks) {
         ExecutionResult result = runTasks(tasks)
         assert result.failure
@@ -267,5 +272,13 @@ abstract class IntegrationSpec extends Specification {
 
     protected File addSubproject(String subprojectName, String subBuildGradleText) {
         helper.addSubproject(subprojectName, subBuildGradleText)
+    }
+
+    File getProjectDir() {
+        return projectDir
+    }
+
+    File getSettingsFile() {
+        return settingsFile
     }
 }

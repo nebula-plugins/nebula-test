@@ -1,11 +1,13 @@
 package nebula.test.functional
 
+import groovy.transform.CompileStatic
 import nebula.test.functional.internal.DefaultGradleRunner
 import nebula.test.functional.internal.GradleHandleFactory
 import nebula.test.functional.internal.classpath.ClasspathInjectingGradleHandleFactory
 import nebula.test.functional.internal.toolingapi.ToolingApiGradleHandleFactory
 
-public class GradleRunnerFactory {
+@CompileStatic
+class GradleRunnerFactory {
     public static GradleRunner createTooling(boolean fork = false, String version = null) {
         GradleHandleFactory toolingApiHandleFactory = new ToolingApiGradleHandleFactory(fork, version);
         return create(toolingApiHandleFactory);
