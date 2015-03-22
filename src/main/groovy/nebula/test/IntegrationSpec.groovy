@@ -30,6 +30,8 @@ import spock.lang.Specification
  * @author Marcin Erdmann
  */
 abstract class IntegrationSpec extends Specification {
+    private static final String DEFAULT_REMOTE_DEBUG_JVM_ARGUMENTS = "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
+
     @TempDirectory(clean=false) File projectDir
 
     // Holds State of last run
@@ -43,9 +45,11 @@ abstract class IntegrationSpec extends Specification {
     File settingsFile
     File buildFile
     boolean fork = false
+    boolean remoteDebug = false
+    List<String> jvmArguments = []
     MultiProjectIntegrationHelper helper
 
-    String findModuleName() {
+    private String findModuleName() {
         projectDir.getName().replaceAll(/_\d+/, '')
     }
 
@@ -68,6 +72,14 @@ abstract class IntegrationSpec extends Specification {
     }
 
     protected GradleHandle launcher(String... args) {
+        List<String> arguments = calculateArguments(args)
+        List<String> jvmArguments = calculateJvmArguments()
+
+        GradleRunner runner = GradleRunnerFactory.createTooling(fork, gradleVersion)
+        runner.handle(projectDir, arguments, jvmArguments)
+    }
+
+    private List<String> calculateArguments(String... args) {
         List<String> arguments = []
         // Gradle will use these files name from the PWD, instead of the project directory. It's easier to just leave
         // them out and let the default find them, since we're not changing their default names.
@@ -77,7 +89,7 @@ abstract class IntegrationSpec extends Specification {
         //arguments += (settingsFile.canonicalPath - projectDir.canonicalPath).substring(1)
         //arguments += '--no-daemon'
 
-        switch(getLogLevel()) {
+        switch (getLogLevel()) {
             case LogLevel.INFO:
                 arguments += '--info'
                 break
@@ -87,9 +99,11 @@ abstract class IntegrationSpec extends Specification {
         }
         arguments += '--stacktrace'
         arguments.addAll(args)
+        arguments
+    }
 
-        GradleRunner runner = GradleRunnerFactory.createTooling(fork, gradleVersion)
-        runner.handle(projectDir, arguments)
+    private List<String> calculateJvmArguments() {
+        return jvmArguments + (remoteDebug ? [DEFAULT_REMOTE_DEBUG_JVM_ARGUMENTS] : [] as List) as List
     }
 
     /**
@@ -182,7 +196,7 @@ abstract class IntegrationSpec extends Specification {
         resourceFile.text = "firstProperty=foo.bar"
     }
 
-    String copyResources(String srcDir, String destination) {
+    void copyResources(String srcDir, String destination) {
         ClassLoader classLoader = getClass().getClassLoader();
         URL resource = classLoader.getResource(srcDir);
         if (resource == null) {

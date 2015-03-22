@@ -27,12 +27,13 @@ public class DefaultGradleRunner implements GradleRunner {
         this.handleFactory = handleFactory;
     }
 
-    public ExecutionResult run(File projectDir, List<String> arguments) {
-        return handle(projectDir, arguments).run();
+    @Override
+    public ExecutionResult run(File projectDir, List<String> arguments, List<String> jvmArguments = []) {
+        return handle(projectDir, arguments, jvmArguments).run();
     }
 
-    public GradleHandle handle(File projectDir, List<String> arguments) {
-        return handleFactory.start(projectDir, arguments);
+    @Override
+    public GradleHandle handle(File projectDir, List<String> arguments, List<String> jvmArguments = []) {
+        return handleFactory.start(projectDir, arguments, jvmArguments);
     }
-
 }

@@ -18,9 +18,6 @@ package nebula.test.functional;
 
 import nebula.test.functional.internal.GradleHandle;
 
-import java.io.File;
-import java.util.List;
-
 public interface GradleRunner {
 
     /**
@@ -29,7 +26,9 @@ public interface GradleRunner {
      * @param args
      * @return results from execution
      */
-    ExecutionResult run(File directory, List<String> args);
+    ExecutionResult run(File directory, List<String> args)
+
+    ExecutionResult run(File directory, List<String> args, List<String> jvmArgs)
 
     /**
      * Handle on instance of Gradle that can be run.
@@ -37,6 +36,7 @@ public interface GradleRunner {
      * @param args
      * @return handle
      */
-    GradleHandle handle(File directory, List<String> args);
+    GradleHandle handle(File directory, List<String> args)
 
+    GradleHandle handle(File directory, List<String> args, List<String> jvmArgs)
 }
