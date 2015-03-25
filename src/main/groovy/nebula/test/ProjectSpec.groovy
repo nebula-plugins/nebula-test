@@ -21,13 +21,13 @@ public abstract class ProjectSpec extends Specification {
     static final String CLEAN_PROJECT_DIR_SYS_PROP = 'cleanProjectDir'
     @TempDirectory File projectDir
 
-    @Rule TestName name = new TestName()
+    @Rule TestName testName = new TestName()
     String canonicalName
     Project project
     MultiProjectHelper helper
 
     def setup() {
-        canonicalName = name.getMethodName().replaceAll(' ', '-')
+        canonicalName = testName.getMethodName().replaceAll(' ', '-')
         project = ProjectBuilder.builder().withName(canonicalName).withProjectDir(projectDir).build()
         helper = new MultiProjectHelper(project)
     }
