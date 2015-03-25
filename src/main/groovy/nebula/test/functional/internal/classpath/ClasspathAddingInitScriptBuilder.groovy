@@ -1,5 +1,6 @@
 package nebula.test.functional.internal.classpath
 
+import groovy.transform.CompileStatic
 import org.gradle.api.Transformer;
 import org.gradle.internal.ErroringAction;
 import org.gradle.internal.IoActions;
@@ -8,7 +9,8 @@ import org.gradle.internal.classloader.ClasspathUtil;
 import org.gradle.util.CollectionUtils
 import org.gradle.util.TextUtil;
 
-public class ClasspathAddingInitScriptBuilder {
+@CompileStatic
+class ClasspathAddingInitScriptBuilder {
 
     public void build(File initScriptFile, final ClassLoader classLoader) {
         build(initScriptFile, getClasspathAsFiles(classLoader));

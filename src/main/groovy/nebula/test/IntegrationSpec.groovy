@@ -16,6 +16,8 @@
 package nebula.test
 
 import com.energizedwork.spock.extensions.TempDirectory
+import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
 import nebula.test.functional.ExecutionResult
 import nebula.test.functional.GradleRunner
 import nebula.test.functional.GradleRunnerFactory
@@ -29,23 +31,27 @@ import spock.lang.Specification
  * @author Justin Ryan
  * @author Marcin Erdmann
  */
+@CompileStatic
 abstract class IntegrationSpec extends Specification {
-    @TempDirectory(clean=false) File projectDir
+    private static final String DEFAULT_REMOTE_DEBUG_JVM_ARGUMENTS = "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
+
+    @TempDirectory(clean=false) protected File projectDir
 
     // Holds State of last run
     private ExecutionResult result
 
-    boolean useToolingApi = true
-    String gradleVersion
-    LogLevel logLevel = LogLevel.INFO
+    protected String gradleVersion
+    protected LogLevel logLevel = LogLevel.INFO
 
-    String moduleName
-    File settingsFile
-    File buildFile
-    boolean fork = false
-    MultiProjectIntegrationHelper helper
+    protected String moduleName
+    protected File settingsFile
+    protected File buildFile
+    protected boolean fork = false
+    protected boolean remoteDebug = false
+    protected List<String> jvmArguments = []
+    protected MultiProjectIntegrationHelper helper
 
-    String findModuleName() {
+    private String findModuleName() {
         projectDir.getName().replaceAll(/_\d+/, '')
     }
 
@@ -68,6 +74,14 @@ abstract class IntegrationSpec extends Specification {
     }
 
     protected GradleHandle launcher(String... args) {
+        List<String> arguments = calculateArguments(args)
+        List<String> jvmArguments = calculateJvmArguments()
+
+        GradleRunner runner = GradleRunnerFactory.createTooling(fork, gradleVersion)
+        runner.handle(projectDir, arguments, jvmArguments)
+    }
+
+    private List<String> calculateArguments(String... args) {
         List<String> arguments = []
         // Gradle will use these files name from the PWD, instead of the project directory. It's easier to just leave
         // them out and let the default find them, since we're not changing their default names.
@@ -77,7 +91,7 @@ abstract class IntegrationSpec extends Specification {
         //arguments += (settingsFile.canonicalPath - projectDir.canonicalPath).substring(1)
         //arguments += '--no-daemon'
 
-        switch(getLogLevel()) {
+        switch (getLogLevel()) {
             case LogLevel.INFO:
                 arguments += '--info'
                 break
@@ -87,21 +101,23 @@ abstract class IntegrationSpec extends Specification {
         }
         arguments += '--stacktrace'
         arguments.addAll(args)
+        arguments
+    }
 
-        GradleRunner runner = GradleRunnerFactory.createTooling(fork, gradleVersion)
-        runner.handle(projectDir, arguments)
+    private List<String> calculateJvmArguments() {
+        return jvmArguments + (remoteDebug ? [DEFAULT_REMOTE_DEBUG_JVM_ARGUMENTS] : [] as List) as List
     }
 
     /**
      * Override to alter its value
      * @return
      */
-    LogLevel getLogLevel() {
+    protected LogLevel getLogLevel() {
         return logLevel
     }
 
     /* Setup */
-    File directory(String path, File baseDir = projectDir) {
+    protected File directory(String path, File baseDir = projectDir) {
         new File(baseDir, path).with {
             mkdirs()
             it
@@ -116,7 +132,8 @@ abstract class IntegrationSpec extends Specification {
         file
     }
 
-    File createFile(String path, File baseDir = projectDir) {
+    @CompileStatic(TypeCheckingMode.SKIP)
+    protected File createFile(String path, File baseDir = projectDir) {
         File file = file(path, baseDir)
         if (!file.exists()) {
             assert file.parentFile.mkdirs() || file.parentFile.exists()
@@ -125,7 +142,7 @@ abstract class IntegrationSpec extends Specification {
         file
     }
 
-    def writeHelloWorld(String packageDotted, File baseDir = projectDir) {
+    protected void writeHelloWorld(String packageDotted, File baseDir = projectDir) {
         def path = 'src/main/java/' + packageDotted.replace('.', '/') + '/HelloWorld.java'
         def javaFile = createFile(path, baseDir)
         javaFile << """package ${packageDotted};
@@ -143,7 +160,7 @@ abstract class IntegrationSpec extends Specification {
      * @param failTest true if you want the test to fail, false if the test should pass
      * @param baseDir the directory to begin creation from, defaults to projectDir
      */
-    def writeUnitTest(boolean failTest, File baseDir = projectDir) {
+    protected void writeUnitTest(boolean failTest, File baseDir = projectDir) {
         writeTest('src/test/java/', 'nebula', failTest, baseDir)
     }
 
@@ -155,7 +172,7 @@ abstract class IntegrationSpec extends Specification {
      * @param failTest true if you want the test to fail, false if the test should pass
      * @param baseDir the directory to begin creation from, defaults to projectDir
      */
-    def writeTest(String srcDir, String packageDotted, boolean failTest, File baseDir = projectDir) {
+    protected void writeTest(String srcDir, String packageDotted, boolean failTest, File baseDir = projectDir) {
         def path = srcDir + packageDotted.replace('.', '/') + '/HelloWorldTest.java'
         def javaFile = createFile(path, baseDir)
         javaFile << """package ${packageDotted};
@@ -176,13 +193,13 @@ abstract class IntegrationSpec extends Specification {
      * @param fileName to be used for the file, sans extension.  The .properties extension will be added to the name.
      * @param baseDir the directory to begin creation from, defaults to projectDir
      */
-    def writeResource(String srcDir, String fileName, File baseDir = projectDir) {
+    protected void writeResource(String srcDir, String fileName, File baseDir = projectDir) {
         def path = "$srcDir/${fileName}.properties"
         def resourceFile = createFile(path, baseDir)
         resourceFile.text = "firstProperty=foo.bar"
     }
 
-    String copyResources(String srcDir, String destination) {
+    protected void copyResources(String srcDir, String destination) {
         ClassLoader classLoader = getClass().getClassLoader();
         URL resource = classLoader.getResource(srcDir);
         if (resource == null) {
@@ -198,32 +215,32 @@ abstract class IntegrationSpec extends Specification {
         }
     }
 
-    String applyPlugin(Class pluginClass) {
+    protected String applyPlugin(Class pluginClass) {
         "apply plugin: $pluginClass.name"
     }
 
     /* Checks */
-    boolean fileExists(String path) {
+    protected boolean fileExists(String path) {
         new File(projectDir, path).exists()
     }
 
     @Deprecated
-    boolean wasExecuted(String taskPath) {
+    protected boolean wasExecuted(String taskPath) {
         result.wasExecuted(taskPath)
     }
 
     @Deprecated
-    boolean wasUpToDate(String taskPath) {
+    protected boolean wasUpToDate(String taskPath) {
         result.wasUpToDate(taskPath)
     }
 
     @Deprecated
-    String getStandardError() {
+    protected String getStandardError() {
         result.standardError
     }
 
     @Deprecated
-    String getStandardOutput() {
+    protected String getStandardOutput() {
         result.standardOutput
     }
 
@@ -236,6 +253,7 @@ abstract class IntegrationSpec extends Specification {
         result
     }
 
+    @CompileStatic(TypeCheckingMode.SKIP)
     protected ExecutionResult runTasksWithFailure(String... tasks) {
         ExecutionResult result = runTasks(tasks)
         assert result.failure
@@ -248,11 +266,19 @@ abstract class IntegrationSpec extends Specification {
         return result
     }
 
-    File addSubproject(String subprojectName) {
+    protected File addSubproject(String subprojectName) {
         helper.addSubproject(subprojectName)
     }
 
-    File addSubproject(String subprojectName, String subBuildGradleText) {
+    protected File addSubproject(String subprojectName, String subBuildGradleText) {
         helper.addSubproject(subprojectName, subBuildGradleText)
+    }
+
+    File getProjectDir() {
+        return projectDir
+    }
+
+    File getSettingsFile() {
+        return settingsFile
     }
 }

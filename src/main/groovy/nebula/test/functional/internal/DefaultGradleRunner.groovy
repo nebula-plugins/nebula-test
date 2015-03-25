@@ -16,10 +16,12 @@
 
 package nebula.test.functional.internal
 
+import groovy.transform.CompileStatic
 import nebula.test.functional.ExecutionResult
 import nebula.test.functional.GradleRunner
 
-public class DefaultGradleRunner implements GradleRunner {
+@CompileStatic
+class DefaultGradleRunner implements GradleRunner {
 
     private final GradleHandleFactory handleFactory;
 
@@ -27,12 +29,13 @@ public class DefaultGradleRunner implements GradleRunner {
         this.handleFactory = handleFactory;
     }
 
-    public ExecutionResult run(File projectDir, List<String> arguments) {
-        return handle(projectDir, arguments).run();
+    @Override
+    public ExecutionResult run(File projectDir, List<String> arguments, List<String> jvmArguments = []) {
+        return handle(projectDir, arguments, jvmArguments).run();
     }
 
-    public GradleHandle handle(File projectDir, List<String> arguments) {
-        return handleFactory.start(projectDir, arguments);
+    @Override
+    public GradleHandle handle(File projectDir, List<String> arguments, List<String> jvmArguments = []) {
+        return handleFactory.start(projectDir, arguments, jvmArguments);
     }
-
 }

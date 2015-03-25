@@ -1,5 +1,7 @@
 package nebula.test.functional.internal.toolingapi
 
+import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
 import nebula.test.functional.internal.GradleHandle
 import nebula.test.functional.internal.GradleHandleBuildListener
 import nebula.test.functional.internal.GradleHandleFactory
@@ -10,8 +12,10 @@ import org.gradle.tooling.GradleConnector
 import org.gradle.tooling.ProjectConnection
 import org.gradle.wrapper.WrapperExecutor
 
+@CompileStatic
 public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
-    static final String FORK_SYS_PROP = 'nebula.test.functional.fork'
+    public static final String FORK_SYS_PROP = 'nebula.test.functional.fork'
+
     private final boolean fork
     private final String version
 
@@ -20,7 +24,9 @@ public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
         this.version = version
     }
 
-    public GradleHandle start(File projectDir, List<String> arguments) {
+    @Override
+    @CompileStatic(TypeCheckingMode.SKIP)
+    public GradleHandle start(File projectDir, List<String> arguments, List<String> jvmArguments = []) {
         GradleConnector connector = createGradleConnector(projectDir)
 
         boolean forkedProcess = isForkedProcess()
@@ -29,7 +35,7 @@ public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
         connector.embedded(!forkedProcess)
 
         ProjectConnection connection = connector.connect();
-        BuildLauncher launcher = createBuildLauncher(connection, arguments)
+        BuildLauncher launcher = createBuildLauncher(connection, arguments, jvmArguments)
         createGradleHandle(connection, launcher, forkedProcess)
     }
 
@@ -70,11 +76,10 @@ public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
         Boolean.parseBoolean(System.getProperty(FORK_SYS_PROP, Boolean.FALSE.toString()))
     }
 
-    private BuildLauncher createBuildLauncher(ProjectConnection connection, List<String> arguments) {
+    private BuildLauncher createBuildLauncher(ProjectConnection connection, List<String> arguments, List<String> jvmArguments) {
         BuildLauncher launcher = connection.newBuild();
-        String[] argumentArray = new String[arguments.size()];
-        arguments.toArray(argumentArray);
-        launcher.withArguments(argumentArray);
+        launcher.withArguments(arguments as String[]);
+        launcher.setJvmArguments(jvmArguments as String[])
         launcher
     }
 

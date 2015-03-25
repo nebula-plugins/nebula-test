@@ -16,6 +16,7 @@
 
 package nebula.test.functional.internal.toolingapi
 
+import groovy.transform.CompileStatic
 import nebula.test.functional.ExecutionResult
 import nebula.test.functional.internal.GradleHandle
 import nebula.test.functional.internal.GradleHandleBuildListener
@@ -24,7 +25,8 @@ import org.gradle.tooling.BuildLauncher
 import org.gradle.tooling.ProgressEvent
 import org.gradle.tooling.ProgressListener
 
-public class BuildLauncherBackedGradleHandle implements GradleHandle {
+@CompileStatic
+class BuildLauncherBackedGradleHandle implements GradleHandle {
 
     final private ByteArrayOutputStream standardOutput = new ByteArrayOutputStream();
     final private ByteArrayOutputStream standardError = new ByteArrayOutputStream();
@@ -71,6 +73,7 @@ public class BuildLauncherBackedGradleHandle implements GradleHandle {
         return standardError.toString();
     }
 
+    @Override
     public ExecutionResult run() {
         Throwable failure = null;
         try {

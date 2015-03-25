@@ -1,7 +1,9 @@
 package nebula.test.multiproject
 
+import groovy.transform.CompileStatic
 import nebula.test.IntegrationSpec
 
+@CompileStatic
 class MultiProjectIntegrationHelper {
     static String lineEnd = System.getProperty('line.separator')
 
