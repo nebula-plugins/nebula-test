@@ -1,4 +1,10 @@
-2.2.0 / 2015-1-30
+2.2.1 / 2015-03-25
+==================
+
+* move to spock 1.0-groovy-2.3
+* Improve debugging support for forked tests
+
+2.2.0 / 2015-01-30
 ===================
 
 * Move to gradle 2.2.1
