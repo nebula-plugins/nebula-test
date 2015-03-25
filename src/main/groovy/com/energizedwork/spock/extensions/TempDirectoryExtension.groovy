@@ -89,8 +89,8 @@ class TempDirectoryInterceptor extends DirectoryManagingInterceptor {
 
     @Override
     void install(SpecInfo spec) {
-        spec.setupMethod.addInterceptor this
-        spec.cleanupMethod.addInterceptor this
+        spec.setupMethods.each { it.addInterceptor this }
+        spec.cleanupMethods.each { it.addInterceptor this }
     }
 
 }
@@ -115,8 +115,8 @@ class SharedTempDirectoryInterceptor extends DirectoryManagingInterceptor {
 
     @Override
     void install(SpecInfo spec) {
-        spec.setupSpecMethod.addInterceptor this
-        spec.cleanupSpecMethod.addInterceptor this
+        spec.setupSpecMethods.each { it.addInterceptor this }
+        spec.cleanupSpecMethods.each { it.addInterceptor this }
     }
 
 }

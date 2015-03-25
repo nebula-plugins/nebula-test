@@ -10,7 +10,7 @@ apply plugin: 'idea'
 dependencies {
     compile gradleApi() // Sadly not transitive
 
-    compile ('org.spockframework:spock-core:0.7-groovy-2.0') { exclude group: 'org.codehaus.groovy' }
+    compile ('org.spockframework:spock-core:1.0-groovy-2.3') { exclude group: 'org.codehaus.groovy' }
     // Waiting for this to be published to maven central
     // https://bintray.com/robfletcher/maven/spock-extensions/view
     // compile ('com.energizedwork:spock-extensions:1.0') { exclude group: 'org.codehaus.groovy' }
