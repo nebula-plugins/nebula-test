@@ -64,7 +64,8 @@ can't set break points in the build.gradle file, but you can set them in the plu
 It's up to your test to call the runTask methods. There are a few utility methods to help assemble a project.
 * Behavior - override to change behavior
   * _logLevel_ - Adjust log level being used
-  * _useToolingApi_ - Choose to use the tooling api or not
+  * _fork_ - By default tests are executed in the same JVM as Gradle which is helpful for debugging your code. If you want classloader isolation, you might
+  want to rather go with a forked JVM for executing your tests. **Note:** This flag is based on an property from Gradle's non-public API.
 * Setup of project
   * _File directory(String path)_ - Create a directory, with a mkdirs.
   * _File createFile(String path)_ - Create a file, relative from the project, with parent directories being created.
