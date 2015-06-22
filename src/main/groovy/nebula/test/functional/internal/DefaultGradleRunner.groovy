@@ -22,7 +22,6 @@ import nebula.test.functional.GradleRunner
 
 @CompileStatic
 class DefaultGradleRunner implements GradleRunner {
-
     private final GradleHandleFactory handleFactory;
 
     public DefaultGradleRunner(GradleHandleFactory handleFactory) {
