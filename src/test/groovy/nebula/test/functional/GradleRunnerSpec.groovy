@@ -12,7 +12,7 @@ class GradleRunnerSpec extends Specification {
 
     def setup() {
         def userDir = new File(StandardSystemProperty.USER_DIR.value())
-        // Partial real-world classpath from a IntegrationSpec launch
+        // Partial real-world classpath from a IntegrationSpec launch, only the userDir paths matter, otherwise these are just string comparisons
         def classpathUris = ["file:/Applications/IntelliJ%20IDEA%2015%20EAP.app/Contents/lib/serviceMessages.jar",
         "file:/Applications/IntelliJ%20IDEA%2015%20EAP.app/Contents/lib/idea_rt.jar",
         "file:/Applications/IntelliJ%20IDEA%2015%20EAP.app/Contents/plugins/junit/lib/junit-rt.jar",

@@ -22,7 +22,7 @@ import com.google.common.base.StandardSystemProperty
 import nebula.test.functional.internal.GradleHandle
 
 public interface GradleRunner {
-    // These predicates are here, instead of on GradleRunnerFactory due to a Groovy static compiler bug
+    // These predicates are here, instead of on GradleRunnerFactory due to a Groovy static compiler bug (https://issues.apache.org/jira/browse/GROOVY-7159)
 
     static final Predicate<URL> CLASSPATH_GRADLE_CACHE = new Predicate<URL>() {
         @Override
