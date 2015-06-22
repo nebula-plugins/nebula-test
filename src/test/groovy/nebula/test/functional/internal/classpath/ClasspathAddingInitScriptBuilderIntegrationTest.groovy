@@ -4,15 +4,13 @@ import nebula.test.ProjectSpec
 import org.gradle.util.TextUtil
 
 class ClasspathAddingInitScriptBuilderIntegrationTest extends ProjectSpec {
-    ClasspathAddingInitScriptBuilder builder = new ClasspathAddingInitScriptBuilder()
-
-    def "can build init script with huge amount of dependencies"() {
+    def 'can build init script with huge amount of dependencies'() {
         given:
         File initScript = project.file('build/init.gradle')
         List<File> libs = ClasspathAddingInitScriptBuilderFixture.createLibraries(projectDir)
 
         when:
-        builder.build(initScript, libs)
+        ClasspathAddingInitScriptBuilder.build(initScript, libs)
 
         then:
         initScript.exists()
