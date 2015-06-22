@@ -8,7 +8,7 @@ class ClasspathAddingInitScriptBuilderFunctionalTest extends IntegrationSpec {
         given:
         File initScript = new File(projectDir, 'build/init.gradle')
         List<File> libs = ClasspathAddingInitScriptBuilderFixture.createLibraries(projectDir)
-        new ClasspathAddingInitScriptBuilder().build(initScript, libs)
+        ClasspathAddingInitScriptBuilder.build(initScript, libs)
 
         buildFile << """
 task helloWorld {

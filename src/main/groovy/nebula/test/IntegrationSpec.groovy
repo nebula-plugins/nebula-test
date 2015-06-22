@@ -16,6 +16,7 @@
 package nebula.test
 
 import com.energizedwork.spock.extensions.TempDirectory
+import com.google.common.base.Predicate
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 import nebula.test.functional.ExecutionResult
@@ -50,6 +51,7 @@ abstract class IntegrationSpec extends Specification {
     protected boolean remoteDebug = false
     protected List<String> jvmArguments = []
     protected MultiProjectIntegrationHelper helper
+    protected Predicate<URL> classpathFilter
 
     private String findModuleName() {
         projectDir.getName().replaceAll(/_\d+/, '')
@@ -77,7 +79,7 @@ abstract class IntegrationSpec extends Specification {
         List<String> arguments = calculateArguments(args)
         List<String> jvmArguments = calculateJvmArguments()
 
-        GradleRunner runner = GradleRunnerFactory.createTooling(fork, gradleVersion)
+        GradleRunner runner = GradleRunnerFactory.createTooling(fork, gradleVersion, classpathFilter)
         runner.handle(projectDir, arguments, jvmArguments)
     }
 

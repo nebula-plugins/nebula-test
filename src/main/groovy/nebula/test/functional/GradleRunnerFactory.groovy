@@ -1,5 +1,6 @@
 package nebula.test.functional
 
+import com.google.common.base.Predicate
 import groovy.transform.CompileStatic
 import nebula.test.functional.internal.DefaultGradleRunner
 import nebula.test.functional.internal.GradleHandleFactory
@@ -8,18 +9,19 @@ import nebula.test.functional.internal.toolingapi.ToolingApiGradleHandleFactory
 
 @CompileStatic
 class GradleRunnerFactory {
-    public static GradleRunner createTooling(boolean fork = false, String version = null) {
+    public static GradleRunner createTooling(boolean fork = false, String version = null, Predicate<URL> classpathFilter = null) {
         GradleHandleFactory toolingApiHandleFactory = new ToolingApiGradleHandleFactory(fork, version);
-        return create(toolingApiHandleFactory);
+        return create(toolingApiHandleFactory, classpathFilter ?: GradleRunner.CLASSPATH_DEFAULT);
     }
 
-    public static GradleRunner create(GradleHandleFactory handleFactory) {
-
+    public static GradleRunner create(GradleHandleFactory handleFactory, Predicate<URL> classpathFilter = null) {
         // TODO: Which class would be attached to the right classloader? Is using something from the test kit right?
         ClassLoader sourceClassLoader = GradleRunnerFactory.class.getClassLoader();
-        GradleHandleFactory classpathInjectingHandleFactory = new ClasspathInjectingGradleHandleFactory(sourceClassLoader, handleFactory);
-
-        return new DefaultGradleRunner(classpathInjectingHandleFactory);
+        create(handleFactory, sourceClassLoader, classpathFilter ?: GradleRunner.CLASSPATH_DEFAULT)
     }
 
+    public static GradleRunner create(GradleHandleFactory handleFactory, ClassLoader sourceClassLoader, Predicate<URL> classpathFilter) {
+        GradleHandleFactory classpathInjectingHandleFactory = new ClasspathInjectingGradleHandleFactory(sourceClassLoader, handleFactory, classpathFilter);
+        return new DefaultGradleRunner(classpathInjectingHandleFactory);
+    }
 }
