@@ -6,7 +6,7 @@ ProjectSpec
 -----------
 Uses Project Builder to create a in-memory expression of a Gradle build (project variable), specifically in a 'projectDir'. A sanitized project name will
 be stored in canonicalName. Caveat, this is ONLY setting up the Project data structure, and not running through the completely lifecycle, Like to
-see http://issues.gradle.org/browse/GRADLE-1619.  Its value lays in being able to execute method with a proper Project object, which can flush out most 
+see http://issues.gradle.org/browse/GRADLE-1619.  Its value lays in being able to execute method with a proper Project object, which can flush out most
 groovy functions, finding basic compiler like issues. The private method evaluate() can be called on the project variable for force evaluation of
 afterEvaluate blocks, keeping in mind that still won't generate a task gradle or run the tasks.
 
@@ -62,32 +62,51 @@ contents of the *projectDir* after build, it shouldn't matter. The GradleLaunche
 can't set break points in the build.gradle file, but you can set them in the plugins being called.
 
 It's up to your test to call the runTask methods. There are a few utility methods to help assemble a project.
-* Behavior - override to change behavior
-  * _logLevel_ - Adjust log level being used
-  * _fork_ - By default tests are executed in the same JVM as Gradle which is helpful for debugging your code. If you want classloader isolation, you might
-  want to rather go with a forked JVM for executing your tests. **Note:** This flag is based on an property from Gradle's non-public API.
-* Setup of project
-  * _File directory(String path)_ - Create a directory, with a mkdirs.
-  * _File createFile(String path)_ - Create a file, relative from the project, with parent directories being created.
-  * _def writeHelloWorld(String packageDotted)_ - Write out a simple java HelloWorld in the package provided
-  * _String copyResources(String srcDir, String destination)_ - Copy a resource from the classpath to the project's directory
-  * _String applyPlugin(Class pluginClass)_ - Returns the appropriate string for applying a plugin, using a loadClass call. Would need to be added to the buildFile
-* Execution - actual run a project, only one should be run per test, otherwise the task list will be overwritten.
-  * _BuildResult analyze(String... tasks)_ - Analysis of project with the given tasks, doesn't actually execute tasks
-  * _BuildResult runTasksWithSuccessfully(String... tasks)_ - Run, and assume that the build will succeed.
-  * _BuildResult runTasksWithFailure(String... tasks)_ - Run, and assume that the build will fail.
-* Validate project after execution
-  * _boolean fileExists(String path)_ - Says if a file was created in the project dir
-* Create subprojects
-  * _File addSubproject(String subprojectName)_ - Create a subproject, return back the new directory
-  * _File addSubproject(String subprojectName, String subBuildGradleText)_ - Create a subproject setting its build.gradle to the given String
 
-ExecutionResult provides a few useful methods to test the outcome of a build:
-  * _boolean wasExecuted(String taskPath)_ - Says if a task was executed.
-  * _boolean wasUpToDate(String taskPath)_ - Says if a task was recorded as UP-TO-DATE.
-  * _String getStandardError()_ - Returns System.err, which can be inspected
-  * _String getStandardOutput()_ - Returns System.out, which can be inspected
-  * _Throwable getFailure()_ - Returns the Throwable available to failed builds.
+#### Behaviour
+|  |                                                                                                                                                                                                                                                      |
+|-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `logLevel`  | Adjust log level being used                                                                                                                                                                                                                                                        |
+| `fork`      | By default tests are executed in the same JVM as Gradle which is helpful for debugging your code. If you want classloader isolation, you might want to rather go with a forked JVM for executing your tests. Note: This flag is based on an property from Gradle’s non-public API. |
+
+#### Setup of project
+|                                       |                                                                                                                       |
+|-----------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| `File directory(String path)`                             | Create a directory, with a mkdirs.                                                                                    |
+| `File createFile(String path)`                            | Create a file, relative from the project, with parent directories being created.                                      |
+| `def writeHelloWorld(String packageDotted)`               | Write out a simple java HelloWorld in the package provided                                                            |
+| `String copyResources(String srcDir, String destination)` | Copy a resource from the classpath to the project’s directory                                                         |
+| `String applyPlugin(Class pluginClass)`                   | Returns the appropriate string for applying a plugin, using a loadClass call. Would need to be added to the buildFile |
+
+
+
+#### Execution
+|                                                                                                          |                                                                          |
+|----------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
+| `BuildResult analyze(String… tasks)`  | Analysis of project with the given tasks, doesn’t actually execute tasks |
+| `BuildResult runTasksWithSuccessfully(String… tasks)`                                                    | Run, and assume that the build will succeed.                             |
+| `BuildResult runTasksWithFailure(String… tasks)`                                                         | Run, and assume that the build will fail.                                |
+
+#### Validate project after execution
+|                                   |                                               |
+|-----------------------------------|-----------------------------------------------|
+| `boolean fileExists(String path)` | Says if a file was created in the project dir |
+
+#### Create subprojects
+|                                                                        |                                                                  |
+|------------------------------------------------------------------------|------------------------------------------------------------------|
+| `File addSubproject(String subprojectName)`                            | Create a subproject, return back the new directory               |
+| `File addSubproject(String subprojectName, String subBuildGradleText)` | Create a subproject setting its build.gradle to the given String |
+
+#### ExecutionResult provides a few useful methods to test the outcome of a build
+|                                        |                                                   |
+|----------------------------------------|---------------------------------------------------|
+| `boolean wasExecuted(String taskPath)` | Says if a task was executed.                      |
+| `boolean wasUpToDate(String taskPath)` | Says if a task was recorded as UP-TO-DATE.        |
+| `String getStandardError()`            | Returns System.err which can be inspected         |
+| `String getStandardOutput()`           | Returns System.out which can be inspected         |
+| `Throwable getFailure()`               | Returns the Throwable available to failed builds. |
+
 
 Example:
 
@@ -121,7 +140,7 @@ Example:
 
 Generating Test Maven and Ivy Repos
 -----------------------------------
-More detailed information can be found on our [wiki](https://github.com/nebula-plugins/nebula-test/wiki/Maven-and-Ivy-Test-Repository-Generation). 
+More detailed information can be found on our [wiki](https://github.com/nebula-plugins/nebula-test/wiki/Maven-and-Ivy-Test-Repository-Generation).
 
 Caveats:
 * this will not check whether the dependency graph you describe is valid
@@ -208,8 +227,8 @@ Given
 
     def generator = new GradleDependencyGenerator(graph)
 
-* ivy repos will be at: generator.ivyRepoDir 
-* maven repos will be at: generator.mavenRepoDir 
+* ivy repos will be at: generator.ivyRepoDir
+* maven repos will be at: generator.mavenRepoDir
 
 Code example:
 
@@ -235,19 +254,19 @@ Multi-project Helpers
 MultiProjectHelper can create various sub-projects using the ProjectBuilder.
 
 #### Usage for MultiProjectHelper:
- 
+
     def helper = new MultiProjectHelper(project)
     Project sub = helper.addSubproject('sub')
 
 ### MultiProjectIntegrationHelper
-    
+
 MultiProjectIntegrationHelper can create sub-projects using our IntegrationSpec.
 
 #### Usage for MultiProjectIntegrationHelper:
- 
+
     class MySpec extends IntegrationSpec {
         def helper = new MultiProjectIntegrationHelper(projectDir, setingsFile)
-        
+
         def 'my test method'() {
             File subDirectory = helper.addSubproject('sub1')
         }
