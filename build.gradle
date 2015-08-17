@@ -6,6 +6,7 @@ buildscript {
 plugins {
     id 'groovy'
     id 'idea'
+    id 'jacoco'
     id 'nebula.maven-publishing' version '3.0.2'
     id 'nebula.javadoc-jar' version '3.0.2'
     id 'nebula.source-jar' version '3.0.2'
