@@ -8,4 +8,4 @@
  * https://github.com/alkemist/gradle-test-kit
  *
  */
-package nebula.test;
+package nebula.test
