@@ -1,4 +1,10 @@
-2.2.2 / 2015-06-??
+3.0.0 / 2015-08-17
+==================
+
+* Move to gradle 2.6
+* Switch to new publishing
+
+2.2.2 / 2015-06-22
 ==================
 
 * Add classpath filtering to prevent Gradle, IntelliJ and JVM classes from being added to the IntegrationSpec init script classpath. Set classpathFilter to nebula.test.functional.GradleRunner#CLASSPATH_ALL to restore the default behaviour, or implement your own predicate to control the filtering for your use case
