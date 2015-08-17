@@ -1,27 +1,25 @@
 buildscript {
     repositories { jcenter() }
-    dependencies { classpath "com.netflix.nebula:nebula-plugin-plugin:2.2.+" }
+    dependencies { classpath "com.netflix.nebula:nebula-plugin-plugin:3.0.4" }
 }
 
-description 'Test harness for Gradle plugins'
-apply plugin: 'nebula-plugin' // applying to even nebula-test since it had 99% of the characterizes of a nebula-plugin
-apply plugin: 'idea'
-
-dependencies {
-    compile gradleApi() // Sadly not transitive
-
-    compile ('org.spockframework:spock-core:1.0-groovy-2.3') { exclude group: 'org.codehaus.groovy' }
-    // Waiting for this to be published to maven central
-    // https://bintray.com/robfletcher/maven/spock-extensions/view
-    // compile ('com.energizedwork:spock-extensions:1.0') { exclude group: 'org.codehaus.groovy' }
-    compile 'cglib:cglib-nodep:2.2.2' // For Mocking classes with Spock
-    //compile "org.gradle:gradle-tooling-api:${gradle.gradleVersion}" // Still not in Maven Central...
-
-    // Gradle provides commons-lang 2.6, but since gradleApi doesn't participate in conflict resolution, we're at the whim
-    // of any other dependencies on commons-lang coming first in the classpath. This direct dependency is a poor attempt
-    // at including a newer version of commons-lang for Gradle. :-(
-    compile 'commons-lang:commons-lang:2.6'
+plugins {
+    id 'groovy'
+    id 'idea'
+    id 'jacoco'
+    id 'nebula.maven-publishing' version '3.0.2'
+    id 'nebula.javadoc-jar' version '3.0.2'
+    id 'nebula.source-jar' version '3.0.2'
+    id 'nebula.apache-license-pom' version '3.0.2'
+    id 'nebula.info' version '2.2.4'
+    id 'nebula.contacts' version '2.2.0'
+    id 'com.github.kt3k.coveralls' version '2.4.0'
 }
+
+description 'Test harness for Gradle plugins. Hopefully retiring in favor of Gradle TestKit'
+apply plugin: 'nebula.plugin-plugin'
+
+group = 'com.netflix.nebula'
 
 contacts {
     'justin@halfempty.org' {
@@ -32,4 +30,38 @@ contacts {
         moniker 'Rob Spieldenner'
         github 'rspieldenner'
     }
+}
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile localGroovy()
+    compile gradleApi()
+
+    compile ('org.spockframework:spock-core:1.0-groovy-2.3') { exclude group: 'org.codehaus.groovy' }
+    // Waiting for this to be published to maven central
+    // https://bintray.com/robfletcher/maven/spock-extensions/view
+    // compile ('com.energizedwork:spock-extensions:1.0') { exclude group: 'org.codehaus.groovy' }
+    compile 'cglib:cglib-nodep:2.2.2' // For Mocking classes with Spock
+
+    // Gradle provides commons-lang 2.6, but since gradleApi doesn't participate in conflict resolution, we're at the whim
+    // of any other dependencies on commons-lang coming first in the classpath. This direct dependency is a poor attempt
+    // at including a newer version of commons-lang for Gradle. :-(
+    compile 'commons-lang:commons-lang:2.6'
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
+    }
+}
+
+bintray {
+    publications = ['nebula']
 }
