@@ -8,6 +8,17 @@ Nebula Test
 
 Classes specific to testing a Gradle project, leveraging [Spock](http://spockframework.org)
 
+Usage
+=====
+
+Depending on nebula-test
+------------------------
+
+    repositories { jcenter() }
+    dependencies {
+      testCompile 'com.netflix.nebula:nebula-test:3.0.0'
+    }
+
 ProjectSpec
 -----------
 Uses Project Builder to create a in-memory expression of a Gradle build (project variable), specifically in a 'projectDir'. A sanitized project name will
@@ -69,7 +80,7 @@ can't set break points in the build.gradle file, but you can set them in the plu
 
 It's up to your test to call the runTask methods. There are a few utility methods to help assemble a project.
 
-#### Behaviour
+#### Behavior
 |  |                                                                                                                                                                                                                                                      |
 |-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `logLevel`  | Adjust log level being used                                                                                                                                                                                                                                                        |
