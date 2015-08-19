@@ -16,7 +16,6 @@
 package nebula.test.dependencies
 
 import nebula.test.functional.GradleRunnerFactory
-import nebula.test.functional.internal.GradleHandle
 
 class GradleDependencyGenerator {
     static final String STANDARD_SUBPROJECT_BLOCK = '''\
@@ -155,7 +154,6 @@ class GradleDependencyGenerator {
 
     private void runTasks(String tasks) {
         def runner = GradleRunnerFactory.createTooling() // Could optionally use Launcher
-        GradleHandle handle = runner.handle(gradleRoot, tasks.tokenize())
-        handle.run().rethrowFailure()
+        runner.run(gradleRoot, tasks.tokenize()).rethrowFailure()
     }
 }

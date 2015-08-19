@@ -14,6 +14,7 @@ plugins {
     id 'nebula.info' version '2.2.4'
     id 'nebula.contacts' version '2.2.0'
     id 'com.github.kt3k.coveralls' version '2.4.0'
+    id "org.ysb33r.gradletest" version "0.5.4"
 }
 
 description 'Test harness for Gradle plugins. Hopefully retiring in favor of Gradle TestKit'
@@ -65,3 +66,12 @@ jacocoTestReport {
 bintray {
     publications = ['nebula']
 }
+
+gradleTest {
+    versions '2.2.1', '2.3', '2.4', '2.5', '2.6'
+}
+
+gradleTest.doFirst {
+    project.version = project.version.toString()
+}
+gradleTest.dependsOn jar
