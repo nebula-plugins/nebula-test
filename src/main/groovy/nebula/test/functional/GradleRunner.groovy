@@ -65,6 +65,8 @@ public interface GradleRunner {
 
     ExecutionResult run(File directory, List<String> args, List<String> jvmArgs)
 
+    ExecutionResult run(File directory, List<String> args, List<String> jvmArgs, List<PreExecutionAction> preExecutionActions)
+
     /**
      * Handle on instance of Gradle that can be run.
      * @param directory
@@ -74,4 +76,6 @@ public interface GradleRunner {
     GradleHandle handle(File directory, List<String> args)
 
     GradleHandle handle(File directory, List<String> args, List<String> jvmArgs)
+
+    GradleHandle handle(File directory, List<String> args, List<String> jvmArgs, List<PreExecutionAction> preExecutionActions)
 }

@@ -19,6 +19,7 @@ package nebula.test.functional.internal
 import groovy.transform.CompileStatic
 import nebula.test.functional.ExecutionResult
 import nebula.test.functional.GradleRunner
+import nebula.test.functional.PreExecutionAction
 
 @CompileStatic
 class DefaultGradleRunner implements GradleRunner {
@@ -29,12 +30,13 @@ class DefaultGradleRunner implements GradleRunner {
     }
 
     @Override
-    public ExecutionResult run(File projectDir, List<String> arguments, List<String> jvmArguments = []) {
-        return handle(projectDir, arguments, jvmArguments).run();
+    public ExecutionResult run(File projectDir, List<String> arguments, List<String> jvmArguments = [], List<PreExecutionAction> preExecutionActions = []) {
+        return handle(projectDir, arguments, jvmArguments, preExecutionActions).run();
     }
 
     @Override
-    public GradleHandle handle(File projectDir, List<String> arguments, List<String> jvmArguments = []) {
+    public GradleHandle handle(File projectDir, List<String> arguments, List<String> jvmArguments = [], List<PreExecutionAction> preExecutionActions = []) {
+        preExecutionActions?.each { it.execute(projectDir, arguments, jvmArguments) }
         return handleFactory.start(projectDir, arguments, jvmArguments);
     }
 }

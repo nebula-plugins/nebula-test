@@ -22,6 +22,7 @@ import groovy.transform.TypeCheckingMode
 import nebula.test.functional.ExecutionResult
 import nebula.test.functional.GradleRunner
 import nebula.test.functional.GradleRunnerFactory
+import nebula.test.functional.PreExecutionAction
 import nebula.test.functional.internal.GradleHandle
 import nebula.test.multiproject.MultiProjectIntegrationHelper
 import org.apache.commons.io.FileUtils
@@ -52,27 +53,29 @@ abstract class IntegrationSpec extends Specification {
     protected List<String> jvmArguments = []
     protected MultiProjectIntegrationHelper helper
     protected Predicate<URL> classpathFilter
+    protected List<File> initScripts = []
+    protected List<PreExecutionAction> preExecutionActions = []
 
     private String findModuleName() {
-        projectDir.getName().replaceAll(/_\d+/, '')
+        getProjectDir().getName().replaceAll(/_\d+/, '')
     }
 
     def setup() {
         moduleName = findModuleName()
         if (!settingsFile) {
-            settingsFile = new File(projectDir, 'settings.gradle')
+            settingsFile = new File(getProjectDir(), 'settings.gradle')
             settingsFile.text = "rootProject.name='${moduleName}'\n"
         }
 
         if (!buildFile) {
-            buildFile = new File(projectDir, 'build.gradle')
+            buildFile = new File(getProjectDir(), 'build.gradle')
         }
 
-        println "Running test from ${projectDir}"
+        println "Running test from ${getProjectDir()}"
 
         buildFile << "// Running test for ${moduleName}\n"
 
-        helper = new MultiProjectIntegrationHelper(projectDir, settingsFile)
+        helper = new MultiProjectIntegrationHelper(getProjectDir(), settingsFile)
     }
 
     protected GradleHandle launcher(String... args) {
@@ -80,7 +83,7 @@ abstract class IntegrationSpec extends Specification {
         List<String> jvmArguments = calculateJvmArguments()
 
         GradleRunner runner = GradleRunnerFactory.createTooling(fork, gradleVersion, classpathFilter)
-        runner.handle(projectDir, arguments, jvmArguments)
+        runner.handle(getProjectDir(), arguments, jvmArguments, preExecutionActions)
     }
 
     private List<String> calculateArguments(String... args) {
@@ -103,11 +106,20 @@ abstract class IntegrationSpec extends Specification {
         }
         arguments += '--stacktrace'
         arguments.addAll(args)
+        arguments.addAll(initScripts.collect { file -> '-I' + file.absolutePath })
         arguments
     }
 
     private List<String> calculateJvmArguments() {
         return jvmArguments + (remoteDebug ? [DEFAULT_REMOTE_DEBUG_JVM_ARGUMENTS] : [] as List) as List
+    }
+
+    protected void addInitScript(File initFile) {
+        initScripts.add(initFile)
+    }
+
+    protected void addPreExecute(PreExecutionAction preExecutionAction) {
+        preExecutionActions.add(preExecutionAction)
     }
 
     /**
@@ -119,14 +131,14 @@ abstract class IntegrationSpec extends Specification {
     }
 
     /* Setup */
-    protected File directory(String path, File baseDir = projectDir) {
+    protected File directory(String path, File baseDir = getProjectDir()) {
         new File(baseDir, path).with {
             mkdirs()
             it
         }
     }
 
-    protected File file(String path, File baseDir = projectDir) {
+    protected File file(String path, File baseDir = getProjectDir()) {
         def splitted = path.split('/')
         def directory = splitted.size() > 1 ? directory(splitted[0..-2].join('/'), baseDir) : baseDir
         def file = new File(directory, splitted[-1])
@@ -135,7 +147,7 @@ abstract class IntegrationSpec extends Specification {
     }
 
     @CompileStatic(TypeCheckingMode.SKIP)
-    protected File createFile(String path, File baseDir = projectDir) {
+    protected File createFile(String path, File baseDir = getProjectDir()) {
         File file = file(path, baseDir)
         if (!file.exists()) {
             assert file.parentFile.mkdirs() || file.parentFile.exists()
@@ -144,7 +156,7 @@ abstract class IntegrationSpec extends Specification {
         file
     }
 
-    protected void writeHelloWorld(String packageDotted, File baseDir = projectDir) {
+    protected void writeHelloWorld(String packageDotted, File baseDir = getProjectDir()) {
         def path = 'src/main/java/' + packageDotted.replace('.', '/') + '/HelloWorld.java'
         def javaFile = createFile(path, baseDir)
         javaFile << """package ${packageDotted};
@@ -162,7 +174,7 @@ abstract class IntegrationSpec extends Specification {
      * @param failTest true if you want the test to fail, false if the test should pass
      * @param baseDir the directory to begin creation from, defaults to projectDir
      */
-    protected void writeUnitTest(boolean failTest, File baseDir = projectDir) {
+    protected void writeUnitTest(boolean failTest, File baseDir = getProjectDir()) {
         writeTest('src/test/java/', 'nebula', failTest, baseDir)
     }
 
@@ -174,7 +186,7 @@ abstract class IntegrationSpec extends Specification {
      * @param failTest true if you want the test to fail, false if the test should pass
      * @param baseDir the directory to begin creation from, defaults to projectDir
      */
-    protected void writeTest(String srcDir, String packageDotted, boolean failTest, File baseDir = projectDir) {
+    protected void writeTest(String srcDir, String packageDotted, boolean failTest, File baseDir = getProjectDir()) {
         def path = srcDir + packageDotted.replace('.', '/') + '/HelloWorldTest.java'
         def javaFile = createFile(path, baseDir)
         javaFile << """package ${packageDotted};
@@ -195,7 +207,7 @@ abstract class IntegrationSpec extends Specification {
      * @param fileName to be used for the file, sans extension.  The .properties extension will be added to the name.
      * @param baseDir the directory to begin creation from, defaults to projectDir
      */
-    protected void writeResource(String srcDir, String fileName, File baseDir = projectDir) {
+    protected void writeResource(String srcDir, String fileName, File baseDir = getProjectDir()) {
         def path = "$srcDir/${fileName}.properties"
         def resourceFile = createFile(path, baseDir)
         resourceFile.text = "firstProperty=foo.bar"
