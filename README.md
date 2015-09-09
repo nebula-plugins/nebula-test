@@ -289,6 +289,29 @@ MultiProjectIntegrationHelper can create sub-projects using our IntegrationSpec.
         }
     }
 
+Pre Build Hooks
+---------------
+
+### PreExecutionAction
+
+PreExecutionActions allows for actions to happen before gradle is executed.
+
+### Usage for PreExecutionAction:
+
+    addPreExecute(new PreExecutionAction() {
+        @Override
+        void execute(File projectDir, List<String> arguments, List<String> jvmArguments) {
+            initScript.text = '''
+            gradle.projectsLoaded {
+                gradle.rootProject.tasks.create('foo')
+            }
+            '''.stripIndent()
+        }
+    })
+
+The PreExecutionAction lets you automatically add steps to the test that get executed just before run is called. This is particularly useful when tests change a value that is needed during the execution allowing the action to be defined in a setup, and delayed until the execution.
+
+
 Caveat
 ------
 * This would have been in nebula-core, but via POMs you can't get dependencies just for tests.
