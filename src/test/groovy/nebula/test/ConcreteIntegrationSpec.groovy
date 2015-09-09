@@ -1,6 +1,7 @@
 package nebula.test
 
 import nebula.test.functional.ExecutionResult
+import nebula.test.functional.PreExecutionAction
 import spock.lang.Unroll
 
 class ConcreteIntegrationSpec extends IntegrationSpec {
@@ -57,5 +58,49 @@ class ConcreteIntegrationSpec extends IntegrationSpec {
         desc       | testTooling
         "Tooling"  | true
         "Launcher" | false
+    }
+
+    def 'init scripts will be appended to arguments provided to gradle'() {
+        setup:
+        def initScript = file('foo.gradle')
+        initScript.text = '''
+        gradle.projectsLoaded {
+            gradle.rootProject.tasks.create('foo')
+        }
+        '''.stripIndent()
+        when:
+        def failure = runTasksWithFailure('foo')
+
+        then:
+        failure.failure != null
+
+        when:
+        addInitScript(initScript)
+        failure = runTasksSuccessfully('foo')
+        failure.failure == null
+
+        then:
+        noExceptionThrown()
+    }
+
+    def 'pre execution tasks will run before gradle'() {
+        def initScript = file('foo.gradle')
+
+        when:
+        addPreExecute(new PreExecutionAction() {
+            @Override
+            void execute(File projectDir, List<String> arguments, List<String> jvmArguments) {
+                initScript.text = '''
+                gradle.projectsLoaded {
+                    gradle.rootProject.tasks.create('foo')
+                }
+                '''.stripIndent()
+            }
+        })
+        addInitScript(initScript)
+        runTasksSuccessfully('foo')
+
+        then:
+        noExceptionThrown()
     }
 }
