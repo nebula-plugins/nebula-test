@@ -1,16 +1,16 @@
-buildscript {
-    repositories { jcenter() }
-    dependencies { classpath "com.netflix.nebula:nebula-plugin-plugin:3.0.5" }
-}
+buildscript { repositories { jcenter() } }
 
 plugins {
     id 'groovy'
     id 'idea'
     id 'jacoco'
-    id 'nebula.maven-publishing' version '3.0.2'
-    id 'nebula.javadoc-jar' version '3.0.2'
-    id 'nebula.source-jar' version '3.0.2'
-    id 'nebula.apache-license-pom' version '3.0.2'
+    id 'nebula.maven-publish' version '4.0.1'
+    id 'nebula.javadoc-jar' version '4.0.1'
+    id 'nebula.source-jar' version '4.0.1'
+    id 'nebula.maven-apache-license' version '4.0.1'
+    id 'nebula.nebula-release' version '3.0.0'
+    id 'nebula.nebula-bintray' version '3.1.0'
+    id 'nebula.dependency-lock' version '3.0.0'
     id 'nebula.info' version '2.2.4'
     id 'nebula.contacts' version '2.2.0'
     id 'com.github.kt3k.coveralls' version '2.4.0'
@@ -18,7 +18,6 @@ plugins {
 }
 
 description 'Test harness for Gradle plugins. Hopefully retiring in favor of Gradle TestKit'
-apply plugin: 'nebula.plugin-plugin'
 
 group = 'com.netflix.nebula'
 
@@ -61,10 +60,6 @@ jacocoTestReport {
         xml.enabled = true // coveralls plugin depends on xml format report
         html.enabled = true
     }
-}
-
-bintray {
-    publications = ['nebula']
 }
 
 gradleTest {

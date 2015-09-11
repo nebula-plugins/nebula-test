@@ -1,3 +1,8 @@
+3.1.0 / 2015-09-11
+==================
+
+* Added support for Pre-build hooks from ethankhall
+
 3.0.0 / 2015-08-18
 ==================
 

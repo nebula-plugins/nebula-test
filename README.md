@@ -16,7 +16,7 @@ Depending on nebula-test
 
     repositories { jcenter() }
     dependencies {
-      testCompile 'com.netflix.nebula:nebula-test:3.0.0'
+      testCompile 'com.netflix.nebula:nebula-test:3.1.0'
     }
 
 ProjectSpec
