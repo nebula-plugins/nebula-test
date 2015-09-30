@@ -43,16 +43,11 @@ dependencies {
     compile localGroovy()
     compile gradleApi()
 
-    compile ('org.spockframework:spock-core:1.0-groovy-2.3') { exclude group: 'org.codehaus.groovy' }
+    compile ('org.spockframework:spock-core:1.0-groovy-2.4') { exclude group: 'org.codehaus.groovy' }
     // Waiting for this to be published to maven central
     // https://bintray.com/robfletcher/maven/spock-extensions/view
     // compile ('com.energizedwork:spock-extensions:1.0') { exclude group: 'org.codehaus.groovy' }
     compile 'cglib:cglib-nodep:2.2.2' // For Mocking classes with Spock
-
-    // Gradle provides commons-lang 2.6, but since gradleApi doesn't participate in conflict resolution, we're at the whim
-    // of any other dependencies on commons-lang coming first in the classpath. This direct dependency is a poor attempt
-    // at including a newer version of commons-lang for Gradle. :-(
-    compile 'commons-lang:commons-lang:2.6'
 }
 
 jacocoTestReport {

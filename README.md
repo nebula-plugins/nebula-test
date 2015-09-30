@@ -326,7 +326,9 @@ Gradle Compatibility Tested
 | 2.3            | no    |
 | 2.4            | no    |
 | 2.5            | no    |
-| 2.6            | yes   |
+| 2.6            | yes - must force to 'org.spockframework:spock-core:1.0-groovy-2.3' |
+| 2.7            | yes - must force to 'org.spockframework:spock-core:1.0-groovy-2.3' |
+| 2.8-rc-1       | yes   |
 
 LICENSE
 =======
