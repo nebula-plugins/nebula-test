@@ -35,7 +35,7 @@ public interface GradleRunner {
         @Override
         boolean apply(URL url) {
             File userDir = new File(StandardSystemProperty.USER_DIR.value())
-            return url.path.startsWith(userDir.path)
+            return url.path.startsWith(userDir.toURI().toURL().path)
         }
     }
 
