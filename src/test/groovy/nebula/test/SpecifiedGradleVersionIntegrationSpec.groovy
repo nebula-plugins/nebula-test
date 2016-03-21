@@ -25,7 +25,7 @@ class SpecifiedGradleVersionIntegrationSpec extends IntegrationSpec {
         then:
             result.standardOutput.contains("gradle/$requestedGradleVersion/taskArtifacts")
         where:
-            requestedGradleVersion << ['2.0', '2.1']
+            requestedGradleVersion << ['2.8', '2.9']
     }
 
     static final String CUSTOM_DISTRIBUTION = 'http://dl.bintray.com/nebula/gradle-distributions/1.12-20140608201532+0000/gradle-1.12-20140608201532+0000-bin.zip'
