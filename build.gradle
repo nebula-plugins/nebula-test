@@ -1,25 +1,27 @@
-buildscript { repositories { jcenter() } }
+/*
+ * Copyright 2014-2016 Netflix, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+buildscript { repositories { jcenter() } } // Some plugin dependencies (namely JFrog) are not in Maven Central
 
 plugins {
-    id 'groovy'
-    id 'idea'
-    id 'jacoco'
-    id 'nebula.maven-publish' version '4.2.2'
-    id 'nebula.javadoc-jar' version '4.2.2'
-    id 'nebula.source-jar' version '4.2.2'
-    id 'nebula.maven-apache-license' version '4.2.2'
-    id 'nebula.nebula-release' version '3.0.5'
-    id 'nebula.nebula-bintray' version '3.1.0'
-    id 'nebula.dependency-lock' version '3.0.0'
-    id 'nebula.info' version '3.0.3'
-    id 'nebula.contacts' version '3.0.1'
-    id 'com.github.kt3k.coveralls' version '2.4.0'
-    id "org.ysb33r.gradletest" version "0.5.4"
+    id 'com.gradle.plugin-publish' version '0.9.1'
+    id 'nebula.plugin-plugin' version '4.0.0'
 }
 
 description 'Test harness for Gradle plugins. Hopefully retiring in favor of Gradle TestKit'
-
-group = 'com.netflix.nebula'
 
 contacts {
     'justin@halfempty.org' {
@@ -32,29 +34,11 @@ contacts {
     }
 }
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
-
-repositories {
-    jcenter()
-}
-
 dependencies {
-    compile localGroovy()
-    compile gradleApi()
-
-    compile ('org.spockframework:spock-core:1.0-groovy-2.4') { exclude group: 'org.codehaus.groovy' }
     // Waiting for this to be published to maven central
     // https://bintray.com/robfletcher/maven/spock-extensions/view
     // compile ('com.energizedwork:spock-extensions:1.0') { exclude group: 'org.codehaus.groovy' }
     compile 'cglib:cglib-nodep:2.2.2' // For Mocking classes with Spock
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled = true // coveralls plugin depends on xml format report
-        html.enabled = true
-    }
 }
 
 gradleTest {
