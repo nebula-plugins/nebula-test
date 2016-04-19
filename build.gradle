@@ -19,6 +19,7 @@ buildscript { repositories { jcenter() } } // Some plugin dependencies (namely J
 plugins {
     id 'com.gradle.plugin-publish' version '0.9.4'
     id 'nebula.plugin-plugin' version '4.0.0'
+    id 'org.ysb33r.gradletest' version '0.5.5'
 }
 
 description 'Test harness for Gradle plugins. Hopefully retiring in favor of Gradle TestKit'
