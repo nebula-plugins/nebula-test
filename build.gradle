@@ -36,6 +36,7 @@ contacts {
 }
 
 dependencies {
+    compile ('org.spockframework:spock-core:1.0-groovy-2.4') { exclude group: 'org.codehaus.groovy' }
     // Waiting for this to be published to maven central
     // https://bintray.com/robfletcher/maven/spock-extensions/view
     // compile ('com.energizedwork:spock-extensions:1.0') { exclude group: 'org.codehaus.groovy' }
