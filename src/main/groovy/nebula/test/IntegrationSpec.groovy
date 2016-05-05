@@ -61,6 +61,8 @@ abstract class IntegrationSpec extends Specification {
     }
 
     def setup() {
+        System.setProperty('gradle.user.home', buildDir.resolve('.gradle').toString())
+
         moduleName = findModuleName()
         if (!settingsFile) {
             settingsFile = new File(getProjectDir(), 'settings.gradle')
@@ -195,7 +197,7 @@ abstract class IntegrationSpec extends Specification {
 
             public class HelloWorldTest {
                 @Test public void doesSomething() {
-                    assertFalse( $failTest ); 
+                    assertFalse( $failTest );
                 }
             }
         """.stripIndent()
