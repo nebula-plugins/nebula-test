@@ -1,6 +1,7 @@
 Nebula Test
 ===========
 
+![Support Status]https://img.shields.io/badge/Nebula-deprecated-red.svg)
 [![Build Status](https://travis-ci.org/nebula-plugins/nebula-test.svg)](https://travis-ci.org/nebula-plugins/nebula-test)
 [![Coverage Status](https://coveralls.io/repos/nebula-plugins/nebula-test/badge.svg?branch=master&service=github)](https://coveralls.io/github/nebula-plugins/nebula-test?branch=master)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nebula-plugins/nebula-test?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
