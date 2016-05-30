@@ -39,8 +39,11 @@ contacts {
 dependencies {
     compile 'com.google.guava:guava:latest.release'
     compile 'commons-io:commons-io:latest.release'
-    compile ('org.spockframework:spock-core:1.0-groovy-2.4') { exclude group: 'org.codehaus.groovy' }
-    compile 'cglib:cglib-nodep:latest.release' // For Mocking classes with Spock
+    compile ('org.spockframework:spock-core:1.0-groovy-2.4') {
+        exclude group: 'org.codehaus.groovy'
+    }
+    compile 'cglib:cglib-nodep:latest.release'
+    compile 'org.objenesis:objenesis:2.4'
 }
 
 gradleTest {
