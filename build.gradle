@@ -20,6 +20,7 @@ plugins {
     id 'com.gradle.plugin-publish' version '0.9.4'
     id 'nebula.plugin-plugin' version '4.4.0'
     id 'org.ysb33r.gradletest' version '0.5.4'
+    id 'nebula.dependency-lock' version '4.3.0'
 }
 
 description 'Test harness for Gradle plugins. Hopefully retiring in favor of Gradle TestKit'
@@ -36,11 +37,10 @@ contacts {
 }
 
 dependencies {
+    compile 'com.google.guava:guava:latest.release'
+    compile 'commons-io:commons-io:latest.release'
     compile ('org.spockframework:spock-core:1.0-groovy-2.4') { exclude group: 'org.codehaus.groovy' }
-    // Waiting for this to be published to maven central
-    // https://bintray.com/robfletcher/maven/spock-extensions/view
-    // compile ('com.energizedwork:spock-extensions:1.0') { exclude group: 'org.codehaus.groovy' }
-    compile 'cglib:cglib-nodep:2.2.2' // For Mocking classes with Spock
+    compile 'cglib:cglib-nodep:latest.release' // For Mocking classes with Spock
 }
 
 gradleTest {
