@@ -18,8 +18,8 @@ package nebula.test.functional
 
 import com.google.common.base.Predicate
 import com.google.common.base.Predicates
-import com.google.common.base.StandardSystemProperty
 import nebula.test.functional.internal.GradleHandle
+import nebula.test.functional.internal.classpath.ClasspathUserDirPredicate
 
 public interface GradleRunner {
     // These predicates are here, instead of on GradleRunnerFactory due to a Groovy static compiler bug (https://issues.apache.org/jira/browse/GROOVY-7159)
@@ -31,13 +31,7 @@ public interface GradleRunner {
         }
     }
 
-    static final Predicate<URL> CLASSPATH_USER_DIR = new Predicate<URL>() {
-        @Override
-        boolean apply(URL url) {
-            File userDir = new File(StandardSystemProperty.USER_DIR.value())
-            return url.path.startsWith(userDir.path)
-        }
-    }
+    static final Predicate<URL> CLASSPATH_USER_DIR = new ClasspathUserDirPredicate()
 
     /**
      * Attempts to provide a classpath that approximates the 'normal' Gradle runtime classpath. Use {@link #CLASSPATH_ALL}
