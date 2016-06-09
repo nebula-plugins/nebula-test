@@ -5,12 +5,9 @@ import groovy.transform.TypeCheckingMode
 import nebula.test.functional.internal.GradleHandle
 import nebula.test.functional.internal.GradleHandleBuildListener
 import nebula.test.functional.internal.GradleHandleFactory
-import org.gradle.initialization.layout.BuildLayout
-import org.gradle.initialization.layout.BuildLayoutFactory
 import org.gradle.tooling.BuildLauncher
 import org.gradle.tooling.GradleConnector
 import org.gradle.tooling.ProjectConnection
-import org.gradle.wrapper.WrapperExecutor
 
 @CompileStatic
 public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
@@ -54,18 +51,31 @@ public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
         }
     }
 
-    private File configureWrapperDistributionIfUsed(GradleConnector connector, File projectDir) {
+    private static void configureWrapperDistributionIfUsed(GradleConnector connector, File projectDir) {
+        // Search above us, in the project that owns the test
         File target = projectDir.absoluteFile
-        while(target!=null) {
-            // Search above us, in the project that owns the test
-            BuildLayout layoutParent = new BuildLayoutFactory().getLayoutFor(target, true)
-            WrapperExecutor wrapperParent = WrapperExecutor.forProjectDirectory(layoutParent.rootDirectory, System.out)
-            if (wrapperParent.distribution) {
-                connector.useDistribution(wrapperParent.distribution)
-                return target
+        while (target != null) {
+            URI distribution = prepareDistributionURI(target)
+            if (distribution) {
+                connector.useDistribution(distribution)
+                return
             }
             target = target.parentFile
         }
+    }
+
+    // Translated from org.gradle.wrapper.WrapperExecutor to avoid coupling to Gradle API
+    private static URI prepareDistributionURI(File target) {
+        File propertiesFile = new File(target, "gradle/wrapper/gradle-wrapper.properties")
+        if (propertiesFile.exists()) {
+            Properties properties = new Properties()
+            propertiesFile.withInputStream {
+                properties.load(it)
+            }
+            URI source = new URI(properties.getProperty("distributionUrl"))
+            return source.getScheme() == null ? (new File(propertiesFile.getParentFile(), source.getSchemeSpecificPart())).toURI() : source;
+        }
+        return null
     }
 
     private boolean isForkedProcess() {
@@ -76,7 +86,7 @@ public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
         Boolean.parseBoolean(System.getProperty(FORK_SYS_PROP, Boolean.FALSE.toString()))
     }
 
-    private BuildLauncher createBuildLauncher(ProjectConnection connection, List<String> arguments, List<String> jvmArguments) {
+    private static BuildLauncher createBuildLauncher(ProjectConnection connection, List<String> arguments, List<String> jvmArguments) {
         BuildLauncher launcher = connection.newBuild();
         launcher.withArguments(arguments as String[]);
         launcher.setJvmArguments(jvmArguments as String[])
