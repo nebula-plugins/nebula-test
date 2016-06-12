@@ -9,8 +9,9 @@ import nebula.test.functional.internal.toolingapi.ToolingApiGradleHandleFactory
 
 @CompileStatic
 class GradleRunnerFactory {
-    public static GradleRunner createTooling(boolean fork = false, String version = null, Predicate<URL> classpathFilter = null) {
-        GradleHandleFactory toolingApiHandleFactory = new ToolingApiGradleHandleFactory(fork, version);
+    public static GradleRunner createTooling(boolean fork = false, String version = null, Integer daemonMaxIdleTimeInSeconds = null,
+                                             Predicate<URL> classpathFilter = null) {
+        GradleHandleFactory toolingApiHandleFactory = new ToolingApiGradleHandleFactory(fork, version, daemonMaxIdleTimeInSeconds);
         return create(toolingApiHandleFactory, classpathFilter ?: GradleRunner.CLASSPATH_DEFAULT);
     }
 
