@@ -34,12 +34,12 @@ contacts {
 }
 
 dependencies {
-    compile 'com.google.guava:guava:latest.release'
-    compile 'commons-io:commons-io:latest.release'
+    compile 'com.google.guava:guava:19.0'
+    compile 'commons-io:commons-io:2.5'
     compile ('org.spockframework:spock-core:1.0-groovy-2.4') {
         exclude group: 'org.codehaus.groovy'
     }
-    compile 'cglib:cglib-nodep:latest.release'
+    compile 'cglib:cglib-nodep:3.2.2'
     compile 'org.objenesis:objenesis:2.4'
 }
 
