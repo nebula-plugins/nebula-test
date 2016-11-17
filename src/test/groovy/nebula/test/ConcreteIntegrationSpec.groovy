@@ -32,7 +32,7 @@ class ConcreteIntegrationSpec extends IntegrationSpec {
         then:
         fileExists('build/classes/main/nebula/test/hello/HelloWorld.class')
         result.wasExecuted(':compileTestJava')
-        result.getStandardOutput().contains('Skipping task \':compileTestJava\' as it has no source files.')
+        result.getStandardOutput().contains('Skipping task \':compileTestJava\' as it has no source files and no previous output files.')
 
         where:
         type         | forked
