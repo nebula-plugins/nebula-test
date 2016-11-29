@@ -61,6 +61,32 @@ class GradleDependencyGeneratorSpec extends Specification {
         new File(ivyRepo, 'test/ivy/foo/1.0.0/foo-1.0.0.jar').exists()
     }
 
+    def 'check ivy status'() {
+        def directory = 'build/testdependencies/ivyxml'
+        def graph = ['test.ivy:foo:1.0.0']
+        def generator = new GradleDependencyGenerator(new DependencyGraph(graph), directory)
+
+        when:
+        generator.generateTestIvyRepo()
+
+        then:
+        def repo = new File(directory)
+        new File(repo, 'ivyrepo/test/ivy/foo/1.0.0/foo-1.0.0-ivy.xml').text.contains 'status="integration"'
+    }
+
+    def 'allow different ivy status'() {
+        def directory = 'build/testdependencies/ivyxml'
+        def graph = ['test.ivy:foo:1.0.0']
+        def generator = new GradleDependencyGenerator(new DependencyGraph(graph), directory)
+
+        when:
+        generator.generateTestIvyRepo('release')
+
+        then:
+        def repo = new File(directory)
+        new File(repo, 'ivyrepo/test/ivy/foo/1.0.0/foo-1.0.0-ivy.xml').text.contains 'status="release"'
+    }
+
     def 'check ivy xml'() {
         def directory = 'build/testdependencies/ivyxml'
         def graph = ['test.ivy:foo:1.0.0 -> test.ivy:bar:1.1.0']
