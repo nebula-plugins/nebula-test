@@ -15,20 +15,13 @@
  */
 package nebula.test.dependencies.maven
 
-import groovy.transform.Canonical
-import groovy.transform.Sortable
+enum ArtifactType {
+    POM('pom'),
+    JAR('jar')
 
-@Canonical
-@Sortable
-class Artifact {
-    String group
-    String artifact
-    String version
-    ArtifactType type = ArtifactType.JAR
-
-    Artifact(String group, String artifact, String version) {
-        this.group = group
-        this.artifact = artifact
-        this.version = version
+    ArtifactType(String packaging) {
+        this.packaging = packaging
     }
+
+    String packaging
 }

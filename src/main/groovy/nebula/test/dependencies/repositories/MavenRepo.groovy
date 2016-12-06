@@ -15,8 +15,27 @@
  */
 package nebula.test.dependencies.repositories
 
-/**
- * Created by rspieldenner on 11/14/16.
- */
+import nebula.test.dependencies.maven.Pom
+
 class MavenRepo {
+    Set<Pom> poms = new HashSet<>()
+    File root
+
+    String repoString() {
+        """\
+            maven { url '${root.absolutePath}' }
+            """.stripIndent()
+    }
+
+    void generate() {
+        if (!root.exists()) {
+            root.mkdirs()
+        }
+        poms.each { Pom pom ->
+            def path = "${pom.artifact.group.replaceAll(/\./, '/')}/${pom.artifact.artifact}/${pom.artifact.version}"
+            def dir = new File(root, path)
+            dir.mkdirs()
+            new File(dir, pom.filename).text = pom.generate()
+        }
+    }
 }
