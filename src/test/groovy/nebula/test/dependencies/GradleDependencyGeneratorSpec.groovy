@@ -15,6 +15,7 @@
  */
 package nebula.test.dependencies
 
+import spock.lang.Ignore
 import spock.lang.Specification
 
 class GradleDependencyGeneratorSpec extends Specification {
@@ -74,6 +75,7 @@ class GradleDependencyGeneratorSpec extends Specification {
         new File(repo, 'ivyrepo/test/ivy/foo/1.0.0/foo-1.0.0-ivy.xml').text.contains 'status="integration"'
     }
 
+    @Ignore
     def 'allow different ivy status'() {
         def directory = 'build/testdependencies/ivyxml'
         def graph = ['test.ivy:foo:1.0.0']

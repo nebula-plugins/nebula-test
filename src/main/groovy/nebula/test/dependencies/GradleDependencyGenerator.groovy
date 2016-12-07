@@ -92,12 +92,6 @@ class GradleDependencyGenerator {
         ivyRepoDir
     }
 
-    File generateTestIvyRepo(String status) {
-        runTasks('publishIvyPublicationToIvyRepository', "-Pstatus=${status}")
-
-        ivyRepoDir
-    }
-
     String getIvyRepoDirPath() {
         ivyRepoDir.absolutePath
     }
