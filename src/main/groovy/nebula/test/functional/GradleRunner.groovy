@@ -42,7 +42,7 @@ public interface GradleRunner {
     static final Predicate<URL> CLASSPATH_PROJECT_DEPENDENCIES = new Predicate<URL>() {
         @Override
         boolean apply(URL url) {
-            return url.path.contains('build/classes') || url.path.contains('build/resources')
+            return url.path.contains('build/classes') || url.path.contains('build/resources') || url.path.contains('build/libs')
         }
     }
 

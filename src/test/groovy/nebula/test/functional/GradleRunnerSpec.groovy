@@ -44,14 +44,22 @@ class GradleRunnerSpec extends Specification {
                 "file:/Library/Java/JavaVirtualMachines/jdk1.7.0_79.jdk/Contents/Home/jre/lib/ext/sunjce_provider.jar",
                 "file:/Library/Java/JavaVirtualMachines/jdk1.7.0_79.jdk/Contents/Home/jre/lib/ext/sunpkcs11.jar",
                 "file:/Library/Java/JavaVirtualMachines/jdk1.7.0_79.jdk/Contents/Home/jre/lib/ext/zipfs.jar",
+
+                // The project that is being tested always appears as follows:
                 "file:$workDir/build/classes/test/",
                 "file:$workDir/build/classes/main/",
                 "file:$workDir/build/resources/test/",
                 "file:$workDir/build/resources/main/",
+
+                // when launched from IDE, project dependencies appear this way:
                 "file:$siblingDir/build/classes/test/",
                 "file:$siblingDir/build/classes/main/",
                 "file:$siblingDir/build/resources/test/",
                 "file:$siblingDir/build/resources/main/",
+
+                // when launched from Gradle, project dependencies appear as jars:
+                "file:$siblingDir/build/libs/repos-4.0.0.jar",
+
                 "file:/Users/dannyt/.gradle/caches/modules-2/files-2.1/org.spockframework/spock-core/1.0-groovy-2.3/762fbf6c5f24baabf9addcf9cf3647151791f7eb/spock-core-1.0-groovy-2.3.jar",
                 "file:/Users/dannyt/.gradle/caches/modules-2/files-2.1/cglib/cglib-nodep/2.2.2/d456bb230c70c0b95c76fb28e429d42f275941/cglib-nodep-2.2.2.jar",
                 "file:/Users/dannyt/.gradle/caches/modules-2/files-2.1/commons-lang/commons-lang/2.6/ce1edb914c94ebc388f086c6827e8bdeec71ac2/commons-lang-2.6.jar",
@@ -82,12 +90,12 @@ class GradleRunnerSpec extends Specification {
     def 'classpath project deps predicate filters to projects'() {
         expect:
         def filtered = FluentIterable.from(classpath).filter(GradleRunner.CLASSPATH_PROJECT_DEPENDENCIES).toList()
-        filtered.size() == 8
+        filtered.size() == 9
     }
 
     def 'default classpath includes only application class paths and dependencies'() {
         expect:
         def filtered = FluentIterable.from(classpath).filter(GradleRunner.CLASSPATH_DEFAULT).toList()
-        filtered.size() == 13
+        filtered.size() == 14
     }
 }
