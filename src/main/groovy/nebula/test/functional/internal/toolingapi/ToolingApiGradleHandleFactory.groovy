@@ -1,7 +1,7 @@
 package nebula.test.functional.internal.toolingapi
 
+import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
-import groovy.transform.TypeCheckingMode
 import nebula.test.functional.internal.GradleHandle
 import nebula.test.functional.internal.GradleHandleBuildListener
 import nebula.test.functional.internal.GradleHandleFactory
@@ -9,20 +9,24 @@ import org.gradle.tooling.BuildLauncher
 import org.gradle.tooling.GradleConnector
 import org.gradle.tooling.ProjectConnection
 
+import java.util.concurrent.TimeUnit
+
 @CompileStatic
 public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
     public static final String FORK_SYS_PROP = 'nebula.test.functional.fork'
 
     private final boolean fork
     private final String version
+    private final Integer daemonMaxIdleTimeInSeconds
 
-    ToolingApiGradleHandleFactory(boolean fork, String version) {
+    ToolingApiGradleHandleFactory(boolean fork, String version, Integer daemonMaxIdleTimeInSeconds = null) {
         this.fork = fork
         this.version = version
+        this.daemonMaxIdleTimeInSeconds = daemonMaxIdleTimeInSeconds
     }
 
     @Override
-    @CompileStatic(TypeCheckingMode.SKIP)
+    @CompileDynamic
     public GradleHandle start(File projectDir, List<String> arguments, List<String> jvmArguments = []) {
         GradleConnector connector = createGradleConnector(projectDir)
 
@@ -30,6 +34,10 @@ public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
 
         // Allow for in-process debugging
         connector.embedded(!forkedProcess)
+
+        if (daemonMaxIdleTimeInSeconds != null) {
+            connector.daemonMaxIdleTime(daemonMaxIdleTimeInSeconds, TimeUnit.SECONDS)
+        }
 
         ProjectConnection connection = connector.connect();
         BuildLauncher launcher = createBuildLauncher(connection, arguments, jvmArguments)

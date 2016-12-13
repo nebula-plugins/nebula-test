@@ -36,6 +36,7 @@ import spock.lang.Specification
 @CompileStatic
 abstract class IntegrationSpec extends Specification {
     private static final String DEFAULT_REMOTE_DEBUG_JVM_ARGUMENTS = "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
+    private static final Integer DEFAULT_DAEMON_MAX_IDLE_TIME_IN_SECONDS_IN_MEMORY_SAFE_MODE = 15;
 
     @TempDirectory(clean=false) protected File projectDir
 
@@ -55,6 +56,9 @@ abstract class IntegrationSpec extends Specification {
     protected Predicate<URL> classpathFilter
     protected List<File> initScripts = []
     protected List<PreExecutionAction> preExecutionActions = []
+    //Shutdown Gradle daemon after a few seconds to release memory. Useful for testing with multiple Gradle versions on shared CI server
+    protected boolean memorySafeMode = false
+    protected Integer daemonMaxIdleTimeInSecondsInMemorySafeMode = DEFAULT_DAEMON_MAX_IDLE_TIME_IN_SECONDS_IN_MEMORY_SAFE_MODE
 
     private String findModuleName() {
         getProjectDir().getName().replaceAll(/_\d+/, '')
@@ -81,8 +85,9 @@ abstract class IntegrationSpec extends Specification {
     protected GradleHandle launcher(String... args) {
         List<String> arguments = calculateArguments(args)
         List<String> jvmArguments = calculateJvmArguments()
+        Integer daemonMaxIdleTimeInSeconds = calculateMaxIdleDaemonTimeoutInSeconds()
 
-        GradleRunner runner = GradleRunnerFactory.createTooling(fork, gradleVersion, classpathFilter)
+        GradleRunner runner = GradleRunnerFactory.createTooling(fork, gradleVersion, daemonMaxIdleTimeInSeconds, classpathFilter)
         runner.handle(getProjectDir(), arguments, jvmArguments, preExecutionActions)
     }
 
@@ -112,6 +117,10 @@ abstract class IntegrationSpec extends Specification {
 
     private List<String> calculateJvmArguments() {
         return jvmArguments + (remoteDebug ? [DEFAULT_REMOTE_DEBUG_JVM_ARGUMENTS] : [] as List) as List
+    }
+
+    private Integer calculateMaxIdleDaemonTimeoutInSeconds() {
+        return memorySafeMode ? daemonMaxIdleTimeInSecondsInMemorySafeMode : null
     }
 
     protected void addInitScript(File initFile) {
