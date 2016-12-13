@@ -74,11 +74,13 @@ class Pom {
             }
             if (dependencyManagementArtifacts) {
                 dependencyManagement {
-                    dependencyManagementArtifacts.each { Artifact a ->
-                        dependency {
-                            groupId(a.group)
-                            artifactId(a.artifact)
-                            version(a.version)
+                    dependencies {
+                        dependencyManagementArtifacts.each { Artifact a ->
+                            dependency {
+                                groupId(a.group)
+                                artifactId(a.artifact)
+                                version(a.version)
+                            }
                         }
                     }
                 }
