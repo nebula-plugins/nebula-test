@@ -9,7 +9,7 @@ class ChangingTestDirSpec extends IntegrationSpec {
 
   def 'can change name of project dir'() {
     expect:
-    projectDir.absolutePath.contains('test/build1')
+    projectDir.absolutePath.contains('build/test/build1')
   }
 
 }

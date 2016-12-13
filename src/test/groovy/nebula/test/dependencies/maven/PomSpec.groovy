@@ -38,11 +38,13 @@ class PomSpec extends Specification {
               <version>0.1.0</version>
               <packaging>pom</packaging>
               <dependencyManagement>
-                <dependency>
-                  <groupId>foo</groupId>
-                  <artifactId>bar</artifactId>
-                  <version>1.2.3</version>
-                </dependency>
+                <dependencies>
+                  <dependency>
+                    <groupId>foo</groupId>
+                    <artifactId>bar</artifactId>
+                    <version>1.2.3</version>
+                  </dependency>
+                </dependencies>
               </dependencyManagement>
             </project>'''.stripIndent()
         pomXml == expected
