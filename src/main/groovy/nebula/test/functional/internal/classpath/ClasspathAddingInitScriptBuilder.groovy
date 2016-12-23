@@ -7,6 +7,7 @@ import groovy.transform.CompileStatic
 import org.gradle.internal.ErroringAction
 import org.gradle.internal.IoActions
 import org.gradle.internal.classloader.ClasspathUtil
+import org.gradle.internal.classpath.ClassPath
 import org.gradle.util.TextUtil
 
 @CompileStatic
@@ -37,12 +38,23 @@ class ClasspathAddingInitScriptBuilder {
     }
 
     public static List<File> getClasspathAsFiles(ClassLoader classLoader, Predicate<URL> classpathFilter) {
-        List<URL> classpathUrls = ClasspathUtil.getClasspath(classLoader);
+        List<URL> classpathUrls = getClasspathUrls(classLoader)
         return FluentIterable.from(classpathUrls).filter(classpathFilter).transform(new Function<URL, File>() {
             @Override
             File apply(URL url) {
                 return new File(url.toURI());
             }
         }).toList()
+    }
+
+    private static List<URL> getClasspathUrls(ClassLoader classLoader) {
+        Object cp = ClasspathUtil.getClasspath(classLoader)
+        if (cp instanceof List<URL>) {
+            return (List<URL>) cp
+        }
+        if (cp instanceof ClassPath) { // introduced by gradle/gradle@0ab8bc2
+            return ((ClassPath) cp).asURLs
+        }
+        throw new IllegalStateException("Unable to extract classpath urls from type ${cp.class.canonicalName}")
     }
 }
