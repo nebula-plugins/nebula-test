@@ -1,5 +1,6 @@
 package nebula.test
 
+import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.logging.LogLevel
 import spock.lang.Ignore
 import spock.lang.Unroll
@@ -23,7 +24,12 @@ class SpecifiedGradleVersionIntegrationSpec extends IntegrationSpec {
         when:
             def result = runTasksSuccessfully('build')
         then:
-            result.standardOutput.contains("gradle/$requestedGradleVersion/taskArtifacts")
+            if (Os.isFamily(Os.FAMILY_WINDOWS)){
+                result.standardOutput.contains("gradle\\$requestedGradleVersion\\taskArtifacts")
+            } else {
+                result.standardOutput.contains("gradle/$requestedGradleVersion/taskArtifacts")
+            }
+
         where:
             requestedGradleVersion << ['2.8', '2.9']
     }
