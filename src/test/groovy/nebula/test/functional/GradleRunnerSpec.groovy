@@ -46,10 +46,10 @@ class GradleRunnerSpec extends Specification {
                 "file:/Library/Java/JavaVirtualMachines/jdk1.7.0_79.jdk/Contents/Home/jre/lib/ext/zipfs.jar",
 
                 // The project that is being tested always appears as follows:
-                "file:$workDir/build/classes/test/",
-                "file:$workDir/build/classes/main/",
-                "file:$workDir/build/resources/test/",
-                "file:$workDir/build/resources/main/",
+                new File(workDir, 'build/classes/test/').toURI() as String,
+                new File(workDir, 'build/classes/main/').toURI() as String,
+                new File(workDir, 'build/resources/test/').toURI() as String,
+                new File(workDir, 'build/resources/main/').toURI() as String,
 
                 // when launched from IDE, project dependencies appear this way:
                 "file:$siblingDir/build/classes/test/",
@@ -83,19 +83,13 @@ class GradleRunnerSpec extends Specification {
 
     def 'jvm predicate includes expected files'() {
         expect:
-        def filtered = FluentIterable.from(classpath).filter(GradleRunner.CLASSPATH_PROJECT_DIR).toList()
+        def filtered = FluentIterable.from(classpath).filter(GradleRunner.CLASSPATH_USER_DIR).toList()
         filtered.size() == 4
-    }
-
-    def 'classpath project deps predicate filters to projects'() {
-        expect:
-        def filtered = FluentIterable.from(classpath).filter(GradleRunner.CLASSPATH_PROJECT_DEPENDENCIES).toList()
-        filtered.size() == 9
     }
 
     def 'default classpath includes only application class paths and dependencies'() {
         expect:
         def filtered = FluentIterable.from(classpath).filter(GradleRunner.CLASSPATH_DEFAULT).toList()
-        filtered.size() == 14
+        filtered.size() == 9
     }
 }
