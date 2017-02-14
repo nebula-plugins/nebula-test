@@ -1,3 +1,10 @@
+5.0.1 / 2017-02-14
+==================
+
+* BUGFIX: Fixes for Windows users
+ * Thanks Björn Kautler github: Vampire
+ * Thanks Willie Slepecki github: scphantm
+
 5.0.0 / 2017-01-04
 ==================
 
