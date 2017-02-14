@@ -80,9 +80,13 @@ class GradleDependencyGenerator {
         mavenRepoDir.absolutePath
     }
 
+    String getMavenRepoUrl() {
+        mavenRepoDir.toURI().toURL()
+    }
+
     String getMavenRepositoryBlock() {
         """\
-            maven { url '${getMavenRepoDirPath()}' }
+            maven { url '${getMavenRepoUrl()}' }
         """.stripIndent()
     }
 
@@ -96,10 +100,14 @@ class GradleDependencyGenerator {
         ivyRepoDir.absolutePath
     }
 
+    String getIvyRepoUrl() {
+        ivyRepoDir.toURI().toURL()
+    }
+
     String getIvyRepositoryBlock() {
         """\
             ivy {
-                url '${getIvyRepoDirPath()}'
+                url '${getIvyRepoUrl()}'
                 layout('pattern') {
                     ivy '[organisation]/[module]/[revision]/[module]-[revision]-ivy.[ext]'
                     artifact '[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]'

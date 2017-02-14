@@ -2,15 +2,19 @@ package nebula.test
 
 import org.gradle.api.logging.LogLevel
 import spock.lang.Ignore
+import spock.lang.IgnoreIf
 import spock.lang.Unroll
+import spock.util.environment.OperatingSystem
 
 class SpecifiedGradleVersionIntegrationSpec extends IntegrationSpec {
     def setup() {
         fork = true
     }
 
-    @Unroll("should use Gradle #requestedGradleVersion when requested")
-    def "should allow to run functional tests with different Gradle versions"() {
+
+    @IgnoreIf({ OperatingSystem.current.linux || OperatingSystem.current.macOs})
+    @Unroll("should use Gradle #requestedGradleVersion when requested ")
+    def "should allow to run functional tests with different Gradle versions Windows"() {
         given:
             writeHelloWorld('nebula.test.hello')
             buildFile << '''
@@ -18,14 +22,45 @@ class SpecifiedGradleVersionIntegrationSpec extends IntegrationSpec {
             '''.stripIndent()
         and:
             logLevel = LogLevel.DEBUG
+
         and:
             gradleVersion = requestedGradleVersion
+
         when:
             def result = runTasksSuccessfully('build')
+
         then:
-            result.standardOutput.contains("gradle/$requestedGradleVersion/taskArtifacts")
+
+        result.standardOutput.contains("gradle\\$requestedGradleVersion\\taskArtifacts")
+
         where:
             requestedGradleVersion << ['2.8', '2.9']
+    }
+
+    @IgnoreIf({ OperatingSystem.current.windows })
+    @Unroll("should use Gradle #requestedGradleVersion when requested ")
+    def "should allow to run functional tests with different Gradle versions Linux - Mac"() {
+        given:
+        writeHelloWorld('nebula.test.hello')
+        buildFile << '''
+                apply plugin: 'java'
+            '''.stripIndent()
+        and:
+        logLevel = LogLevel.DEBUG
+
+        and:
+        gradleVersion = requestedGradleVersion
+
+        when:
+        def result = runTasksSuccessfully('build')
+
+        then:
+
+        result.standardOutput.contains("gradle/$requestedGradleVersion/taskArtifacts")
+
+
+        where:
+        requestedGradleVersion << ['2.8', '2.9']
     }
 
     static final String CUSTOM_DISTRIBUTION = 'http://dl.bintray.com/nebula/gradle-distributions/1.12-20140608201532+0000/gradle-1.12-20140608201532+0000-bin.zip'
