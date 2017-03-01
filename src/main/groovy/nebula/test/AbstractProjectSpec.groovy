@@ -1,6 +1,5 @@
 package nebula.test
 
-import com.energizedwork.spock.extensions.TempDirectory
 import groovy.transform.CompileStatic
 import nebula.test.multiproject.MultiProjectHelper
 import org.gradle.api.Project
@@ -21,7 +20,7 @@ import spock.lang.Specification
 @CompileStatic
 public abstract class AbstractProjectSpec extends Specification {
     static final String CLEAN_PROJECT_DIR_SYS_PROP = 'cleanProjectDir'
-    @TempDirectory File ourProjectDir
+    File ourProjectDir
 
     @Rule TestName testName = new TestName()
     String canonicalName
@@ -29,6 +28,11 @@ public abstract class AbstractProjectSpec extends Specification {
     MultiProjectHelper helper
 
     def setup() {
+        ourProjectDir = new File("build/nebulatest/${this.class.canonicalName}/${testName.methodName.replaceAll(/\W+/, '-')}")
+        if (ourProjectDir.exists()) {
+            ourProjectDir.deleteDir()
+        }
+        ourProjectDir.mkdirs()
         canonicalName = testName.getMethodName().replaceAll(' ', '-')
         project = ProjectBuilder.builder().withName(canonicalName).withProjectDir(ourProjectDir).build()
         helper = new MultiProjectHelper(project)

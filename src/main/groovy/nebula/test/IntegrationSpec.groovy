@@ -15,7 +15,6 @@
  */
 package nebula.test
 
-import com.energizedwork.spock.extensions.TempDirectory
 import com.google.common.base.Predicate
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
@@ -27,18 +26,15 @@ import nebula.test.functional.internal.GradleHandle
 import nebula.test.multiproject.MultiProjectIntegrationHelper
 import org.apache.commons.io.FileUtils
 import org.gradle.api.logging.LogLevel
-import spock.lang.Specification
 
 /**
  * @author Justin Ryan
  * @author Marcin Erdmann
  */
 @CompileStatic
-abstract class IntegrationSpec extends Specification {
+abstract class IntegrationSpec extends BaseIntegrationSpec {
     private static final String DEFAULT_REMOTE_DEBUG_JVM_ARGUMENTS = "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
     private static final Integer DEFAULT_DAEMON_MAX_IDLE_TIME_IN_SECONDS_IN_MEMORY_SAFE_MODE = 15;
-
-    @TempDirectory(clean=false) protected File projectDir
 
     // Holds State of last run
     private ExecutionResult result
@@ -61,7 +57,7 @@ abstract class IntegrationSpec extends Specification {
     protected Integer daemonMaxIdleTimeInSecondsInMemorySafeMode = DEFAULT_DAEMON_MAX_IDLE_TIME_IN_SECONDS_IN_MEMORY_SAFE_MODE
 
     private String findModuleName() {
-        getProjectDir().getName().replaceAll(/_\d+/, '')
+         getProjectDir().getName().replaceAll(/_\d+/, '')
     }
 
     def setup() {
@@ -139,89 +135,6 @@ abstract class IntegrationSpec extends Specification {
         return logLevel
     }
 
-    /* Setup */
-    protected File directory(String path, File baseDir = getProjectDir()) {
-        new File(baseDir, path).with {
-            mkdirs()
-            it
-        }
-    }
-
-    protected File file(String path, File baseDir = getProjectDir()) {
-        def splitted = path.split('/')
-        def directory = splitted.size() > 1 ? directory(splitted[0..-2].join('/'), baseDir) : baseDir
-        def file = new File(directory, splitted[-1])
-        file.createNewFile()
-        file
-    }
-
-    @CompileStatic(TypeCheckingMode.SKIP)
-    protected File createFile(String path, File baseDir = getProjectDir()) {
-        File file = file(path, baseDir)
-        if (!file.exists()) {
-            assert file.parentFile.mkdirs() || file.parentFile.exists()
-            file.createNewFile()
-        }
-        file
-    }
-
-    protected void writeHelloWorld(String packageDotted, File baseDir = getProjectDir()) {
-        def path = 'src/main/java/' + packageDotted.replace('.', '/') + '/HelloWorld.java'
-        def javaFile = createFile(path, baseDir)
-        javaFile << """package ${packageDotted};
-
-            public class HelloWorld {
-                public static void main(String[] args) {
-                    System.out.println("Hello Integration Test");
-                }
-            }
-        """.stripIndent()
-    }
-
-    /**
-     * Creates a unit test for testing your plugin.
-     * @param failTest true if you want the test to fail, false if the test should pass
-     * @param baseDir the directory to begin creation from, defaults to projectDir
-     */
-    protected void writeUnitTest(boolean failTest, File baseDir = getProjectDir()) {
-        writeTest('src/test/java/', 'nebula', failTest, baseDir)
-    }
-
-    /**
-     *
-     * Creates a unit test for testing your plugin.
-     * @param srcDir the directory in the project where the source file should be created.
-     * @param packageDotted the package for the unit test class, written in dot notation (ex. - nebula.integration)
-     * @param failTest true if you want the test to fail, false if the test should pass
-     * @param baseDir the directory to begin creation from, defaults to projectDir
-     */
-    protected void writeTest(String srcDir, String packageDotted, boolean failTest, File baseDir = getProjectDir()) {
-        def path = srcDir + packageDotted.replace('.', '/') + '/HelloWorldTest.java'
-        def javaFile = createFile(path, baseDir)
-        javaFile << """package ${packageDotted};
-            import org.junit.Test;
-            import static org.junit.Assert.assertFalse;
-
-            public class HelloWorldTest {
-                @Test public void doesSomething() {
-                    assertFalse( $failTest ); 
-                }
-            }
-        """.stripIndent()
-    }
-
-    /**
-     * Creates a properties file to included as project resource.
-     * @param srcDir the directory in the project where the source file should be created.
-     * @param fileName to be used for the file, sans extension.  The .properties extension will be added to the name.
-     * @param baseDir the directory to begin creation from, defaults to projectDir
-     */
-    protected void writeResource(String srcDir, String fileName, File baseDir = getProjectDir()) {
-        def path = "$srcDir/${fileName}.properties"
-        def resourceFile = createFile(path, baseDir)
-        resourceFile.text = "firstProperty=foo.bar"
-    }
-
     protected void copyResources(String srcDir, String destination) {
         ClassLoader classLoader = getClass().getClassLoader();
         URL resource = classLoader.getResource(srcDir);
@@ -295,10 +208,6 @@ abstract class IntegrationSpec extends Specification {
 
     protected File addSubproject(String subprojectName, String subBuildGradleText) {
         helper.addSubproject(subprojectName, subBuildGradleText)
-    }
-
-    File getProjectDir() {
-        return projectDir
     }
 
     File getSettingsFile() {
