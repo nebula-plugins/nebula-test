@@ -28,26 +28,6 @@ abstract class IntegrationTestKitSpec extends BaseIntegrationSpec {
     def setup() {
         settingsFile = new File(projectDir, "settings.gradle")
         buildFile = new File(projectDir, "build.gradle")
-
-        configurePluginClasspath()
-    }
-
-    def configurePluginClasspath() {
-        def pluginClasspathResource = this.class.classLoader.findResource("plugin-classpath.txt")
-        if (pluginClasspathResource == null) {
-            throw new IllegalStateException("Did not find plugin classpath resource, run `testClasses` build task.")
-        }
-        def pluginClasspath = pluginClasspathResource.readLines()
-                .collect { it.replace("\\", "\\\\") } // escape backslashes in Windows paths
-                .collect { "'$it'" }
-                .join(", ")
-        buildFile << """\
-            buildscript {
-                dependencies {
-                    classpath files($pluginClasspath)
-                }
-            }
-        """.stripIndent()
     }
 
     def cleanup() {
@@ -69,6 +49,7 @@ abstract class IntegrationTestKitSpec extends BaseIntegrationSpec {
         GradleRunner.create()
                 .withProjectDir(projectDir)
                 .withArguments(*tasks.plus("-i"))
+                .withPluginClasspath()
                 .forwardOutput()
                 .build()
     }
