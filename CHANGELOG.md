@@ -1,3 +1,8 @@
+5.1.0 / 2017-03-01
+==================
+
+* Add IntegrationTestKitSpec -- helper for Gradle TestKit
+
 5.0.1 / 2017-02-14
 ==================
 

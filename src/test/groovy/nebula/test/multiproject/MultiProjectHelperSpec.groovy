@@ -51,6 +51,6 @@ class MultiProjectHelperSpec extends ProjectSpec {
         then:
         sub.parent == project
         project.subprojects.find { it == sub } != null
-        sub.projectDir == new File(projectDir, 'sub')
+        sub.projectDir.toURI().toURL() == new File(projectDir, 'sub').toURI().toURL()
     }
 }
