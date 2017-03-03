@@ -26,7 +26,7 @@ abstract class BaseIntegrationSpec extends Specification {
     File projectDir
 
     def setup() {
-        projectDir = new File("build/nebulatest/${this.class.canonicalName}/${testName.methodName.replaceAll(/\W+/, '-')}")
+        projectDir = new File("build/nebulatest/${this.class.canonicalName}/${testName.methodName.replaceAll(/\W+/, '-')}").absoluteFile
         if (projectDir.exists()) {
             projectDir.deleteDir()
         }
