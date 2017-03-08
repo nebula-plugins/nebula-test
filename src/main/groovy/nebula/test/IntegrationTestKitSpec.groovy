@@ -21,6 +21,7 @@ import org.junit.Rule
 import org.junit.rules.TestName
 
 abstract class IntegrationTestKitSpec extends BaseIntegrationSpec {
+    static final String LINE_END = System.getProperty('line.separator')
     boolean keepFiles = false
     File buildFile
     File settingsFile
@@ -40,7 +41,7 @@ abstract class IntegrationTestKitSpec extends BaseIntegrationSpec {
         def subdir = new File(projectDir, name)
         subdir.mkdirs()
 
-        settingsFile << "include \"${name}\""
+        settingsFile << "include \"${name}\"${LINE_END}"
 
         new File(subdir, "build.gradle").text = buildGradle
     }

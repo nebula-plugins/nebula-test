@@ -18,13 +18,9 @@ Gradle Compatibility Tested
 
 | Gradle Version | Works |
 | :------------: | :---: |
-| 2.2.1          | no    |
-| 2.3            | no    |
-| 2.4            | no    |
-| 2.5            | no    |
-| 2.6            | yes - must force to 'org.spockframework:spock-core:1.0-groovy-2.3' |
-| 2.7            | yes - must force to 'org.spockframework:spock-core:1.0-groovy-2.3' |
-| 2.8            | yes   |
+| 2.x            | no    |
+| 3.3            | yes   |
+| 3.4.1          | yes   |
 
 LICENSE
 =======
