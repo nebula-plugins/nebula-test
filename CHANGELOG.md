@@ -1,7 +1,23 @@
+5.1.3 / 2017-03-08
+==================
+
+* Fix for multiproject helper in IntegrationTestKitSpec
+
+5.1.2 / 2017-03-03
+==================
+
+* make projectdir absolute
+
+5.1.1 / 2017-03-02
+==================
+
+* Fix to IntegrationTestKitSpec
+
 5.1.0 / 2017-03-01
 ==================
 
 * Add IntegrationTestKitSpec -- helper for Gradle TestKit
+* Remove a shaded library
 
 5.0.1 / 2017-02-14
 ==================
