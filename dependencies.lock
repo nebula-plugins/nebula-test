@@ -82,7 +82,7 @@
         },
         "com.netflix.nebula:nebula-test": {
             "project": true,
-            "requested": "6.0.0"
+            "requested": "6.0.1"
         },
         "commons-io:commons-io": {
             "firstLevelTransitive": [
@@ -123,7 +123,7 @@
         },
         "com.netflix.nebula:nebula-test": {
             "project": true,
-            "requested": "6.0.0"
+            "requested": "6.0.1"
         },
         "commons-io:commons-io": {
             "firstLevelTransitive": [
@@ -164,7 +164,7 @@
         },
         "com.netflix.nebula:nebula-test": {
             "project": true,
-            "requested": "6.0.0"
+            "requested": "6.0.1"
         },
         "commons-io:commons-io": {
             "firstLevelTransitive": [
@@ -205,7 +205,7 @@
         },
         "com.netflix.nebula:nebula-test": {
             "project": true,
-            "requested": "6.0.0"
+            "requested": "6.0.1"
         },
         "commons-io:commons-io": {
             "firstLevelTransitive": [
@@ -300,7 +300,7 @@
         },
         "com.netflix.nebula:nebula-test": {
             "project": true,
-            "requested": "6.0.0"
+            "requested": "6.0.1"
         },
         "commons-io:commons-io": {
             "firstLevelTransitive": [
@@ -341,7 +341,7 @@
         },
         "com.netflix.nebula:nebula-test": {
             "project": true,
-            "requested": "6.0.0"
+            "requested": "6.0.1"
         },
         "commons-io:commons-io": {
             "firstLevelTransitive": [
@@ -382,7 +382,7 @@
         },
         "com.netflix.nebula:nebula-test": {
             "project": true,
-            "requested": "6.0.0"
+            "requested": "6.0.1"
         },
         "commons-io:commons-io": {
             "firstLevelTransitive": [
@@ -423,7 +423,7 @@
         },
         "com.netflix.nebula:nebula-test": {
             "project": true,
-            "requested": "6.0.0"
+            "requested": "6.0.1"
         },
         "commons-io:commons-io": {
             "firstLevelTransitive": [
