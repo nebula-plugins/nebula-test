@@ -28,7 +28,7 @@ public abstract class AbstractProjectSpec extends Specification {
     MultiProjectHelper helper
 
     def setup() {
-        ourProjectDir = new File("build/nebulatest/${this.class.canonicalName}/${testName.methodName.replaceAll(/\W+/, '-')}")
+        ourProjectDir = new File("build/nebulatest/${this.class.canonicalName}/${testName.methodName.replaceAll(/\W+/, '-')}").absoluteFile
         if (ourProjectDir.exists()) {
             ourProjectDir.deleteDir()
         }
