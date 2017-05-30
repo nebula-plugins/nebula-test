@@ -30,7 +30,7 @@ class ConcreteIntegrationSpec extends IntegrationSpec {
         def result = runTasksSuccessfully('build', '--info')
 
         then:
-        fileExists('build/classes/main/nebula/test/hello/HelloWorld.class')
+        fileExists('build/classes/java/main/nebula/test/hello/HelloWorld.class')
         result.wasExecuted(':compileTestJava')
         result.getStandardOutput().contains('Skipping task \':compileTestJava\' as it has no source files and no previous output files.')
 

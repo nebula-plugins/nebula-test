@@ -100,7 +100,7 @@ class GradleDependencyGeneratorSpec extends Specification {
         then:
         def repo = new File(directory)
         new File(repo, 'test.ivy.foo_1_0_0/build.gradle').text.contains 'compile \'test.ivy:bar:1.1.0\''
-        new File(repo, 'ivyrepo/test/ivy/foo/1.0.0/foo-1.0.0-ivy.xml').text.contains '<dependency org="test.ivy" name="bar" rev="1.1.0" conf="runtime-&gt;default"/>'
+        new File(repo, 'ivyrepo/test/ivy/foo/1.0.0/foo-1.0.0-ivy.xml').text.contains '<dependency org="test.ivy" name="bar" rev="1.1.0" conf="compile-&gt;default"/>'
     }
 
     def 'check maven pom'() {
@@ -118,7 +118,7 @@ class GradleDependencyGeneratorSpec extends Specification {
         pom.contains '<groupId>test.maven</groupId>'
         pom.contains '<artifactId>bar</artifactId>'
         pom.contains '<version>1.+</version>'
-        pom.contains '<scope>runtime</scope>'
+        pom.contains '<scope>compile</scope>'
     }
 
     def 'multiple libraries with dependencies'() {

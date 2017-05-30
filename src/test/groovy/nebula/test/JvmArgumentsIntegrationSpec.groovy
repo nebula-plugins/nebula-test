@@ -14,7 +14,7 @@ class JvmArgumentsIntegrationSpec extends IntegrationSpec {
             fork = true
             jvmArguments = [TEST_JVM_ARGUMENT]
         when:
-            def result = runTasksSuccessfully('compileJava')
+            def result = runTasksSuccessfully('compileJava', '--debug')
         then:
             result.standardOutput.contains(TEST_JVM_ARGUMENT)
     }
