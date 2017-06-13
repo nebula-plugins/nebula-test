@@ -94,7 +94,8 @@ class BuildLauncherBackedGradleHandle implements GradleHandle {
             // Scan stdout for task's up to date
             boolean upToDate = isTaskUpToDate(stdout, taskName)
             boolean skipped = isTaskSkipped(stdout, taskName)
-            tasks.add( new MinimalExecutedTask(taskName, upToDate, skipped) );
+            boolean noSource = isTaskNoSource(stdout, taskName)
+            tasks.add( new MinimalExecutedTask(taskName, upToDate, skipped, noSource) );
         }
         boolean success = failure == null
         return new ToolingExecutionResult(success, stdout, getStandardError(), tasks, failure);
@@ -106,6 +107,10 @@ class BuildLauncherBackedGradleHandle implements GradleHandle {
 
     private isTaskSkipped(String stdout, String taskName) {
         containsOutput(stdout, taskName, 'SKIPPED')
+    }
+
+    private isTaskNoSource(String stdout, String taskName) {
+        containsOutput(stdout, taskName, 'NO-SOURCE')
     }
 
     private boolean containsOutput(String stdout, String taskName, String stateIdentifier) {

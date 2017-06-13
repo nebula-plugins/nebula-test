@@ -33,5 +33,13 @@ class SomePlugin implements Plugin<Project> {
                 System.err.println 'Printed (stderr)'
             }
         }
+
+        project.task("sourceMe", type: SomeTask) {
+            if(project.hasProperty('source')) {
+                input = project.projectDir
+            }
+
+            doLast { project.logger.quiet 'You gave me source!' }
+        }
     }
 }

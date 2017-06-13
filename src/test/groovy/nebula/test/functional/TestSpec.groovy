@@ -37,27 +37,33 @@ class TestSpec extends Specification {
         """
 
         when:
-        ExecutionResult result = runner.run(tmp.root, ["echo", "doIt", "-PupToDate=false", "-Pskip=false"])
+        ExecutionResult result = runner.run(tmp.root, ["echo", "doIt", "sourceMe", "-PupToDate=false", "-Pskip=false", "-Psource=true"])
         !result.wasExecuted(":hush")
         result.wasExecuted(":echo")
         !result.wasUpToDate(":echo")
         result.wasExecuted(":doIt")
         !result.wasSkipped(":doIt")
+        result.wasExecuted(":sourceMe")
+        !result.noSource(":sourceMe")
 
         then:
         result.standardOutput.contains("I ran!")
         result.standardOutput.contains("Did it!")
+        result.standardOutput.contains("You gave me source!")
 
         when:
-        result = runner.run(tmp.root, ["echo", "doIt", "-PupToDate=true", "-Pskip=true"])
+        result = runner.run(tmp.root, ["echo", "doIt", "sourceMe", "-PupToDate=true", "-Pskip=true"])
 
         then:
         !result.standardOutput.contains("I ran!")
         !result.standardOutput.contains("Did it!")
+        !result.standardOutput.contains("You gave me source!")
         result.wasExecuted(":echo")
         result.wasUpToDate(":echo")
         result.wasExecuted(":doIt")
         result.wasSkipped(":doIt")
+        result.wasExecuted(":sourceMe")
+        result.noSource(":sourceMe")
 
         where:
         type         | forked

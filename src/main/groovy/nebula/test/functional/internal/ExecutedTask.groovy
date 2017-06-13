@@ -4,4 +4,5 @@ interface ExecutedTask {
     String getPath()
     boolean isUpToDate()
     boolean isSkipped()
+    boolean isNoSource()
 }

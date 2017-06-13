@@ -70,6 +70,11 @@ abstract class DefaultExecutionResult implements ExecutionResult {
         getExecutedTaskByPath(taskPath).skipped
     }
 
+    @Override
+    boolean noSource(String taskPath) {
+        getExecutedTaskByPath(taskPath).noSource
+    }
+
     String normalizeTaskPath(String taskPath) {
         taskPath.startsWith(':') ? taskPath : ":$taskPath"
     }
