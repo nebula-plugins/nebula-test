@@ -52,3 +52,5 @@ gradleTest.doFirst {
     project.version = project.version.toString()
 }
 gradleTest.dependsOn jar
+
+publishPlugins.enabled = false
