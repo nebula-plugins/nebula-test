@@ -23,6 +23,7 @@ import org.junit.rules.TestName
 abstract class IntegrationTestKitSpec extends BaseIntegrationSpec {
     static final String LINE_END = System.getProperty('line.separator')
     boolean keepFiles = false
+    boolean debug
     File buildFile
     File settingsFile
 
@@ -50,6 +51,7 @@ abstract class IntegrationTestKitSpec extends BaseIntegrationSpec {
         GradleRunner.create()
                 .withProjectDir(projectDir)
                 .withArguments(*tasks.plus("-i"))
+                .withDebug(debug)
                 .withPluginClasspath()
                 .forwardOutput()
                 .build()
