@@ -17,6 +17,8 @@
 
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
+import nebula.test.functional.ExecutionResult
+import org.gradle.testkit.runner.BuildResult
 import org.junit.Rule
 import org.junit.rules.TestName
 import spock.lang.Specification
@@ -57,6 +59,27 @@ abstract class BaseIntegrationSpec extends Specification {
             file.createNewFile()
         }
         file
+    }
+
+    protected BuildResult checkForDeprecations(BuildResult result) {
+        checkForDeprecations(result.output)
+        return result
+    }
+
+    protected ExecutionResult checkForDeprecations(ExecutionResult result) {
+        checkForDeprecations(result.standardOutput)
+        return result
+    }
+
+    protected static void checkForDeprecations(String output) {
+        def deprecations = output.readLines().findAll {
+            it.contains("has been deprecated and is scheduled to be removed in Gradle")
+        }
+        if (!System.getProperty("ignoreDeprecations") && !deprecations.isEmpty()) {
+            throw new IllegalArgumentException("Deprecation warnings were found (Set the ignoreDeprecations system property during the test to ignore):\n" + deprecations.collect {
+                " - $it"
+            }.join("\n"))
+        }
     }
 
     protected void writeHelloWorld(String packageDotted, File baseDir = getProjectDir()) {

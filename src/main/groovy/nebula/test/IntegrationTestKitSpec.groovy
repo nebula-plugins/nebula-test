@@ -48,12 +48,13 @@ abstract class IntegrationTestKitSpec extends BaseIntegrationSpec {
     }
 
     BuildResult runTasks(String... tasks) {
-        GradleRunner.create()
+        BuildResult result = GradleRunner.create()
                 .withProjectDir(projectDir)
                 .withArguments(*tasks.plus("-i"))
                 .withDebug(debug)
                 .withPluginClasspath()
                 .forwardOutput()
                 .build()
+        return checkForDeprecations(result)
     }
 }

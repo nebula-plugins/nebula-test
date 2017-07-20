@@ -199,7 +199,7 @@ abstract class IntegrationSpec extends BaseIntegrationSpec {
     protected ExecutionResult runTasks(String... tasks) {
         ExecutionResult result = launcher(tasks).run()
         this.result = result
-        return result
+        return checkForDeprecations(result)
     }
 
     protected File addSubproject(String subprojectName) {
