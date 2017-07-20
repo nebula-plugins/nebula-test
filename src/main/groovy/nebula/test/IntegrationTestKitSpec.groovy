@@ -17,8 +17,6 @@ package nebula.test
 
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
-import org.junit.Rule
-import org.junit.rules.TestName
 
 abstract class IntegrationTestKitSpec extends BaseIntegrationSpec {
     static final String LINE_END = System.getProperty('line.separator')
@@ -56,5 +54,10 @@ abstract class IntegrationTestKitSpec extends BaseIntegrationSpec {
                 .forwardOutput()
                 .build()
         return checkForDeprecations(result)
+    }
+
+    protected BuildResult checkForDeprecations(BuildResult result) {
+        checkForDeprecations(result.output)
+        return result
     }
 }

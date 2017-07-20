@@ -61,16 +61,6 @@ abstract class BaseIntegrationSpec extends Specification {
         file
     }
 
-    protected BuildResult checkForDeprecations(BuildResult result) {
-        checkForDeprecations(result.output)
-        return result
-    }
-
-    protected ExecutionResult checkForDeprecations(ExecutionResult result) {
-        checkForDeprecations(result.standardOutput)
-        return result
-    }
-
     protected static void checkForDeprecations(String output) {
         def deprecations = output.readLines().findAll {
             it.contains("has been deprecated and is scheduled to be removed in Gradle")

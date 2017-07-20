@@ -202,6 +202,11 @@ abstract class IntegrationSpec extends BaseIntegrationSpec {
         return checkForDeprecations(result)
     }
 
+    protected ExecutionResult checkForDeprecations(ExecutionResult result) {
+        checkForDeprecations(result.standardOutput)
+        return result
+    }
+
     protected File addSubproject(String subprojectName) {
         helper.addSubproject(subprojectName)
     }
