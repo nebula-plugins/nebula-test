@@ -17,6 +17,7 @@ package nebula.test.functional
 
 import com.google.common.base.StandardSystemProperty
 import com.google.common.collect.FluentIterable
+import spock.lang.Issue
 import spock.lang.Specification
 
 /**
@@ -25,10 +26,10 @@ import spock.lang.Specification
 class GradleRunnerSpec extends Specification {
     List<URL> classpath
 
-    def setup() {
-        def workDir = new File(StandardSystemProperty.USER_DIR.value())
-        def siblingDir = new File(workDir.parentFile, 'sibling')
+    def workDir = new File(StandardSystemProperty.USER_DIR.value())
+    def siblingDir = new File(workDir.parentFile, 'sibling')
 
+    def setup() {
         // Partial real-world classpath from a IntegrationSpec launch, only the workDir/siblingDir paths matter, otherwise these are just string comparisons
         def classpathUris = [
                 "file:/Applications/IntelliJ%20IDEA%2015%20EAP.app/Contents/lib/serviceMessages.jar",
@@ -72,6 +73,13 @@ class GradleRunnerSpec extends Specification {
                 new File(siblingDir, 'build/resources/test/').toURI() as String,
                 new File(siblingDir, 'build/resources/main/').toURI() as String,
 
+                // when launched from IntelliJ, and not delegating to Gradle for compilation, project dependencies appear this way:
+                new File(siblingDir, 'out/integTest/classes').toURI() as String,
+                new File(siblingDir, 'out/test/classes').toURI() as String,
+                new File(siblingDir, 'out/test/resources').toURI() as String,
+                new File(siblingDir, 'out/production/classes').toURI() as String,
+                new File(siblingDir, 'out/production/resources').toURI() as String,
+
                 // when launched from Gradle, project dependencies appear as jars:
                 new File(siblingDir, 'build/libs/repos-4.0.0.jar').toURI() as String,
 
@@ -90,25 +98,25 @@ class GradleRunnerSpec extends Specification {
         classpath = classpathUris.collect { new URI(it).toURL() }
     }
 
-    def 'gradle distribution predicate includes expected files'() {
+    def 'gradle distribution predicate matches expected files'() {
         expect:
         def filtered = FluentIterable.from(classpath).filter(GradleRunner.CLASSPATH_GRADLE_CACHE).toList()
         filtered.size() == 5
     }
 
-    def 'jvm predicate includes expected files'() {
+    def 'jvm predicate matches expected files'() {
         expect:
         def filtered = FluentIterable.from(classpath).filter(GradleRunner.CLASSPATH_PROJECT_DIR).toList()
         filtered.size() == 15
     }
 
-    def 'classpath project deps predicate filters to projects'() {
+    def 'project dependencies matches expected files'() {
         expect:
         def filtered = FluentIterable.from(classpath).filter(GradleRunner.CLASSPATH_PROJECT_DEPENDENCIES).toList()
-        filtered.size() == 9
+        filtered.size() == 14
     }
 
-    def 'default classpath includes only application class paths and dependencies'() {
+    def 'default classpath matches only application class paths and dependencies'() {
         expect:
         def filtered = FluentIterable.from(classpath).filter(GradleRunner.CLASSPATH_DEFAULT).toList()
         filtered.size() == 20
