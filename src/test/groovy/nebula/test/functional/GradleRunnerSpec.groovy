@@ -119,6 +119,6 @@ class GradleRunnerSpec extends Specification {
     def 'default classpath matches only application class paths and dependencies'() {
         expect:
         def filtered = FluentIterable.from(classpath).filter(GradleRunner.CLASSPATH_DEFAULT).toList()
-        filtered.size() == 20
+        filtered.size() == 25
     }
 }
