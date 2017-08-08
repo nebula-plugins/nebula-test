@@ -16,7 +16,7 @@
 
 
 plugins {
-    id 'nebula.plugin-plugin' version '5.17.1'
+    id 'nebula.plugin-plugin' version '5.17.2'
     id 'org.ysb33r.gradletest' version '0.5.4'
 }
 
