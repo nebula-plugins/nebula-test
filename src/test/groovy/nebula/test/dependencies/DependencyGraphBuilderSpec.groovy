@@ -16,6 +16,59 @@ class DependencyGraphBuilderSpec extends Specification {
         foo.group == 'test.nebula'
         foo.artifact == 'foo'
         foo.version == '1.0.0'
+        foo.classifier == null
+        foo.extension == null
+    }
+
+    def 'add one dependency with classifier'() {
+        def builder = new DependencyGraphBuilder()
+        builder.addModule('test.nebula:foo:1.0.0:bar')
+
+        when:
+        DependencyGraph graph = builder.build()
+
+        then:
+        graph.nodes.size() == 1
+        Coordinate foo = graph.nodes.find().coordinate
+        foo.group == 'test.nebula'
+        foo.artifact == 'foo'
+        foo.version == '1.0.0'
+        foo.classifier == 'bar'
+        foo.extension == null
+    }
+
+    def 'add one dependency with extension'() {
+        def builder = new DependencyGraphBuilder()
+        builder.addModule('test.nebula:foo:1.0.0@zip')
+
+        when:
+        DependencyGraph graph = builder.build()
+
+        then:
+        graph.nodes.size() == 1
+        Coordinate foo = graph.nodes.find().coordinate
+        foo.group == 'test.nebula'
+        foo.artifact == 'foo'
+        foo.version == '1.0.0'
+        foo.classifier == null
+        foo.extension == 'zip'
+    }
+
+    def 'add one dependency with classifier, extension'() {
+        def builder = new DependencyGraphBuilder()
+        builder.addModule('test.nebula:foo:1.0.0:bar@zip')
+
+        when:
+        DependencyGraph graph = builder.build()
+
+        then:
+        graph.nodes.size() == 1
+        Coordinate foo = graph.nodes.find().coordinate
+        foo.group == 'test.nebula'
+        foo.artifact == 'foo'
+        foo.version == '1.0.0'
+        foo.classifier == 'bar'
+        foo.extension == 'zip'
     }
 
     def 'add one dependency with group, artifact, version syntax'() {
@@ -31,6 +84,25 @@ class DependencyGraphBuilderSpec extends Specification {
         foo.group == 'test.nebula'
         foo.artifact == 'foo'
         foo.version == '1.0.0'
+        foo.classifier == null
+        foo.extension == null
+    }
+
+    def 'add one dependency with group, artifact, version, classifier, extension syntax'() {
+        def builder = new DependencyGraphBuilder()
+        builder.addModule('test.nebula', 'foo', '1.0.0', 'bar', 'zip')
+
+        when:
+        DependencyGraph graph = builder.build()
+
+        then:
+        graph.nodes.size() == 1
+        Coordinate foo = graph.nodes.find().coordinate
+        foo.group == 'test.nebula'
+        foo.artifact == 'foo'
+        foo.version == '1.0.0'
+        foo.classifier == 'bar'
+        foo.extension == 'zip'
     }
 
     def 'add multiple dependencies'() {
@@ -47,10 +119,14 @@ class DependencyGraphBuilderSpec extends Specification {
         foo.group == 'test.nebula'
         foo.artifact == 'foo'
         foo.version == '1.0.0'
+        foo.classifier == null
+        foo.extension == null
         Coordinate bar = graph.nodes.find { it.coordinate.artifact == 'bar' }.coordinate
         bar.group == 'a.nebula'
         bar.artifact == 'bar'
         bar.version == '2.0.0'
+        bar.classifier == null
+        bar.extension == null
     }
 
     def 'add module with dependencies'() {
@@ -81,6 +157,8 @@ class DependencyGraphBuilderSpec extends Specification {
         dep.group == 'test.nebula'
         dep.artifact == 'baz'
         dep.version == '23.1.3'
+        dep.classifier == null
+        dep.extension == null
     }
 
     def 'add module with dependencies, verify modules are not replaced with placeholder'() {
@@ -100,5 +178,7 @@ class DependencyGraphBuilderSpec extends Specification {
         dep.group == 'test.nebula'
         dep.artifact == 'baz'
         dep.version == '23.1.3'
+        dep.classifier == null
+        dep.extension == null
     }
 }

@@ -24,6 +24,6 @@ class DependencyGraphNode {
 
     @Override
     String toString() {
-        "${group}:${artifact}:${version}"
+        coordinate.toString()
     }
 }

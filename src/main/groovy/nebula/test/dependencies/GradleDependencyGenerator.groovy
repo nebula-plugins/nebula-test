@@ -24,6 +24,9 @@ class GradleDependencyGenerator {
             apply plugin: 'ivy-publish'
             apply plugin: 'java'
 
+            task sourceJar(type: Jar) {
+            }
+
             publishing {
                 repositories {
                     maven {
@@ -43,11 +46,25 @@ class GradleDependencyGenerator {
                         artifactId artifactName
 
                         from components.java
+
+                        if (classifierName != null || extensionName != 'jar') {
+                            artifact(sourceJar) {
+                                classifier classifierName
+                                extension extensionName
+                            }
+                        }
                     }
                     ivy(IvyPublication) {
                         module artifactName
 
                         from components.java
+
+                        if (classifierName != null || extensionName != 'jar') {
+                            artifact(sourceJar) {
+                                classifier classifierName
+                                extension extensionName
+                            }
+                        }
                     }
                 }
             }
@@ -126,6 +143,7 @@ class GradleDependencyGenerator {
 
         gradleRoot.mkdirs()
         def rootBuildGradle = new File(gradleRoot, BUILD_GRADLE)
+
         rootBuildGradle.text = STANDARD_SUBPROJECT_BLOCK
         def includes = []
         graph.nodes.each { DependencyGraphNode n ->
@@ -156,6 +174,8 @@ class GradleDependencyGenerator {
             version = '${node.version}'
             ext {
                 artifactName = '${node.artifact}'
+                extensionName = '${node.extension? node.extension: "jar"}'
+                classifierName = ${node.classifier? "'" + node.classifier + "'": null}
             }
         """.stripIndent() + block.toString()
     }

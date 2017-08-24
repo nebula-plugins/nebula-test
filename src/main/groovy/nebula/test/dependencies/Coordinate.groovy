@@ -22,9 +22,22 @@ class Coordinate {
     String group
     String artifact
     String version
+    String classifier
+    String extension
 
     @Override
     String toString() {
-        "${group}:${artifact}:${version}"
+        def sb = "${group}:${artifact}:${version}"
+        if (classifier) sb <<= ":${classifier}"
+        if (extension) sb <<= "@${extension}"
+        return sb
+    }
+
+    public static Coordinate of(String s) {
+        def (substr, extension) = s.trim().tokenize("@")
+
+        def (group, artifact, version, classifier) = substr.tokenize(':')
+        return new Coordinate(
+                group: group, artifact: artifact, version: version, classifier: classifier, extension: extension)
     }
 }

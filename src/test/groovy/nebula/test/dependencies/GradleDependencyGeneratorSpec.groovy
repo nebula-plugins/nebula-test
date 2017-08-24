@@ -33,6 +33,45 @@ class GradleDependencyGeneratorSpec extends Specification {
         new File(mavenRepo, 'test/maven/foo/1.0.0/foo-1.0.0.jar').exists()
     }
 
+    def 'generate a maven repo with a classifier'() {
+        def directory = 'build/testdependencies/testmavenrepo'
+        def graph = ['test.maven:foo:1.0.0:bat']
+        def generator = new GradleDependencyGenerator(new DependencyGraph(graph), directory)
+
+        when:
+        generator.generateTestMavenRepo()
+
+        then:
+        def mavenRepo = new File(directory + '/mavenrepo')
+        new File(mavenRepo, 'test/maven/foo/1.0.0/foo-1.0.0-bat.jar').exists()
+    }
+
+    def 'generate a maven repo with a extension'() {
+        def directory = 'build/testdependencies/testmavenrepo'
+        def graph = ['test.maven:foo:1.0.0@zip']
+        def generator = new GradleDependencyGenerator(new DependencyGraph(graph), directory)
+
+        when:
+        generator.generateTestMavenRepo()
+
+        then:
+        def mavenRepo = new File(directory + '/mavenrepo')
+        new File(mavenRepo, 'test/maven/foo/1.0.0/foo-1.0.0.zip').exists()
+    }
+
+    def 'generate a maven repo with a classifier and extension'() {
+        def directory = 'build/testdependencies/testmavenrepo'
+        def graph = ['test.maven:foo:1.0.0:bar@zip']
+        def generator = new GradleDependencyGenerator(new DependencyGraph(graph), directory)
+
+        when:
+        generator.generateTestMavenRepo()
+
+        then:
+        def mavenRepo = new File(directory + '/mavenrepo')
+        new File(mavenRepo, 'test/maven/foo/1.0.0/foo-1.0.0-bar.zip').exists()
+    }
+
     def 'generate a maven repo with a SNAPSHOT'() {
         def directory = 'build/testdependencies/testmavenreposnapshot'
         def graph = ['test.maven:foo:1.0.1-SNAPSHOT']
@@ -60,6 +99,19 @@ class GradleDependencyGeneratorSpec extends Specification {
         def ivyRepo = new File(directory + '/ivyrepo')
         new File(ivyRepo, 'test/ivy/foo/1.0.0/foo-1.0.0-ivy.xml').exists()
         new File(ivyRepo, 'test/ivy/foo/1.0.0/foo-1.0.0.jar').exists()
+    }
+
+    def 'generate an ivy repo with classifier and extension'() {
+        def directory = 'build/testdependencies/testivyrepo'
+        def graph = ['test.ivy:foo:1.0.0:baz@zip']
+        def generator = new GradleDependencyGenerator(new DependencyGraph(graph), directory)
+
+        when:
+        generator.generateTestIvyRepo()
+
+        then:
+        def ivyRepo = new File(directory + '/ivyrepo')
+        new File(ivyRepo, 'test/ivy/foo/1.0.0/foo-1.0.0-baz.zip').exists()
     }
 
     def 'check ivy status'() {
@@ -103,6 +155,22 @@ class GradleDependencyGeneratorSpec extends Specification {
         new File(repo, 'ivyrepo/test/ivy/foo/1.0.0/foo-1.0.0-ivy.xml').text.contains '<dependency org="test.ivy" name="bar" rev="1.1.0" conf="compile-&gt;default"/>'
     }
 
+    def 'check ivy xml with dependency with classifier and extension'() {
+        def directory = 'build/testdependencies/ivyxml'
+        def graph = ['test.ivy:foo:1.0.0 -> test.ivy:bar:1.1.0:baz@zip']
+        def generator = new GradleDependencyGenerator(new DependencyGraph(graph), directory)
+
+        when:
+        generator.generateTestIvyRepo()
+
+        then:
+        def repo = new File(directory)
+        new File(repo, 'test.ivy.foo_1_0_0/build.gradle').text.contains 'compile \'test.ivy:bar:1.1.0:baz@zip\''
+        def xml = new File(repo, 'ivyrepo/test/ivy/foo/1.0.0/foo-1.0.0-ivy.xml').text
+        xml.contains '<dependency org="test.ivy" name="bar" rev="1.1.0" conf="compile-&gt;default" transitive="false">'
+        xml.contains '<artifact name="bar" type="zip" ext="zip" m:classifier="baz"/>'
+    }
+
     def 'check maven pom'() {
         def directory = 'build/testdependencies/mavenpom'
         def graph = ['test.maven:foo:1.0.0 -> test.maven:bar:1.+']
@@ -119,6 +187,26 @@ class GradleDependencyGeneratorSpec extends Specification {
         pom.contains '<artifactId>bar</artifactId>'
         pom.contains '<version>1.+</version>'
         pom.contains '<scope>compile</scope>'
+    }
+
+    def 'check maven pom with dependency with classifier and extension'() {
+        def directory = 'build/testdependencies/mavenpom'
+        def graph = ['test.maven:foo:1.0.0 -> test.maven:bar:1.+:baz@zip']
+        def generator = new GradleDependencyGenerator(new DependencyGraph(graph), directory)
+
+        when:
+        generator.generateTestMavenRepo()
+
+        then:
+        def repo = new File(directory)
+        new File(repo, 'test.maven.foo_1_0_0/build.gradle').text.contains 'compile \'test.maven:bar:1.+:baz@zip\''
+        def pom = new File(repo, 'mavenrepo/test/maven/foo/1.0.0/foo-1.0.0.pom').text
+        pom.contains '<groupId>test.maven</groupId>'
+        pom.contains '<artifactId>bar</artifactId>'
+        pom.contains '<version>1.+</version>'
+        pom.contains '<scope>compile</scope>'
+        pom.contains '<classifier>baz</classifier>'
+        pom.contains '<type>zip</type>'
     }
 
     def 'multiple libraries with dependencies'() {
@@ -239,6 +327,8 @@ class GradleDependencyGeneratorSpec extends Specification {
         then:
         block == expectedBlock
     }
+
+    // todo: make some changes down here for classifier and extension
 
     private Boolean mavenFilesExist(String group, String artifact, String version, File repository) {
         String baseName = artifactPath(group, artifact, version)

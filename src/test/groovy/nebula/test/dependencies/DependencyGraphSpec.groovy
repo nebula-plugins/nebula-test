@@ -28,13 +28,15 @@ class DependencyGraphSpec extends Specification {
         node.group == 'test'
         node.artifact == 'foo'
         node.version == '1.0.0'
+        node.classifier == null
+        node.extension == null
         node.dependencies.size() == 0
         node.toString() == 'test:foo:1.0.0'
     }
 
     def 'node with dependencies'() {
         when:
-        def graph = new DependencyGraph(['test:foo:1.0.0 -> test:bar:1.+'])
+        def graph = new DependencyGraph(['test:foo:1.0.0:baz@zip -> test:bar:1.+:bat@jar'])
 
         then:
         graph.nodes.size() == 1
@@ -42,11 +44,15 @@ class DependencyGraphSpec extends Specification {
         node.group == 'test'
         node.artifact == 'foo'
         node.version == '1.0.0'
+        node.classifier == 'baz'
+        node.extension == 'zip'
         node.dependencies.size() == 1 
         Coordinate dependency = node.dependencies[0]
         dependency.group == 'test'
         dependency.artifact == 'bar'
-        dependency.version == '1.+'   
+        dependency.version == '1.+'
+        dependency.classifier == 'bat'
+        dependency.extension == 'jar'
     }
 
     def 'node with multiple dependencies'() {
