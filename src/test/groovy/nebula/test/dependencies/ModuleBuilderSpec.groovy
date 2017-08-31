@@ -78,8 +78,7 @@ class ModuleBuilderSpec extends Specification {
         module.extension == null
         module.dependencies.size() == 0
     }
-
-
+    
     def 'build module with no dependencies separate group, artifact, version, classifer, extension'() {
         def builder = new ModuleBuilder('test.modulebuilder', 'foo', '1.0.0', 'bar', 'zip')
 
