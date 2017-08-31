@@ -143,7 +143,6 @@ class GradleDependencyGenerator {
 
         gradleRoot.mkdirs()
         def rootBuildGradle = new File(gradleRoot, BUILD_GRADLE)
-
         rootBuildGradle.text = STANDARD_SUBPROJECT_BLOCK
         def includes = []
         graph.nodes.each { DependencyGraphNode n ->
@@ -174,8 +173,8 @@ class GradleDependencyGenerator {
             version = '${node.version}'
             ext {
                 artifactName = '${node.artifact}'
-                extensionName = '${node.extension? node.extension: "jar"}'
-                classifierName = ${node.classifier? "'" + node.classifier + "'": null}
+                extensionName = '${node.extension? node.extension: 'jar'}'
+                classifierName = ${node.classifier? "'${node.classifier}'": null}
             }
         """.stripIndent() + block.toString()
     }

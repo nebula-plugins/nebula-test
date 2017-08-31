@@ -129,7 +129,6 @@ class ModuleBuilderSpec extends Specification {
         dep.extension == 'zip'
     }
 
-
     def 'add dependencies'() {
         def builder = new ModuleBuilder('test.modulebuilder', 'bar', '1.0.0')
         builder.addDependency('test.dependency', 'baz', '2.0.1')

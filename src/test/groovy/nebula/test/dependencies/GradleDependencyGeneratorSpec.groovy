@@ -328,8 +328,6 @@ class GradleDependencyGeneratorSpec extends Specification {
         block == expectedBlock
     }
 
-    // todo: make some changes down here for classifier and extension
-
     private Boolean mavenFilesExist(String group, String artifact, String version, File repository) {
         String baseName = artifactPath(group, artifact, version)
         Boolean pomExists = new File(repository, "${baseName}.pom").exists()
