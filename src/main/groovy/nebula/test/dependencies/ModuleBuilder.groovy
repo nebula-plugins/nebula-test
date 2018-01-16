@@ -2,7 +2,7 @@ package nebula.test.dependencies
 
 class ModuleBuilder {
     Coordinate module
-    String status
+    String status = 'integration'
     List<Coordinate> dependencies = []
 
     ModuleBuilder(String coordinate) {
