@@ -157,6 +157,13 @@ class GradleDependencyGenerator {
             ext {
                 artifactName = '${node.artifact}'
             }
+            publishing {
+                publications {
+                    ivy(IvyPublication) {
+                        descriptor.status = '${node.status}'
+                    }
+                }
+            }
         """.stripIndent() + block.toString()
     }
 

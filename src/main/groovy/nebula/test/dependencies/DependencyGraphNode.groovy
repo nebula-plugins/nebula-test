@@ -21,9 +21,10 @@ import groovy.transform.Immutable
 class DependencyGraphNode {
     @Delegate Coordinate coordinate
     List<Coordinate> dependencies = []
+    String status = "integration"
 
     @Override
     String toString() {
-        "${group}:${artifact}:${version}"
+        "${group}:${artifact}:${version}:${status}"
     }
 }

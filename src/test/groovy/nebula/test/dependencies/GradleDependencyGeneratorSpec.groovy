@@ -15,7 +15,6 @@
  */
 package nebula.test.dependencies
 
-import spock.lang.Ignore
 import spock.lang.Specification
 
 class GradleDependencyGeneratorSpec extends Specification {
@@ -75,18 +74,21 @@ class GradleDependencyGeneratorSpec extends Specification {
         new File(repo, 'ivyrepo/test/ivy/foo/1.0.0/foo-1.0.0-ivy.xml').text.contains 'status="integration"'
     }
 
-    @Ignore
     def 'allow different ivy status'() {
         def directory = 'build/testdependencies/ivyxml'
-        def graph = ['test.ivy:foo:1.0.0']
-        def generator = new GradleDependencyGenerator(new DependencyGraph(graph), directory)
+        def graph = [
+                new DependencyGraphNode(coordinate: new Coordinate(group: 'test.ivy', artifact: 'foo-final', version: '1.0.0'), status: "release"),
+                new DependencyGraphNode(coordinate: new Coordinate(group: 'test.ivy', artifact: 'foo-candidate', version: '1.0.0'), status: "candidate")
+        ]
+        def generator = new GradleDependencyGenerator(new DependencyGraph(nodes: graph), directory)
 
         when:
-        generator.generateTestIvyRepo('release')
+        generator.generateTestIvyRepo()
 
         then:
         def repo = new File(directory)
-        new File(repo, 'ivyrepo/test/ivy/foo/1.0.0/foo-1.0.0-ivy.xml').text.contains 'status="release"'
+        new File(repo, 'ivyrepo/test/ivy/foo-final/1.0.0/foo-final-1.0.0-ivy.xml').text.contains 'status="release"'
+        new File(repo, 'ivyrepo/test/ivy/foo-candidate/1.0.0/foo-candidate-1.0.0-ivy.xml').text.contains 'status="candidate"'
     }
 
     def 'check ivy xml'() {

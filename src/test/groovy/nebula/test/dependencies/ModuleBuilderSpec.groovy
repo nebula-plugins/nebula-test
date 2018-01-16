@@ -29,6 +29,20 @@ class ModuleBuilderSpec extends Specification {
         module.dependencies.size() == 0
     }
 
+    def 'build module with specific status'() {
+        def builder = new ModuleBuilder('test.modulebuilder', 'foo', '1.0.0').setStatus('snapshot')
+
+        when:
+        DependencyGraphNode module = builder.build()
+
+        then:
+        module.group == 'test.modulebuilder'
+        module.artifact == 'foo'
+        module.version == '1.0.0'
+        module.status == 'snapshot'
+
+    }
+
     def 'add dependency'() {
         def builder = new ModuleBuilder('test.modulebuilder', 'bar', '1.0.0')
         builder.addDependency('test.dependency', 'baz', '2.0.1')

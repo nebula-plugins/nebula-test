@@ -16,7 +16,7 @@ class DependencyGraphBuilder {
     }
 
     DependencyGraphBuilder addModule(DependencyGraphNode node) {
-        modules[node.toString()] = node
+        modules[node.coordinate.toString()] = node
 
         node.dependencies.each { Coordinate dep ->
             if (!modules.containsKey(dep.toString())) {
