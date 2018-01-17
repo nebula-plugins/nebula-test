@@ -2,6 +2,7 @@ package nebula.test.dependencies
 
 class ModuleBuilder {
     Coordinate module
+    String status = 'integration'
     List<Coordinate> dependencies = []
 
     ModuleBuilder(String coordinate) {
@@ -26,7 +27,13 @@ class ModuleBuilder {
         this
     }
 
+    ModuleBuilder setStatus(String status) {
+        this.status = status
+
+        this
+    }
+
     DependencyGraphNode build() {
-        new DependencyGraphNode(coordinate: module, dependencies: dependencies)
+        new DependencyGraphNode(coordinate: module, dependencies: dependencies, status: status)
     }
 }

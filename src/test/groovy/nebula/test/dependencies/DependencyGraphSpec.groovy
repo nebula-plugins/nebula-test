@@ -29,7 +29,7 @@ class DependencyGraphSpec extends Specification {
         node.artifact == 'foo'
         node.version == '1.0.0'
         node.dependencies.size() == 0
-        node.toString() == 'test:foo:1.0.0'
+        node.toString() == 'test:foo:1.0.0:integration'
     }
 
     def 'node with dependencies'() {
