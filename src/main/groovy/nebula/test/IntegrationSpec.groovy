@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,9 +40,6 @@ abstract class IntegrationSpec extends BaseIntegrationSpec {
     private ExecutionResult result
 
     protected String gradleVersion
-    protected LogLevel logLevel = LogLevel.INFO
-
-    protected String moduleName
     protected File settingsFile
     protected File buildFile
     protected boolean fork = false
@@ -50,18 +47,15 @@ abstract class IntegrationSpec extends BaseIntegrationSpec {
     protected List<String> jvmArguments = []
     protected MultiProjectIntegrationHelper helper
     protected Predicate<URL> classpathFilter
-    protected List<File> initScripts = []
     protected List<PreExecutionAction> preExecutionActions = []
     //Shutdown Gradle daemon after a few seconds to release memory. Useful for testing with multiple Gradle versions on shared CI server
     protected boolean memorySafeMode = false
     protected Integer daemonMaxIdleTimeInSecondsInMemorySafeMode = DEFAULT_DAEMON_MAX_IDLE_TIME_IN_SECONDS_IN_MEMORY_SAFE_MODE
 
-    private String findModuleName() {
-         getProjectDir().getName().replaceAll(/_\d+/, '')
-    }
+
 
     def setup() {
-        moduleName = findModuleName()
+        logLevel = LogLevel.INFO
         if (!settingsFile) {
             settingsFile = new File(getProjectDir(), 'settings.gradle')
             settingsFile.text = "rootProject.name='${moduleName}'\n"
@@ -87,30 +81,6 @@ abstract class IntegrationSpec extends BaseIntegrationSpec {
         runner.handle(getProjectDir(), arguments, jvmArguments, preExecutionActions)
     }
 
-    private List<String> calculateArguments(String... args) {
-        List<String> arguments = []
-        // Gradle will use these files name from the PWD, instead of the project directory. It's easier to just leave
-        // them out and let the default find them, since we're not changing their default names.
-        //arguments += '--build-file'
-        //arguments += (buildFile.canonicalPath - projectDir.canonicalPath).substring(1)
-        //arguments += '--settings-file'
-        //arguments += (settingsFile.canonicalPath - projectDir.canonicalPath).substring(1)
-        //arguments += '--no-daemon'
-
-        switch (getLogLevel()) {
-            case LogLevel.INFO:
-                arguments += '--info'
-                break
-            case LogLevel.DEBUG:
-                arguments += '--debug'
-                break
-        }
-        arguments += '--stacktrace'
-        arguments.addAll(args)
-        arguments.addAll(initScripts.collect { file -> '-I' + file.absolutePath })
-        arguments
-    }
-
     private List<String> calculateJvmArguments() {
         return jvmArguments + (remoteDebug ? [DEFAULT_REMOTE_DEBUG_JVM_ARGUMENTS] : [] as List) as List
     }
@@ -125,14 +95,6 @@ abstract class IntegrationSpec extends BaseIntegrationSpec {
 
     protected void addPreExecute(PreExecutionAction preExecutionAction) {
         preExecutionActions.add(preExecutionAction)
-    }
-
-    /**
-     * Override to alter its value
-     * @return
-     */
-    protected LogLevel getLogLevel() {
-        return logLevel
     }
 
     protected void copyResources(String srcDir, String destination) {

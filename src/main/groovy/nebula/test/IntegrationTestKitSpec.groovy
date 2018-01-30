@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Netflix, Inc.
+ * Copyright 2016-2018 Netflix, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,23 +36,36 @@ abstract class IntegrationTestKitSpec extends BaseIntegrationSpec {
         }
     }
 
-    void addSubproject(String name, String buildGradle) {
+    File addSubproject(String name, String buildGradle) {
         def subdir = new File(projectDir, name)
         subdir.mkdirs()
 
         settingsFile << "include \"${name}\"${LINE_END}"
 
         new File(subdir, "build.gradle").text = buildGradle
+
+        return subdir
     }
 
     BuildResult runTasks(String... tasks) {
         BuildResult result = GradleRunner.create()
                 .withProjectDir(projectDir)
-                .withArguments(*tasks.plus("-i"))
+                .withArguments(calculateArguments(tasks))
                 .withDebug(debug)
                 .withPluginClasspath()
                 .forwardOutput()
                 .build()
+        return checkForDeprecations(result)
+    }
+
+    BuildResult runTasksAndFail(String... tasks) {
+        BuildResult result = GradleRunner.create()
+                .withProjectDir(projectDir)
+                .withArguments(calculateArguments(tasks))
+                .withDebug(debug)
+                .withPluginClasspath()
+                .forwardOutput()
+                .buildAndFail()
         return checkForDeprecations(result)
     }
 

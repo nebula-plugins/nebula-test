@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2017 Netflix, Inc.
+ * Copyright 2013-2018 Netflix, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,7 @@
 
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
-import nebula.test.functional.ExecutionResult
-import org.gradle.testkit.runner.BuildResult
+import org.gradle.api.logging.LogLevel
 import org.junit.Rule
 import org.junit.rules.TestName
 import spock.lang.Specification
@@ -26,6 +25,9 @@ import spock.lang.Specification
 abstract class BaseIntegrationSpec extends Specification {
     @Rule TestName testName = new TestName()
     File projectDir
+    protected String moduleName
+    protected LogLevel logLevel = LogLevel.LIFECYCLE
+    protected List<File> initScripts = []
 
     def setup() {
         projectDir = new File("build/nebulatest/${this.class.canonicalName}/${testName.methodName.replaceAll(/\W+/, '-')}").absoluteFile
@@ -33,6 +35,15 @@ abstract class BaseIntegrationSpec extends Specification {
             projectDir.deleteDir()
         }
         projectDir.mkdirs()
+        moduleName = findModuleName()
+    }
+
+    /**
+     * Override to alter its value
+     * @return
+     */
+    protected LogLevel getLogLevel() {
+        return logLevel
     }
 
     /* Setup */
@@ -134,5 +145,33 @@ abstract class BaseIntegrationSpec extends Specification {
     protected void addResource(String srcDir, String filename, String contents, File baseDir = getProjectDir()) {
         def resourceFile = createFile("${srcDir}/${filename}", baseDir)
         resourceFile.text = contents
+    }
+
+    protected String findModuleName() {
+        getProjectDir().getName().replaceAll(/_\d+/, '')
+    }
+
+    protected List<String> calculateArguments(String... args) {
+        List<String> arguments = []
+        // Gradle will use these files name from the PWD, instead of the project directory. It's easier to just leave
+        // them out and let the default find them, since we're not changing their default names.
+        //arguments += '--build-file'
+        //arguments += (buildFile.canonicalPath - projectDir.canonicalPath).substring(1)
+        //arguments += '--settings-file'
+        //arguments += (settingsFile.canonicalPath - projectDir.canonicalPath).substring(1)
+        //arguments += '--no-daemon'
+
+        switch (getLogLevel()) {
+            case LogLevel.INFO:
+                arguments += '--info'
+                break
+            case LogLevel.DEBUG:
+                arguments += '--debug'
+                break
+        }
+        arguments += '--stacktrace'
+        arguments.addAll(args)
+        arguments.addAll(initScripts.collect { file -> '-I' + file.absolutePath })
+        arguments
     }
  }
