@@ -9,7 +9,9 @@ final class ClasspathAddingInitScriptBuilderFixture {
         def libraries = []
 
         (1..numberOfLibs).each { counter ->
-            File jar = new File(projectDir, "build/libs/lib${counter}.jar")
+            File libDir = new File(projectDir, 'build/libs')
+            libDir.mkdirs()
+            File jar = new File(libDir, "lib${counter}.jar")
             GFileUtils.touch(jar)
             libraries << jar
         }
