@@ -26,7 +26,7 @@ class OutputsGradle2Spec extends Specification {
         result.standardOutput.contains("Printed (stdout)")
     }
 
-    def "err.println included in standardError in fork mode"() {
+    def "err.println included in standardError or standardOutput in fork mode"() {
         given:
         GradleRunner runner = GradleRunnerFactory.createTooling(FORK_MODE)
         tmp.newFile("build.gradle") << """
@@ -37,7 +37,11 @@ class OutputsGradle2Spec extends Specification {
         ExecutionResult result = runner.run(tmp.root, ["print"])
 
         then:
-        result.standardError.contains("Printed (stderr)")
+        def expectedMessage = "Printed (stderr)"
+        //Gradle 4.7 started to print error log messages into standard output
+        //we run build with version lower then 4.7 as well higher so we check both places
+        result.standardError.contains(expectedMessage) || result.standardOutput.contains(expectedMessage)
+
     }
 
     def "stdout redirected to WARN included in standardOutput in fork mode"() {
