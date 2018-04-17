@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package nebula.test
+package nebula.test
 
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
@@ -23,7 +23,8 @@ import org.junit.rules.TestName
 import spock.lang.Specification
 
 abstract class BaseIntegrationSpec extends Specification {
-    @Rule TestName testName = new TestName()
+    @Rule
+    TestName testName = new TestName()
     File projectDir
     protected String moduleName
     protected LogLevel logLevel = LogLevel.LIFECYCLE
@@ -47,6 +48,7 @@ abstract class BaseIntegrationSpec extends Specification {
     }
 
     /* Setup */
+
     protected File directory(String path, File baseDir = getProjectDir()) {
         new File(baseDir, path).with {
             mkdirs()
@@ -152,10 +154,19 @@ abstract class BaseIntegrationSpec extends Specification {
     }
 
     protected List<String> calculateArguments(String... args) {
-        new File(projectDir, 'gradle.properties').newWriter().withWriter { w ->
-            w << """\
-                 org.gradle.warning.mode=all
-                 """.stripIndent()
+        def gradleProperties = new File(projectDir, 'gradle.properties')
+        def addProperties = true
+        if (gradleProperties.exists()) {
+            def properties = new Properties()
+            properties.load(gradleProperties.newReader())
+            if (properties.contains('org.gradle.warning.mode')) {
+                addProperties = false
+            }
+        }
+        if (addProperties) {
+            gradleProperties << """\
+                org.gradle.warning.mode=all
+            """.stripIndent()
         }
 
         List<String> arguments = []
@@ -179,4 +190,4 @@ abstract class BaseIntegrationSpec extends Specification {
         arguments.addAll(initScripts.collect { file -> '-I' + file.absolutePath })
         arguments
     }
- }
+}
