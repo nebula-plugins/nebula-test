@@ -170,6 +170,7 @@ abstract class BaseIntegrationSpec extends Specification {
                 break
         }
         arguments += '--stacktrace'
+        arguments += '--warning-mode=all'
         arguments.addAll(args)
         arguments.addAll(initScripts.collect { file -> '-I' + file.absolutePath })
         arguments
