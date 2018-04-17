@@ -152,6 +152,11 @@ abstract class BaseIntegrationSpec extends Specification {
     }
 
     protected List<String> calculateArguments(String... args) {
+        new File(projectDir, 'gradle.properties') <<
+        """\
+       org.gradle.warning.mode=all
+        """.stripIndent()
+
         List<String> arguments = []
         // Gradle will use these files name from the PWD, instead of the project directory. It's easier to just leave
         // them out and let the default find them, since we're not changing their default names.
@@ -160,7 +165,6 @@ abstract class BaseIntegrationSpec extends Specification {
         //arguments += '--settings-file'
         //arguments += (settingsFile.canonicalPath - projectDir.canonicalPath).substring(1)
         //arguments += '--no-daemon'
-
         switch (getLogLevel()) {
             case LogLevel.INFO:
                 arguments += '--info'
@@ -170,7 +174,6 @@ abstract class BaseIntegrationSpec extends Specification {
                 break
         }
         arguments += '--stacktrace'
-        arguments += '--warning-mode=all'
         arguments.addAll(args)
         arguments.addAll(initScripts.collect { file -> '-I' + file.absolutePath })
         arguments
