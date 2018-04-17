@@ -152,10 +152,11 @@ abstract class BaseIntegrationSpec extends Specification {
     }
 
     protected List<String> calculateArguments(String... args) {
-        new File(projectDir, 'gradle.properties') <<
-        """\
-       org.gradle.warning.mode=all
-        """.stripIndent()
+        new File(projectDir, 'gradle.properties').newWriter().withWriter { w ->
+            w << """\
+                 org.gradle.warning.mode=all
+                 """.stripIndent()
+        }
 
         List<String> arguments = []
         // Gradle will use these files name from the PWD, instead of the project directory. It's easier to just leave
