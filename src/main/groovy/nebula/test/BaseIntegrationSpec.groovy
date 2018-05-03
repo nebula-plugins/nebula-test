@@ -154,21 +154,6 @@ abstract class BaseIntegrationSpec extends Specification {
     }
 
     protected List<String> calculateArguments(String... args) {
-        def gradleProperties = new File(projectDir, 'gradle.properties')
-        def addProperties = true
-        if (gradleProperties.exists()) {
-            def properties = new Properties()
-            properties.load(gradleProperties.newReader())
-            if (properties.contains('org.gradle.warning.mode')) {
-                addProperties = false
-            }
-        }
-        if (addProperties) {
-            gradleProperties << """\
-                org.gradle.warning.mode=all
-            """.stripIndent()
-        }
-
         List<String> arguments = []
         // Gradle will use these files name from the PWD, instead of the project directory. It's easier to just leave
         // them out and let the default find them, since we're not changing their default names.
@@ -186,6 +171,7 @@ abstract class BaseIntegrationSpec extends Specification {
                 break
         }
         arguments += '--stacktrace'
+        arguments += '-Dorg.gradle.warning.mode=all'
         arguments.addAll(args)
         arguments.addAll(initScripts.collect { file -> '-I' + file.absolutePath })
         arguments
