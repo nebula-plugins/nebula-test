@@ -38,18 +38,6 @@ class GradleDependencyGenerator {
                         }
                     }
                 }
-                publications {
-                    maven(MavenPublication) {
-                        artifactId artifactName
-
-                        from components.java
-                    }
-                    ivy(IvyPublication) {
-                        module artifactName
-
-                        from components.java
-                    }
-                }
             }
         }
     '''.stripIndent()
@@ -159,7 +147,13 @@ class GradleDependencyGenerator {
             }
             publishing {
                 publications {
+                    maven(MavenPublication) {
+                        artifactId artifactName
+                        from components.java
+                    }
                     ivy(IvyPublication) {
+                        module artifactName
+                        from components.java
                         descriptor.status = '${node.status}'
                     }
                 }
