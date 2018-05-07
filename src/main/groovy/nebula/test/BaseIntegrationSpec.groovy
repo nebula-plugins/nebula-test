@@ -78,6 +78,11 @@ abstract class BaseIntegrationSpec extends Specification {
         def deprecations = output.readLines().findAll {
             it.contains("has been deprecated and is scheduled to be removed in Gradle")
         }
+        // temporary for known issue with overwriting task
+        // overridden task expected to not be needed in future version
+        if (deprecations.size() == 1 && deprecations.first().contains("Creating a custom task named 'dependencyInsight' has been deprecated and is scheduled to be removed in Gradle 5.0.")) {
+            return
+        }
         if (!System.getProperty("ignoreDeprecations") && !deprecations.isEmpty()) {
             throw new IllegalArgumentException("Deprecation warnings were found (Set the ignoreDeprecations system property during the test to ignore):\n" + deprecations.collect {
                 " - $it"
