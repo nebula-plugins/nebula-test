@@ -45,8 +45,9 @@ public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
     }
 
     private GradleConnector createGradleConnector(File projectDir) {
-        GradleConnector connector = GradleConnector.newConnector();
-        connector.forProjectDirectory(projectDir);
+        GradleConnector connector = GradleConnector.newConnector()
+        connector.forProjectDirectory(projectDir)
+        connector.useGradleUserHomeDir(new File(projectDir, ".gradle"))
         configureGradleVersion(connector, projectDir)
         connector
     }
