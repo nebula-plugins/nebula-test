@@ -16,6 +16,9 @@
 
 package nebula.test.functional
 
+import nebula.test.functional.foo.Thing
+import org.gradle.api.Plugin
+import org.gradle.api.Project
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification

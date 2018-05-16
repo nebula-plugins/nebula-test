@@ -8,16 +8,12 @@ import nebula.test.functional.internal.GradleHandleFactory
 import org.gradle.tooling.BuildLauncher
 import org.gradle.tooling.GradleConnector
 import org.gradle.tooling.ProjectConnection
-import org.gradle.tooling.internal.consumer.DefaultGradleConnector
-import org.gradle.tooling.model.build.BuildEnvironment
 
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
 @CompileStatic
 public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
     public static final String FORK_SYS_PROP = 'nebula.test.functional.fork'
-    private static final Map<String, File> gradleHomeDirs = new ConcurrentHashMap<String, File>()
 
     private final boolean fork
     private final String version
@@ -43,58 +39,23 @@ public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
             connector.daemonMaxIdleTime(daemonMaxIdleTimeInSeconds, TimeUnit.SECONDS)
         }
 
-        ProjectConnection connection = connector.connect()
+        ProjectConnection connection = connector.connect();
         BuildLauncher launcher = createBuildLauncher(connection, arguments, jvmArguments)
         createGradleHandle(connection, launcher, forkedProcess)
     }
 
     private GradleConnector createGradleConnector(File projectDir) {
-        GradleConnector connector = GradleConnector.newConnector()
-        connector.forProjectDirectory(projectDir)
-        configureGradleVersion(connector as DefaultGradleConnector, projectDir)
+        GradleConnector connector = GradleConnector.newConnector();
+        connector.forProjectDirectory(projectDir);
+        configureGradleVersion(connector, projectDir)
         connector
     }
 
-    private void configureGradleVersion(DefaultGradleConnector connector, File projectDir) {
-        def gradleHomeKey
+    private void configureGradleVersion(GradleConnector connector, File projectDir) {
         if (version != null) {
-            gradleHomeKey = version
             connector.useGradleVersion(version)
         } else {
-            gradleHomeKey = 'default'
             configureWrapperDistributionIfUsed(connector, projectDir)
-        }
-
-        /**
-         * TestKit already correctly handles separating the TestKit files from the distribution, but because we're using
-         * the tooling API for this legacy case, we need to initialize a connection and interrogate the installation so
-         * we can have a separate Gradle home for each test, without causing a distribution download for each test.
-         */
-
-        def gradleHomeDir = gradleHomeDirs.computeIfAbsent(gradleHomeKey) {
-            def connection = connector.connect()
-            try {
-                connection.getModel(BuildEnvironment)
-                def distribution = getPrivateField(connector, 'distribution')
-                def installedDistribution = getPrivateField(distribution, 'installedDistribution')
-                getPrivateField(installedDistribution, 'gradleHomeDir')
-            } finally {
-                connection.close()
-            }
-        }
-
-        connector.useInstallation(gradleHomeDir)
-        connector.useGradleUserHomeDir(new File(projectDir, ".gradle"))
-    }
-
-    private static <T> T getPrivateField(Object object, String name) {
-        def field = object.getClass().getDeclaredField(name)
-        def accessible = field.isAccessible()
-        field.setAccessible(true)
-        try {
-            return field.get(object) as T
-        } finally {
-            field.setAccessible(accessible)
         }
     }
 
@@ -134,8 +95,8 @@ public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
     }
 
     private static BuildLauncher createBuildLauncher(ProjectConnection connection, List<String> arguments, List<String> jvmArguments) {
-        BuildLauncher launcher = connection.newBuild()
-        launcher.withArguments(arguments as String[])
+        BuildLauncher launcher = connection.newBuild();
+        launcher.withArguments(arguments as String[]);
         launcher.setJvmArguments(jvmArguments as String[])
         launcher
     }
