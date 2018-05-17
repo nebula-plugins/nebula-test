@@ -23,18 +23,27 @@ class ClasspathAddingInitScriptBuilder {
         IoActions.writeTextFile(initScriptFile, new ErroringAction<Writer>() {
             @Override
             protected void doExecute(Writer writer) throws Exception {
-                writer.write("allprojects {\n");
-                writer.write("  buildscript {\n");
-                writer.write("    dependencies {\n");
-                for (File file : classpath) {
-                    // Commons-lang 2.4 does not escape forward slashes correctly, https://issues.apache.org/jira/browse/LANG-421
-                    writer.write(String.format("      classpath files('%s')\n", TextUtil.escapeString(file.getAbsolutePath())));
-                }
-                writer.write("    }\n");
-                writer.write("  }\n");
-                writer.write("}\n");
+                writer.write("allprojects {\n")
+                writer.write("  buildscript {\n")
+                writer.write("    dependencies {\n")
+                writeClasspath(writer, classpath)
+                writer.write("    }\n")
+                writer.write("  }\n")
+                writer.write("}\n")
+                writer.write("initscript {\n")
+                writer.write("  dependencies {\n")
+                writeClasspath(writer, classpath)
+                writer.write("  }\n")
+                writer.write("}\n")
             }
-        });
+        })
+    }
+
+    public static writeClasspath(Writer writer, List<File> classpath) {
+        for (File file : classpath) {
+            // Commons-lang 2.4 does not escape forward slashes correctly, https://issues.apache.org/jira/browse/LANG-421
+            writer.write(String.format("      classpath files('%s')\n", TextUtil.escapeString(file.getAbsolutePath())));
+        }
     }
 
     public static List<File> getClasspathAsFiles(ClassLoader classLoader, Predicate<URL> classpathFilter) {
