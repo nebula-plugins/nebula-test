@@ -22,8 +22,9 @@ import nebula.test.functional.internal.GradleHandle
 import nebula.test.functional.internal.GradleHandleBuildListener
 import org.gradle.tooling.BuildException
 import org.gradle.tooling.BuildLauncher
-import org.gradle.tooling.ProgressEvent
-import org.gradle.tooling.ProgressListener
+import org.gradle.tooling.events.ProgressEvent
+import org.gradle.tooling.events.ProgressListener
+import org.gradle.tooling.events.task.TaskOperationDescriptor
 
 @CompileStatic
 class BuildLauncherBackedGradleHandle implements GradleHandle {
@@ -33,7 +34,6 @@ class BuildLauncherBackedGradleHandle implements GradleHandle {
     final private BuildLauncher launcher;
     final private boolean forkedProcess
     final private List<String> tasksExecuted;
-    public static final String PROGRESS_TASK_PREFIX = "Execute :";
     private GradleHandleBuildListener buildListener
 
     public BuildLauncherBackedGradleHandle(BuildLauncher launcher, boolean forkedProcess) {
@@ -45,10 +45,9 @@ class BuildLauncherBackedGradleHandle implements GradleHandle {
         launcher.addProgressListener(new ProgressListener() {
             @Override
             public void statusChanged(ProgressEvent event) {
-                // These are free form strings, :-(
-                if (event.getDescription().startsWith(PROGRESS_TASK_PREFIX)) { // E.g. "Execute :echo"
-                    String taskName = event.getDescription().substring(PROGRESS_TASK_PREFIX.length() - 1);
-                    tasksExecuted.add(taskName);
+                if (event.descriptor instanceof TaskOperationDescriptor) {
+                    def descriptor = (TaskOperationDescriptor) event.descriptor
+                    tasksExecuted.add(descriptor.taskPath)
                 }
             }
         });
