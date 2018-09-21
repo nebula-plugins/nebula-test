@@ -38,7 +38,7 @@ class DependencyGraph {
         def coordinate = new Coordinate(group: group, artifact: artifact, version: version)
         def dependencies = (parts.size() > 1) ? parseDependencies(parts[1]) : []
 
-        new DependencyGraphNode(coordinate: coordinate, dependencies: dependencies)
+        new DependencyGraphNode(coordinate: coordinate, dependencies: dependencies, status: "integration")
     }
 
     private List<Coordinate> parseDependencies(String s) {
