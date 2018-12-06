@@ -1,4 +1,1 @@
 rootProject.name='nebula-test'
-
-enableFeaturePreview('STABLE_PUBLISHING')
-
