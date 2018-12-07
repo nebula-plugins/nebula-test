@@ -76,7 +76,7 @@ abstract class BaseIntegrationSpec extends Specification {
 
     protected static void checkForDeprecations(String output) {
         def deprecations = output.readLines().findAll {
-            it.contains("has been deprecated and is scheduled to be removed in Gradle")
+            it.contains("has been deprecated and is scheduled to be removed in Gradle") || it.contains("Deprecated Gradle features were used in this build")
         }
         // temporary for known issue with overwriting task
         // overridden task expected to not be needed in future version

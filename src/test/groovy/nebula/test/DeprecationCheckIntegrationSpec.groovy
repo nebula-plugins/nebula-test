@@ -9,7 +9,7 @@ class DeprecationCheckIntegrationSpec extends IntegrationSpec {
             tasks.jar.deleteAllActions()
         """
 
-        gradleVersion = '4.7-rc-2'
+        gradleVersion = '4.7'
 
         when:
         runTasks()
