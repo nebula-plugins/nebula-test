@@ -184,7 +184,7 @@ class GradleDependencyGeneratorSpec extends Specification {
         String expectedBlock = """\
             ivy {
                 url '${generator.getIvyRepoUrl()}'
-                layout('pattern') {
+                patternLayout {
                     ivy '[organisation]/[module]/[revision]/[module]-[revision]-ivy.[ext]'
                     artifact '[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]'
                     m2compatible = true

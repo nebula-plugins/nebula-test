@@ -31,7 +31,7 @@ class GradleDependencyGenerator {
                     }
                     ivy {
                         url "../ivyrepo"
-                        layout('pattern') {
+                        patternLayout {
                             ivy '[organisation]/[module]/[revision]/[module]-[revision]-ivy.[ext]'
                             artifact '[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]'
                             m2compatible = true
@@ -96,7 +96,7 @@ class GradleDependencyGenerator {
         """\
             ivy {
                 url '${getIvyRepoUrl()}'
-                layout('pattern') {
+                patternLayout {
                     ivy '[organisation]/[module]/[revision]/[module]-[revision]-ivy.[ext]'
                     artifact '[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]'
                     m2compatible = true
