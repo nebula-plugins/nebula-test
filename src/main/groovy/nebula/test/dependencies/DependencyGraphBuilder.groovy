@@ -11,6 +11,10 @@ class DependencyGraphBuilder {
         addModule(group, artifact, version, status)
     }
 
+    DependencyGraphBuilder addModule(String group, String artifact, String version) {
+        addModule(group, artifact, version, DEFAULT_STATUS)
+    }
+
     DependencyGraphBuilder addModule(String group, String artifact, String version, String status) {
         String key = "${group}:${artifact}:${version}".toString()
         modules[key] = new DependencyGraphNode(coordinate: new Coordinate(group: group, artifact: artifact, version: version), status: status ?: DEFAULT_STATUS)
