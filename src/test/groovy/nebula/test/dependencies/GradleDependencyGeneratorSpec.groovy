@@ -47,6 +47,56 @@ class GradleDependencyGeneratorSpec extends Specification {
         }
     }
 
+    def 'publishes ivy status using DependencyGraphBuilder.addModule - passing status'() {
+        given:
+        def directory = 'build/testdependencies/ivypublishAddModuleWithStatus'
+        def graph = new DependencyGraphBuilder().addModule('test.resolved:a:1.0.0:release')
+                .addModule('test.resolved:a:1.1.0:release').build()
+        def generator = new GradleDependencyGenerator(graph, directory)
+
+        when:
+        generator.generateTestIvyRepo()
+
+        then:
+        def ivyRepo = new File('build/testdependencies/ivypublishAddModuleWithStatus')
+        def xml = new File(ivyRepo, 'ivyrepo/test/resolved/a/1.1.0/a-1.1.0-ivy.xml')
+        xml.exists()
+        xml.text.contains("status=\"release\"")
+    }
+
+    def 'publishes ivy status using DependencyGraphBuilder.addModule'() {
+        given:
+        def directory = 'build/testdependencies/ivypublishAddModule'
+        def graph = new DependencyGraphBuilder().addModule('test.resolved:a:1.0.0')
+                .addModule('test.resolved:a:1.1.0').build()
+        def generator = new GradleDependencyGenerator(graph, directory)
+
+        when:
+        generator.generateTestIvyRepo()
+
+        then:
+        def ivyRepo = new File('build/testdependencies/ivypublishAddModule')
+        def xml = new File(ivyRepo, 'ivyrepo/test/resolved/a/1.1.0/a-1.1.0-ivy.xml')
+        xml.exists()
+        xml.text.contains("status=\"integration\"")
+    }
+
+    def 'DependencyGraphBuilder using map for DependencyGraph'() {
+        given:
+        def directory = 'build/testdependencies/ivypublishMap'
+        def graph = ['test.resolved:a:1.0.0', 'test.resolved:a:1.1.0']
+        def generator = new GradleDependencyGenerator(new DependencyGraph(graph), directory)
+
+        when:
+        generator.generateTestIvyRepo()
+
+        then:
+        def ivyRepo = new File('build/testdependencies/ivypublishMap')
+        def xml = new File(ivyRepo, 'ivyrepo/test/resolved/a/1.1.0/a-1.1.0-ivy.xml')
+        xml.exists()
+        xml.text.contains("status=\"integration\"")
+    }
+
     def 'generate an ivy repo'() {
         def directory = 'build/testdependencies/testivyrepo'
         def graph = ['test.ivy:foo:1.0.0']

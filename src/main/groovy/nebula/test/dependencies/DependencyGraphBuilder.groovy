@@ -1,17 +1,23 @@
 package nebula.test.dependencies
 
 class DependencyGraphBuilder {
+
+    private static final DEFAULT_STATUS = 'integration'
+
     Map<String, DependencyGraphNode> modules = [:]
 
     DependencyGraphBuilder addModule(String coordinate) {
-        def (group, artifact, version) = coordinate.trim().tokenize(':')
-        addModule(group, artifact, version)
+        def (group, artifact, version, status) = coordinate.trim().tokenize(':')
+        addModule(group, artifact, version, status)
     }
 
     DependencyGraphBuilder addModule(String group, String artifact, String version) {
-        String key = "${group}:${artifact}:${version}".toString()
-        modules[key] = new DependencyGraphNode(coordinate: new Coordinate(group: group, artifact: artifact, version: version))
+        addModule(group, artifact, version, DEFAULT_STATUS)
+    }
 
+    DependencyGraphBuilder addModule(String group, String artifact, String version, String status) {
+        String key = "${group}:${artifact}:${version}".toString()
+        modules[key] = new DependencyGraphNode(coordinate: new Coordinate(group: group, artifact: artifact, version: version), status: status ?: DEFAULT_STATUS)
         this
     }
 
