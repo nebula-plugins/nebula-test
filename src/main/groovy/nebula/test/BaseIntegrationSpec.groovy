@@ -30,6 +30,8 @@ abstract class BaseIntegrationSpec extends Specification {
     protected LogLevel logLevel = LogLevel.LIFECYCLE
     protected List<File> initScripts = []
 
+    private static final LOGGING_LEVEL_ENV_VARIABLE = "NEBULA_TEST_LOGGING_LEVEL"
+
     def setup() {
         projectDir = new File("build/nebulatest/${this.class.canonicalName}/${testName.methodName.replaceAll(/\W+/, '-')}").absoluteFile
         if (projectDir.exists()) {
@@ -44,7 +46,11 @@ abstract class BaseIntegrationSpec extends Specification {
      * @return
      */
     protected LogLevel getLogLevel() {
-        return logLevel
+        String levelFromEnv = System.getenv(LOGGING_LEVEL_ENV_VARIABLE)
+        if(!levelFromEnv) {
+            return logLevel
+        }
+        return LogLevel.valueOf(levelFromEnv.toUpperCase())
     }
 
     /* Setup */
