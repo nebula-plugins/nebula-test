@@ -50,7 +50,7 @@ abstract class BaseIntegrationSpec extends Specification {
         if(!levelFromEnv) {
             return logLevel
         }
-        return LogLevel.valueOf(levelFromEnv)
+        return LogLevel.valueOf(levelFromEnv.toUpperCase())
     }
 
     /* Setup */
