@@ -99,6 +99,20 @@ abstract class BaseIntegrationSpec extends Specification {
         }
     }
 
+    protected static void checkForMutableProjectState(String output) {
+        def mutableProjectStateWarnings = output.readLines().findAll {
+            it.contains("was resolved without accessing the project in a safe manner") ||
+                    it.contains("This may happen when a configuration is resolved from a thread not managed by Gradle or from a different project")
+
+        }
+
+        if (!System.getProperty("ignoreMutableProjectStateWarnings") && !mutableProjectStateWarnings.isEmpty()) {
+            throw new IllegalArgumentException("Mutable Project State warnings were found (Set the ignoreMutableProjectStateWarnings system property during the test to ignore):\n" + mutableProjectStateWarnings.collect {
+                " - $it"
+            }.join("\n"))
+        }
+    }
+
     protected void writeHelloWorld(String packageDotted, File baseDir = getProjectDir()) {
         def path = 'src/main/java/' + packageDotted.replace('.', '/') + '/HelloWorld.java'
         def javaFile = createFile(path, baseDir)
