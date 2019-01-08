@@ -165,6 +165,7 @@ abstract class IntegrationSpec extends BaseIntegrationSpec {
     }
 
     protected ExecutionResult checkForDeprecations(ExecutionResult result) {
+        checkForMutableProjectState(result.standardOutput)
         checkForDeprecations(result.standardOutput)
         return result
     }
