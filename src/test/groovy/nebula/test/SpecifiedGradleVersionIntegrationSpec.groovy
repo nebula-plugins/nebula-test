@@ -78,7 +78,7 @@ class SpecifiedGradleVersionIntegrationSpec extends IntegrationSpec {
         requestedGradleVersion << ['2.8', '2.9']
     }
 
-    static final String CUSTOM_DISTRIBUTION = 'http://dl.bintray.com/nebula/gradle-distributions/1.12-20140608201532+0000/gradle-1.12-20140608201532+0000-bin.zip'
+    static final String CUSTOM_DISTRIBUTION = 'https://dl.bintray.com/nebula/gradle-distributions/1.12-20140608201532+0000/gradle-1.12-20140608201532+0000-bin.zip'
 
     @Ignore("Only works with a custom distribution that is compatible with our runtime, of which 1.12 is not compatible with our spock 2.0 dependency")
     def 'should be able to use custom distribution'() {
