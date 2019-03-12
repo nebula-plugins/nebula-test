@@ -15,6 +15,7 @@
  */
 package nebula.test.dependencies
 
+import org.gradle.api.invocation.Gradle
 import spock.lang.Specification
 
 class GradleDependencyGeneratorSpec extends Specification {
@@ -109,6 +110,85 @@ class GradleDependencyGeneratorSpec extends Specification {
         def ivyRepo = new File(directory + '/ivyrepo')
         new File(ivyRepo, 'test/ivy/foo/1.0.0/foo-1.0.0-ivy.xml').exists()
         new File(ivyRepo, 'test/ivy/foo/1.0.0/foo-1.0.0.jar').exists()
+    }
+
+    def 'generate an ivy repo block - gradle version older than 5.x'() {
+        def directory = 'build/testdependencies/testivyrepo'
+        def graph = ['test.ivy:foo:1.0.0']
+        def generator = new GradleDependencyGenerator("4.10.3", new DependencyGraph(graph), directory)
+
+        when:
+        String block = generator.getIvyRepositoryBlock()
+
+        then:
+        block.contains("""
+    layout('pattern') {
+        ivy '[organisation]/[module]/[revision]/[module]-[revision]-ivy.[ext]'
+        artifact '[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]'
+        m2compatible = true
+    }
+""")
+    }
+
+    def 'generate an ivy repo block - uses Gradle object newer versions of Gradle'() {
+        Gradle gradleMock = Mock(Gradle)
+        def directory = 'build/testdependencies/testivyrepo'
+        def graph = ['test.ivy:foo:1.0.0']
+
+        when:
+        def generator = new GradleDependencyGenerator(gradleMock, new DependencyGraph(graph), directory)
+        String block = generator.getIvyRepositoryBlock()
+
+        then:
+        1 * gradleMock.getGradleVersion() >> "5.2.1"
+
+        block.contains("""
+    patternLayout {
+        ivy '[organisation]/[module]/[revision]/[module]-[revision]-ivy.[ext]'
+        artifact '[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]'
+        m2compatible = true
+    }
+""")
+
+    }
+
+    def 'generate an ivy repo block - uses Gradle object old versions of Gradle'() {
+        Gradle gradleMock = Mock(Gradle)
+        def directory = 'build/testdependencies/testivyrepo'
+        def graph = ['test.ivy:foo:1.0.0']
+
+        when:
+        def generator = new GradleDependencyGenerator(gradleMock, new DependencyGraph(graph), directory)
+        String block = generator.getIvyRepositoryBlock()
+
+        then:
+        1 * gradleMock.getGradleVersion() >> "4.10.3"
+
+        block.contains("""
+    layout('pattern') {
+        ivy '[organisation]/[module]/[revision]/[module]-[revision]-ivy.[ext]'
+        artifact '[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]'
+        m2compatible = true
+    }
+""")
+    }
+
+    def 'generate an ivy repo block - gradle version newer than 5.x'() {
+        def directory = 'build/testdependencies/testivyrepo'
+        def graph = ['test.ivy:foo:1.0.0']
+        def generator = new GradleDependencyGenerator("5.2.1", new DependencyGraph(graph), directory)
+
+        when:
+        String block = generator.getIvyRepositoryBlock()
+
+        then:
+        block.contains("""
+    patternLayout {
+        ivy '[organisation]/[module]/[revision]/[module]-[revision]-ivy.[ext]'
+        artifact '[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]'
+        m2compatible = true
+    }
+""")
     }
 
     def 'check ivy status'() {
