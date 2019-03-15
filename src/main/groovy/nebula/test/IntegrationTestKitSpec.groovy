@@ -40,7 +40,10 @@ abstract class IntegrationTestKitSpec extends BaseIntegrationSpec {
     boolean definePluginOutsideOfPluginBlock = false
 
     def setup() {
-        settingsFile = new File(projectDir, "settings.gradle")
+        if (! settingsFile) {
+            settingsFile = new File(projectDir, "settings.gradle")
+            settingsFile.text = "rootProject.name='${moduleName}'\n"
+        }
         buildFile = new File(projectDir, "build.gradle")
     }
 
