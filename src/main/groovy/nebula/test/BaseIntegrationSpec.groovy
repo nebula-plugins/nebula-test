@@ -113,10 +113,12 @@ abstract class BaseIntegrationSpec extends Specification {
         }
     }
 
+    protected void writeHelloWorld(File baseDir = getProjectDir()) {
+        writeHelloWorld('nebula', baseDir)
+    }
+
     protected void writeHelloWorld(String packageDotted, File baseDir = getProjectDir()) {
-        def path = 'src/main/java/' + packageDotted.replace('.', '/') + '/HelloWorld.java'
-        def javaFile = createFile(path, baseDir)
-        javaFile << """\
+        writeJavaSourceFile("""\
             package ${packageDotted};
         
             public class HelloWorld {
@@ -124,7 +126,24 @@ abstract class BaseIntegrationSpec extends Specification {
                     System.out.println("Hello Integration Test");
                 }
             }
-            """.stripIndent()
+            """.stripIndent(), 'src/main/java', baseDir)
+    }
+
+    protected void writeJavaSourceFile(String source, File projectDir  = getProjectDir()) {
+        writeJavaSourceFile(source, 'src/main/java', projectDir)
+    }
+
+    protected void writeJavaSourceFile(String source, String sourceFolderPath, File projectDir = getProjectDir()) {
+        File javaFile = createFile(sourceFolderPath + '/' + fullyQualifiedName(source).replaceAll(/\./, '/') + '.java', projectDir)
+        javaFile.text = source
+    }
+
+    /**
+     * Creates a passing unit test for testing your plugin.
+     * @param baseDir the directory to begin creation from, defaults to projectDir
+     */
+    protected void writeUnitTest(File baseDir = getProjectDir()) {
+        writeTest('src/test/java/', 'nebula', false, baseDir)
     }
 
     /**
@@ -136,6 +155,10 @@ abstract class BaseIntegrationSpec extends Specification {
         writeTest('src/test/java/', 'nebula', failTest, baseDir)
     }
 
+    protected void writeUnitTest(String source, File baseDir = getProjectDir()) {
+        writeJavaSourceFile(source, 'src/test/java', baseDir)
+    }
+
     /**
      *
      * Creates a unit test for testing your plugin.
@@ -145,9 +168,7 @@ abstract class BaseIntegrationSpec extends Specification {
      * @param baseDir the directory to begin creation from, defaults to projectDir
      */
     protected void writeTest(String srcDir, String packageDotted, boolean failTest, File baseDir = getProjectDir()) {
-        def path = srcDir + packageDotted.replace('.', '/') + '/HelloWorldTest.java'
-        def javaFile = createFile(path, baseDir)
-        javaFile << """\
+        writeJavaSourceFile("""\
             package ${packageDotted};
             import org.junit.Test;
             import static org.junit.Assert.assertFalse;
@@ -157,7 +178,15 @@ abstract class BaseIntegrationSpec extends Specification {
                     assertFalse( $failTest ); 
                 }
             }
-            """.stripIndent()
+            """.stripIndent(), srcDir, baseDir)
+    }
+
+    private static String fullyQualifiedName(String sourceStr) {
+        def pkgMatcher = sourceStr =~ /\s*package\s+([\w\.]+)/
+        def pkg = pkgMatcher.find() ? pkgMatcher[0][1] + '.' : ''
+
+        def classMatcher = sourceStr =~ /\s*(class|interface)\s+(\w+)/
+        return classMatcher.find() ? pkg + classMatcher[0][2] : null
     }
 
     /**
