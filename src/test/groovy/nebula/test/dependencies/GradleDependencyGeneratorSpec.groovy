@@ -15,6 +15,7 @@
  */
 package nebula.test.dependencies
 
+import org.gradle.api.JavaVersion
 import org.gradle.api.invocation.Gradle
 import spock.lang.Specification
 
@@ -219,6 +220,21 @@ class GradleDependencyGeneratorSpec extends Specification {
         def repo = new File(directory)
         new File(repo, 'ivyrepo/test/ivy/foo-final/1.0.0/foo-final-1.0.0-ivy.xml').text.contains 'status="release"'
         new File(repo, 'ivyrepo/test/ivy/foo-candidate/1.0.0/foo-candidate-1.0.0-ivy.xml').text.contains 'status="candidate"'
+    }
+
+    def 'allow different target compatibility'() {
+        def directory = 'build/testdependencies/ivyxml'
+        def graph = [
+                new DependencyGraphNode(coordinate: new Coordinate(group: 'test.ivy', artifact: 'foo-final', version: '1.0.0'), status: "release", targetCompatibility: JavaVersion.VERSION_1_7),
+        ]
+        def generator = new GradleDependencyGenerator(new DependencyGraph(nodes: graph), directory)
+
+        when:
+        generator.generateTestIvyRepo()
+
+        then:
+        def repo = new File(directory)
+        new File(repo, 'ivyrepo/test/ivy/foo-final/1.0.0/foo-final-1.0.0.module').text.contains '"org.gradle.jvm.version": 7'
     }
 
     def 'check ivy xml'() {

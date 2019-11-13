@@ -16,12 +16,14 @@
 package nebula.test.dependencies
 
 import groovy.transform.Immutable
+import org.gradle.api.JavaVersion
 
 @Immutable(knownImmutableClasses = [Coordinate])
 class DependencyGraphNode {
     @Delegate Coordinate coordinate
     List<Coordinate> dependencies = []
     String status = "integration"
+    JavaVersion targetCompatibility = JavaVersion.VERSION_1_8
 
     @Override
     String toString() {
