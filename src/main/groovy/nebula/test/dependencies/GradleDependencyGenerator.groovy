@@ -193,6 +193,9 @@ class GradleDependencyGenerator {
             ext {
                 artifactName = '${node.artifact}'
             }
+            
+            targetCompatibility = ${node.targetCompatibility}
+            
             publishing {
                 publications {
                     maven(MavenPublication) {
