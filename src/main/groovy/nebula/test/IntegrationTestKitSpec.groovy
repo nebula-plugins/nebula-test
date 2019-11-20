@@ -31,6 +31,7 @@ abstract class IntegrationTestKitSpec extends BaseIntegrationSpec {
     File settingsFile
     String gradleVersion
     String gradleDistribution
+    boolean forwardOutput = false
 
     /**
      * Automatic addition of `GradleRunner.withPluginClasspath()` _only_ works if the plugin under test is applied using the plugins DSL
@@ -95,8 +96,10 @@ abstract class IntegrationTestKitSpec extends BaseIntegrationSpec {
                 .withArguments(calculateArguments(tasks) + pluginArgs)
                 .withDebug(debug)
                 .withPluginClasspath()
-                .forwardOutput()
 
+        if(forwardOutput) {
+            gradleRunnerBuilder.forwardOutput()
+        }
         if (gradleVersion != null) {
             gradleRunnerBuilder.withGradleVersion(gradleVersion)
         }
