@@ -27,7 +27,7 @@ class SpecifiedGradleVersionIntegrationSpec extends IntegrationSpec {
     }
 
 
-    @IgnoreIf({ OperatingSystem.current.linux || OperatingSystem.current.macOs})
+    @IgnoreIf({ OperatingSystem.current.linux || OperatingSystem.current.macOs || jvm.isJava9Compatible()})
     @Unroll("should use Gradle #requestedGradleVersion when requested ")
     def "should allow to run functional tests with different Gradle versions Windows"() {
         given:
@@ -52,7 +52,7 @@ class SpecifiedGradleVersionIntegrationSpec extends IntegrationSpec {
             requestedGradleVersion << ['2.8', '2.9']
     }
 
-    @IgnoreIf({ OperatingSystem.current.windows })
+    @IgnoreIf({ OperatingSystem.current.windows || jvm.isJava9Compatible() })
     @Unroll("should use Gradle #requestedGradleVersion when requested ")
     def "should allow to run functional tests with different Gradle versions Linux - Mac"() {
         given:
