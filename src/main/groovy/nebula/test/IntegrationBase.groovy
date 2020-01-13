@@ -19,15 +19,21 @@ import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 import org.gradle.api.logging.LogLevel
 
-abstract class IntegrationBase {
+/**
+ * Base class which provides useful methods for testing a gradle plugin.
+ *
+ * <p>This is testing framework agnostic and can be either extended (see {@link BaseIntegrationSpec}) or composed, by
+ * including it inside a test class as field.
+ */
+abstract trait IntegrationBase {
     File projectDir
-    protected String moduleName
-    protected LogLevel logLevel = LogLevel.LIFECYCLE
-    protected List<File> initScripts = []
+    String moduleName
+    LogLevel logLevel = LogLevel.LIFECYCLE
+    List<File> initScripts = []
 
     private static final LOGGING_LEVEL_ENV_VARIABLE = "NEBULA_TEST_LOGGING_LEVEL"
 
-    def setup(String testMethodName) {
+    def initialize(String testMethodName) {
         projectDir = new File("build/nebulatest/${this.class.canonicalName}/${testMethodName.replaceAll(/\W+/, '-')}").absoluteFile
         if (projectDir.exists()) {
             projectDir.deleteDir()
@@ -40,7 +46,7 @@ abstract class IntegrationBase {
      * Override to alter its value
      * @return
      */
-    protected LogLevel getLogLevel() {
+    LogLevel getLogLevel() {
         String levelFromEnv = System.getenv(LOGGING_LEVEL_ENV_VARIABLE)
         if(!levelFromEnv) {
             return logLevel
@@ -50,14 +56,14 @@ abstract class IntegrationBase {
 
     /* Setup */
 
-    protected File directory(String path, File baseDir = getProjectDir()) {
+    File directory(String path, File baseDir = getProjectDir()) {
         new File(baseDir, path).with {
             mkdirs()
             it
         }
     }
 
-    protected File file(String path, File baseDir = getProjectDir()) {
+    File file(String path, File baseDir = getProjectDir()) {
         def splitted = path.split('/')
         def directory = splitted.size() > 1 ? directory(splitted[0..-2].join('/'), baseDir) : baseDir
         def file = new File(directory, splitted[-1])
@@ -66,7 +72,7 @@ abstract class IntegrationBase {
     }
 
     @CompileStatic(TypeCheckingMode.SKIP)
-    protected File createFile(String path, File baseDir = getProjectDir()) {
+    File createFile(String path, File baseDir = getProjectDir()) {
         File file = file(path, baseDir)
         if (!file.exists()) {
             assert file.parentFile.mkdirs() || file.parentFile.exists()
@@ -75,7 +81,7 @@ abstract class IntegrationBase {
         file
     }
 
-    protected static void checkForDeprecations(String output) {
+    static void checkForDeprecations(String output) {
         def deprecations = output.readLines().findAll {
             it.contains("has been deprecated and is scheduled to be removed in Gradle") ||
                     it.contains("Deprecated Gradle features were used in this build") ||
@@ -94,7 +100,7 @@ abstract class IntegrationBase {
         }
     }
 
-    protected static void checkForMutableProjectState(String output) {
+    static void checkForMutableProjectState(String output) {
         def mutableProjectStateWarnings = output.readLines().findAll {
             it.contains("was resolved without accessing the project in a safe manner") ||
                     it.contains("This may happen when a configuration is resolved from a thread not managed by Gradle or from a different project")
@@ -108,11 +114,11 @@ abstract class IntegrationBase {
         }
     }
 
-    protected void writeHelloWorld(File baseDir = getProjectDir()) {
+    void writeHelloWorld(File baseDir = getProjectDir()) {
         writeHelloWorld('nebula', baseDir)
     }
 
-    protected void writeHelloWorld(String packageDotted, File baseDir = getProjectDir()) {
+    void writeHelloWorld(String packageDotted, File baseDir = getProjectDir()) {
         writeJavaSourceFile("""\
             package ${packageDotted};
         
@@ -124,11 +130,11 @@ abstract class IntegrationBase {
             """.stripIndent(), 'src/main/java', baseDir)
     }
 
-    protected void writeJavaSourceFile(String source, File projectDir  = getProjectDir()) {
+    void writeJavaSourceFile(String source, File projectDir  = getProjectDir()) {
         writeJavaSourceFile(source, 'src/main/java', projectDir)
     }
 
-    protected void writeJavaSourceFile(String source, String sourceFolderPath, File projectDir = getProjectDir()) {
+    void writeJavaSourceFile(String source, String sourceFolderPath, File projectDir = getProjectDir()) {
         File javaFile = createFile(sourceFolderPath + '/' + fullyQualifiedName(source).replaceAll(/\./, '/') + '.java', projectDir)
         javaFile.text = source
     }
@@ -137,7 +143,7 @@ abstract class IntegrationBase {
      * Creates a passing unit test for testing your plugin.
      * @param baseDir the directory to begin creation from, defaults to projectDir
      */
-    protected void writeUnitTest(File baseDir = getProjectDir()) {
+    void writeUnitTest(File baseDir = getProjectDir()) {
         writeTest('src/test/java/', 'nebula', false, baseDir)
     }
 
@@ -146,11 +152,11 @@ abstract class IntegrationBase {
      * @param failTest true if you want the test to fail, false if the test should pass
      * @param baseDir the directory to begin creation from, defaults to projectDir
      */
-    protected void writeUnitTest(boolean failTest, File baseDir = getProjectDir()) {
+    void writeUnitTest(boolean failTest, File baseDir = getProjectDir()) {
         writeTest('src/test/java/', 'nebula', failTest, baseDir)
     }
 
-    protected void writeUnitTest(String source, File baseDir = getProjectDir()) {
+    void writeUnitTest(String source, File baseDir = getProjectDir()) {
         writeJavaSourceFile(source, 'src/test/java', baseDir)
     }
 
@@ -162,7 +168,7 @@ abstract class IntegrationBase {
      * @param failTest true if you want the test to fail, false if the test should pass
      * @param baseDir the directory to begin creation from, defaults to projectDir
      */
-    protected void writeTest(String srcDir, String packageDotted, boolean failTest, File baseDir = getProjectDir()) {
+    void writeTest(String srcDir, String packageDotted, boolean failTest, File baseDir = getProjectDir()) {
         writeJavaSourceFile("""\
             package ${packageDotted};
             import org.junit.Test;
@@ -190,22 +196,22 @@ abstract class IntegrationBase {
      * @param fileName to be used for the file, sans extension.  The .properties extension will be added to the name.
      * @param baseDir the directory to begin creation from, defaults to projectDir
      */
-    protected void writeResource(String srcDir, String fileName, File baseDir = getProjectDir()) {
+    void writeResource(String srcDir, String fileName, File baseDir = getProjectDir()) {
         def path = "$srcDir/${fileName}.properties"
         def resourceFile = createFile(path, baseDir)
         resourceFile.text = "firstProperty=foo.bar"
     }
 
-    protected void addResource(String srcDir, String filename, String contents, File baseDir = getProjectDir()) {
+    void addResource(String srcDir, String filename, String contents, File baseDir = getProjectDir()) {
         def resourceFile = createFile("${srcDir}/${filename}", baseDir)
         resourceFile.text = contents
     }
 
-    protected String findModuleName() {
+    String findModuleName() {
         getProjectDir().getName().replaceAll(/_\d+/, '')
     }
 
-    protected List<String> calculateArguments(String... args) {
+    List<String> calculateArguments(String... args) {
         List<String> arguments = []
         // Gradle will use these files name from the PWD, instead of the project directory. It's easier to just leave
         // them out and let the default find them, since we're not changing their default names.
