@@ -28,6 +28,6 @@ abstract class BaseIntegrationSpec extends Specification implements IntegrationB
     TestName testName = new TestName()
 
     void setup() {
-        initialize(testName.methodName)
+        IntegrationBase.super.initialize(testName.methodName)
     }
 }
