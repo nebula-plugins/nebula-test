@@ -39,18 +39,18 @@ abstract trait Integration extends IntegrationBase {
     // Holds State of last run
     private ExecutionResult result
 
-    protected String gradleVersion
-    protected File settingsFile
-    protected File buildFile
-    protected boolean fork = false
-    protected boolean remoteDebug = false
-    protected List<String> jvmArguments = []
-    protected MultiProjectIntegrationHelper helper
-    protected Predicate<URL> classpathFilter
-    protected List<PreExecutionAction> preExecutionActions = []
+    String gradleVersion
+    File settingsFile
+    File buildFile
+    boolean fork = false
+    boolean remoteDebug = false
+    List<String> jvmArguments = []
+    MultiProjectIntegrationHelper helper
+    Predicate<URL> classpathFilter
+    List<PreExecutionAction> preExecutionActions = []
     //Shutdown Gradle daemon after a few seconds to release memory. Useful for testing with multiple Gradle versions on shared CI server
-    protected boolean memorySafeMode = false
-    protected Integer daemonMaxIdleTimeInSecondsInMemorySafeMode = DEFAULT_DAEMON_MAX_IDLE_TIME_IN_SECONDS_IN_MEMORY_SAFE_MODE
+    boolean memorySafeMode = false
+    Integer daemonMaxIdleTimeInSecondsInMemorySafeMode = DEFAULT_DAEMON_MAX_IDLE_TIME_IN_SECONDS_IN_MEMORY_SAFE_MODE
 
 
 
