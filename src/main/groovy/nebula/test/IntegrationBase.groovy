@@ -25,13 +25,14 @@ import org.gradle.api.logging.LogLevel
  * <p>This is testing framework agnostic and can be either extended (see {@link BaseIntegrationSpec}) or composed, by
  * including it inside a test class as field.
  */
+@CompileStatic
 abstract trait IntegrationBase {
     File projectDir
     String moduleName
     LogLevel logLevel = LogLevel.LIFECYCLE
     List<File> initScripts = []
 
-    private static final LOGGING_LEVEL_ENV_VARIABLE = "NEBULA_TEST_LOGGING_LEVEL"
+    private static final String LOGGING_LEVEL_ENV_VARIABLE = "NEBULA_TEST_LOGGING_LEVEL"
 
     def initialize(String testMethodName) {
         projectDir = new File("build/nebulatest/${this.class.canonicalName}/${testMethodName.replaceAll(/\W+/, '-')}").absoluteFile
@@ -39,7 +40,7 @@ abstract trait IntegrationBase {
             projectDir.deleteDir()
         }
         projectDir.mkdirs()
-        moduleName = findModuleName()
+        moduleName = this.findModuleName()
     }
 
     /**
@@ -184,10 +185,10 @@ abstract trait IntegrationBase {
 
     private static String fullyQualifiedName(String sourceStr) {
         def pkgMatcher = sourceStr =~ /\s*package\s+([\w\.]+)/
-        def pkg = pkgMatcher.find() ? pkgMatcher[0][1] + '.' : ''
+        def pkg = pkgMatcher.find() ? (pkgMatcher[0] as List<String>)[1] + '.' : ''
 
         def classMatcher = sourceStr =~ /\s*(class|interface)\s+(\w+)/
-        return classMatcher.find() ? pkg + classMatcher[0][2] : null
+        return classMatcher.find() ? pkg + (classMatcher[0] as List<String>)[2] : null
     }
 
     /**

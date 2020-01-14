@@ -15,6 +15,7 @@
  */
 package nebula.test
 
+import groovy.transform.CompileStatic
 import nebula.test.functional.internal.classpath.ClasspathAddingInitScriptBuilder
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
@@ -26,6 +27,7 @@ import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 /**
  * Base trait for implementing gradle integration tests using the {@code gradle-test-kit} runner.
  */
+@CompileStatic
 abstract trait IntegrationTestKitBase extends IntegrationBase {
     static final String LINE_END = System.getProperty('line.separator')
     boolean keepFiles = false
@@ -87,7 +89,7 @@ abstract trait IntegrationTestKitBase extends IntegrationBase {
     def tasksWereSuccessful(BuildResult result, String... tasks) {
         tasks.each { task ->
             if (!task.contains('-P') && !task.contains('--')) {
-                def modTask = task.startsWith(':') ? task : ":$task"
+                String modTask = task.startsWith(':') ? task : ":$task"
                 def outcome = result.task(modTask).outcome
                 assert outcome == SUCCESS || outcome == UP_TO_DATE
             }
@@ -95,7 +97,9 @@ abstract trait IntegrationTestKitBase extends IntegrationBase {
     }
 
     GradleRunner createRunner(String... tasks) {
-        def pluginArgs = definePluginOutsideOfPluginBlock ? createGradleTestKitInitArgs() : new ArrayList<>()
+        List<String> pluginArgs = definePluginOutsideOfPluginBlock
+                ? createGradleTestKitInitArgs()
+                : new ArrayList<String>()
         def gradleRunnerBuilder = GradleRunner.create()
                 .withProjectDir(projectDir)
                 .withArguments(calculateArguments(tasks) + pluginArgs)
