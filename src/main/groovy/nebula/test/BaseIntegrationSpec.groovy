@@ -15,7 +15,7 @@
  */
 package nebula.test
 
-
+import groovy.transform.CompileStatic
 import org.junit.Rule
 import org.junit.rules.TestName
 import spock.lang.Specification
@@ -23,6 +23,7 @@ import spock.lang.Specification
 /**
  * {@link Specification} implementation of the {@link IntegrationBase}.
  */
+@CompileStatic
 abstract class BaseIntegrationSpec extends Specification implements IntegrationBase {
     @Rule
     TestName testName = new TestName()
