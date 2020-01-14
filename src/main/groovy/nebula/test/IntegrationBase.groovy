@@ -183,7 +183,7 @@ abstract trait IntegrationBase {
             """.stripIndent(), srcDir, baseDir)
     }
 
-    private static String fullyQualifiedName(String sourceStr) {
+    private String fullyQualifiedName(String sourceStr) {
         def pkgMatcher = sourceStr =~ /\s*package\s+([\w\.]+)/
         def pkg = pkgMatcher.find() ? (pkgMatcher[0] as List<String>)[1] + '.' : ''
 
