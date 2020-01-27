@@ -29,6 +29,7 @@ abstract class BaseIntegrationSpec extends Specification {
     protected String moduleName
     protected LogLevel logLevel = LogLevel.LIFECYCLE
     protected List<File> initScripts = []
+    boolean parallelEnabled = false
 
     private static final LOGGING_LEVEL_ENV_VARIABLE = "NEBULA_TEST_LOGGING_LEVEL"
 
@@ -226,6 +227,9 @@ abstract class BaseIntegrationSpec extends Specification {
             case LogLevel.DEBUG:
                 arguments += '--debug'
                 break
+        }
+        if(parallelEnabled) {
+            arguments += '--parallel'
         }
         arguments += '--stacktrace'
         arguments += '-Dorg.gradle.warning.mode=all'
