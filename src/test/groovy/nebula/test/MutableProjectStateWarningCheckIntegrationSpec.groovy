@@ -3,7 +3,7 @@ package nebula.test
 class MutableProjectStateWarningCheckIntegrationSpec extends IntegrationSpec {
 
     def setup() {
-        gradleVersion = "5.1"
+        gradleVersion = "5.6.4"
     }
 
     def 'mutable project state warning when configuration in another project is resolved unsafely'() {
@@ -38,11 +38,10 @@ class MutableProjectStateWarningCheckIntegrationSpec extends IntegrationSpec {
 
 
         when:
-        runTasks("resolve", "--parallel", "--warning-mode", "all")
+        def failure = runTasksWithFailure("resolve", "--parallel").failure
 
         then:
-        def e = thrown(IllegalArgumentException)
-        e.message.contains('Mutable Project State warnings were found (Set the ignoreMutableProjectStateWarnings system property during the test to ignore)')
+        failure.message.contains('Deprecated Gradle features were used in this build, making it incompatible with Gradle 6.0')
     }
 
     def 'mutable project state warning when configuration is resolved from a non-gradle thread'() {
@@ -81,11 +80,10 @@ class MutableProjectStateWarningCheckIntegrationSpec extends IntegrationSpec {
 
 
         when:
-        runTasks("resolve", "--warning-mode", "all")
+        def failure = runTasksWithFailure("resolve").failure
 
         then:
-        def e = thrown(IllegalArgumentException)
-        e.message.contains('Mutable Project State warnings were found (Set the ignoreMutableProjectStateWarnings system property during the test to ignore)')
+        failure.message.contains('Deprecated Gradle features were used in this build, making it incompatible with Gradle 6.0')
     }
 
     def 'mutable project state warning when configuration is resolved while evaluating a different project'() {
@@ -117,11 +115,10 @@ class MutableProjectStateWarningCheckIntegrationSpec extends IntegrationSpec {
 
 
         when:
-        runTasks(":bar:help", "--parallel", "--warning-mode", "all")
+        def failure = runTasksWithFailure(":bar:help", "--parallel").failure
 
         then:
-        def e = thrown(IllegalArgumentException)
-        e.message.contains('Mutable Project State warnings were found (Set the ignoreMutableProjectStateWarnings system property during the test to ignore)')
+        failure.message.contains('Deprecated Gradle features were used in this build, making it incompatible with Gradle 6.0')
     }
 
 }

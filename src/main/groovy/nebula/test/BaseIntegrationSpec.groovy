@@ -18,6 +18,7 @@ package nebula.test
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 import org.gradle.api.logging.LogLevel
+import org.gradle.api.logging.configuration.WarningMode
 import org.junit.Rule
 import org.junit.rules.TestName
 import spock.lang.Specification
@@ -79,39 +80,6 @@ abstract class BaseIntegrationSpec extends Specification {
             file.createNewFile()
         }
         file
-    }
-
-    protected static void checkForDeprecations(String output) {
-        def deprecations = output.readLines().findAll {
-            it.contains("has been deprecated and is scheduled to be removed in Gradle") ||
-                    it.contains("Deprecated Gradle features were used in this build") ||
-                    it.contains("has been deprecated. This is scheduled to be removed in Gradle") ||
-                    it.contains("This behaviour has been deprecated and is scheduled to be removed in Gradle")
-        }
-        // temporary for known issue with overwriting task
-        // overridden task expected to not be needed in future version
-        if (deprecations.size() == 1 && deprecations.first().contains("Creating a custom task named 'dependencyInsight' has been deprecated and is scheduled to be removed in Gradle 5.0.")) {
-            return
-        }
-        if (!System.getProperty("ignoreDeprecations") && !deprecations.isEmpty()) {
-            throw new IllegalArgumentException("Deprecation warnings were found (Set the ignoreDeprecations system property during the test to ignore):\n" + deprecations.collect {
-                " - $it"
-            }.join("\n"))
-        }
-    }
-
-    protected static void checkForMutableProjectState(String output) {
-        def mutableProjectStateWarnings = output.readLines().findAll {
-            it.contains("was resolved without accessing the project in a safe manner") ||
-                    it.contains("This may happen when a configuration is resolved from a thread not managed by Gradle or from a different project")
-
-        }
-
-        if (!System.getProperty("ignoreMutableProjectStateWarnings") && !mutableProjectStateWarnings.isEmpty()) {
-            throw new IllegalArgumentException("Mutable Project State warnings were found (Set the ignoreMutableProjectStateWarnings system property during the test to ignore):\n" + mutableProjectStateWarnings.collect {
-                " - $it"
-            }.join("\n"))
-        }
     }
 
     protected void writeHelloWorld(File baseDir = getProjectDir()) {
@@ -211,15 +179,11 @@ abstract class BaseIntegrationSpec extends Specification {
         getProjectDir().getName().replaceAll(/_\d+/, '')
     }
 
-    protected List<String> calculateArguments(String... args) {
+    protected List<String> calculateArguments(WarningMode warningMode, String... args) {
+        // We have to avoid the command line switch for backwards compatibility and system properties in non-forked and forked modes are weird so we use gradle.properties
+        new File(projectDir, 'gradle.properties') << '\norg.gradle.warning.mode=' + warningMode.name().toLowerCase()
+
         List<String> arguments = []
-        // Gradle will use these files name from the PWD, instead of the project directory. It's easier to just leave
-        // them out and let the default find them, since we're not changing their default names.
-        //arguments += '--build-file'
-        //arguments += (buildFile.canonicalPath - projectDir.canonicalPath).substring(1)
-        //arguments += '--settings-file'
-        //arguments += (settingsFile.canonicalPath - projectDir.canonicalPath).substring(1)
-        //arguments += '--no-daemon'
         switch (getLogLevel()) {
             case LogLevel.INFO:
                 arguments += '--info'
@@ -232,7 +196,6 @@ abstract class BaseIntegrationSpec extends Specification {
             arguments += '--parallel'
         }
         arguments += '--stacktrace'
-        arguments += '-Dorg.gradle.warning.mode=all'
         arguments.addAll(args)
         arguments.addAll(initScripts.collect { file -> '-I' + file.absolutePath })
         arguments

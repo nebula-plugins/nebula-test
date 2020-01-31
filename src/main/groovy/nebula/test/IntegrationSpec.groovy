@@ -26,6 +26,7 @@ import nebula.test.functional.internal.GradleHandle
 import nebula.test.multiproject.MultiProjectIntegrationHelper
 import org.apache.commons.io.FileUtils
 import org.gradle.api.logging.LogLevel
+import org.gradle.api.logging.configuration.WarningMode
 
 /**
  * @author Justin Ryan
@@ -34,7 +35,7 @@ import org.gradle.api.logging.LogLevel
 @CompileStatic
 abstract class IntegrationSpec extends BaseIntegrationSpec {
     private static final String DEFAULT_REMOTE_DEBUG_JVM_ARGUMENTS = "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
-    private static final Integer DEFAULT_DAEMON_MAX_IDLE_TIME_IN_SECONDS_IN_MEMORY_SAFE_MODE = 15;
+    private static final Integer DEFAULT_DAEMON_MAX_IDLE_TIME_IN_SECONDS_IN_MEMORY_SAFE_MODE = 15
 
     // Holds State of last run
     private ExecutionResult result
@@ -72,8 +73,8 @@ abstract class IntegrationSpec extends BaseIntegrationSpec {
         helper = new MultiProjectIntegrationHelper(getProjectDir(), settingsFile)
     }
 
-    protected GradleHandle launcher(String... args) {
-        List<String> arguments = calculateArguments(args)
+    protected GradleHandle launcher(WarningMode warningMode, String ... args) {
+        List<String> arguments = calculateArguments(warningMode, args)
         List<String> jvmArguments = calculateJvmArguments()
         Integer daemonMaxIdleTimeInSeconds = calculateMaxIdleDaemonTimeoutInSeconds()
 
@@ -144,7 +145,11 @@ abstract class IntegrationSpec extends BaseIntegrationSpec {
 
     /* Execution */
     protected ExecutionResult runTasksSuccessfully(String... tasks) {
-        ExecutionResult result = runTasks(tasks)
+        return runTasksSuccessfully(WarningMode.Fail, tasks)
+    }
+
+    protected ExecutionResult runTasksSuccessfully(WarningMode warningMode, String... tasks) {
+        ExecutionResult result = runTasks(warningMode, tasks)
         if (result.failure) {
             result.rethrowFailure()
         }
@@ -153,20 +158,23 @@ abstract class IntegrationSpec extends BaseIntegrationSpec {
 
     @CompileStatic(TypeCheckingMode.SKIP)
     protected ExecutionResult runTasksWithFailure(String... tasks) {
-        ExecutionResult result = runTasks(tasks)
+        return runTasksWithFailure(WarningMode.Fail, tasks)
+    }
+
+    @CompileStatic(TypeCheckingMode.SKIP)
+    protected ExecutionResult runTasksWithFailure(WarningMode warningMode, String... tasks) {
+        ExecutionResult result = runTasks(warningMode, tasks)
         assert result.failure
         result
     }
 
     protected ExecutionResult runTasks(String... tasks) {
-        ExecutionResult result = launcher(tasks).run()
-        this.result = result
-        return checkForDeprecations(result)
+        return runTasks(WarningMode.Fail, tasks)
     }
 
-    protected ExecutionResult checkForDeprecations(ExecutionResult result) {
-        checkForMutableProjectState(result.standardOutput)
-        checkForDeprecations(result.standardOutput)
+    protected ExecutionResult runTasks(WarningMode warningMode, String... tasks) {
+        ExecutionResult result = launcher(warningMode, tasks).run()
+        this.result = result
         return result
     }
 

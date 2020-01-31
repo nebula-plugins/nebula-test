@@ -15,7 +15,9 @@
  */
 package nebula.test
 
+
 import nebula.test.functional.internal.classpath.ClasspathAddingInitScriptBuilder
+import org.gradle.api.logging.configuration.WarningMode
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.util.GFileUtils
@@ -41,7 +43,7 @@ abstract class IntegrationTestKitSpec extends BaseIntegrationSpec {
     boolean definePluginOutsideOfPluginBlock = false
 
     def setup() {
-        if (! settingsFile) {
+        if (!settingsFile) {
             settingsFile = new File(projectDir, "settings.gradle")
             settingsFile.text = "rootProject.name='${moduleName}'\n"
         }
@@ -68,15 +70,19 @@ abstract class IntegrationTestKitSpec extends BaseIntegrationSpec {
     }
 
     BuildResult runTasks(String... tasks) {
-        BuildResult result = createRunner(tasks)
-                .build()
-        return checkForDeprecations(result)
+        return runTasks(WarningMode.Fail, tasks)
+    }
+
+    BuildResult runTasks(WarningMode warningMode, String... tasks) {
+        return createRunner(warningMode, tasks).build()
     }
 
     BuildResult runTasksAndFail(String... tasks) {
-        BuildResult result = createRunner(tasks)
-                .buildAndFail()
-        return checkForDeprecations(result)
+        return runTasksAndFail(WarningMode.Fail, tasks)
+    }
+
+    BuildResult runTasksAndFail(WarningMode warningMode, String... tasks) {
+        return createRunner(warningMode, tasks).buildAndFail()
     }
 
     def tasksWereSuccessful(BuildResult result, String... tasks) {
@@ -90,14 +96,19 @@ abstract class IntegrationTestKitSpec extends BaseIntegrationSpec {
     }
 
     GradleRunner createRunner(String... tasks) {
-        def pluginArgs = definePluginOutsideOfPluginBlock ? createGradleTestKitInitArgs() : new ArrayList<>()
+        return createRunner(WarningMode.Fail, tasks)
+    }
+
+    GradleRunner createRunner(WarningMode warningMode, String... tasks) {
+        def arguments = calculateArguments(warningMode, tasks)
+        def pluginArgs = definePluginOutsideOfPluginBlock ? createGradleTestKitInitArgs() : new ArrayList<String>()
         def gradleRunnerBuilder = GradleRunner.create()
                 .withProjectDir(projectDir)
-                .withArguments(calculateArguments(tasks) + pluginArgs)
+                .withArguments(arguments + pluginArgs)
                 .withDebug(debug)
                 .withPluginClasspath()
 
-        if(forwardOutput) {
+        if (forwardOutput) {
             gradleRunnerBuilder.forwardOutput()
         }
         if (gradleVersion != null) {
@@ -121,10 +132,5 @@ abstract class IntegrationTestKitSpec extends BaseIntegrationSpec {
         ClasspathAddingInitScriptBuilder.build(initScript, classLoader, classpathFilter)
 
         return Arrays.asList("--init-script", initScript.getAbsolutePath())
-    }
-
-    protected BuildResult checkForDeprecations(BuildResult result) {
-        checkForDeprecations(result.output)
-        return result
     }
 }
