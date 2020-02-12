@@ -31,6 +31,7 @@ abstract trait IntegrationBase {
     String moduleName
     LogLevel logLevel = LogLevel.LIFECYCLE
     List<File> initScripts = []
+    boolean parallelEnabled = false
 
     private static final String LOGGING_LEVEL_ENV_VARIABLE = "NEBULA_TEST_LOGGING_LEVEL"
 
@@ -228,6 +229,9 @@ abstract trait IntegrationBase {
             case LogLevel.DEBUG:
                 arguments += '--debug'
                 break
+        }
+        if(parallelEnabled) {
+            arguments += '--parallel'
         }
         arguments += '--stacktrace'
         arguments += '-Dorg.gradle.warning.mode=all'
