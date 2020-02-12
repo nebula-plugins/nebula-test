@@ -54,8 +54,8 @@ abstract trait Integration extends IntegrationBase {
 
 
 
-    def initialize(String testMethodName) {
-        super.initialize(testMethodName)
+    def initialize(Class<?> testClass, String testMethodName) {
+        super.initialize(testClass, testMethodName)
         logLevel = LogLevel.INFO
         if (!settingsFile) {
             settingsFile = new File(getProjectDir(), 'settings.gradle')

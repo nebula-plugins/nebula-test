@@ -25,6 +25,6 @@ abstract class IntegrationTestKitSpec extends Specification implements Integrati
     TestName testName = new TestName()
 
     void setup() {
-        IntegrationTestKitBase.super.initialize(testName.methodName)
+        IntegrationTestKitBase.super.initialize(getClass(), testName.methodName)
     }
 }

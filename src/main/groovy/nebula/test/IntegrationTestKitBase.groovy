@@ -47,7 +47,7 @@ abstract trait IntegrationTestKitBase extends IntegrationBase {
 
     @Override
     def initialize(String testMethodName) {
-        super.initialize(testMethodName)
+        super.initialize(getClass(), testMethodName)
         if (! settingsFile) {
             settingsFile = new File(projectDir, "settings.gradle")
             settingsFile.text = "rootProject.name='${moduleName}'\n"

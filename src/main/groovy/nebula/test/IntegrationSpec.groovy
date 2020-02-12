@@ -25,6 +25,6 @@ import groovy.transform.CompileStatic
 @CompileStatic
 abstract class IntegrationSpec extends BaseIntegrationSpec implements Integration {
     def setup() {
-        Integration.super.initialize(testName.methodName)
+        Integration.super.initialize(getClass(), testName.methodName)
     }
 }
