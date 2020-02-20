@@ -239,4 +239,12 @@ abstract trait IntegrationBase {
         arguments.addAll(initScripts.collect { file -> '-I' + file.absolutePath })
         arguments
     }
+
+    static def dependencies(File _buildFile, String... confs = ['compile', 'testCompile', 'implementation', 'testImplementation', 'api']) {
+        _buildFile.text.readLines()
+                .collect { it.trim() }
+                .findAll { line -> confs.any { c -> line.startsWith(c) } }
+                .collect { it.split(/\s+/)[1].replaceAll(/['"]/, '') }
+                .sort()
+    }
 }
