@@ -17,6 +17,7 @@
 
 plugins {
     id 'nebula.plugin-plugin' version '14.1.3'
+    id 'java-library'
     id 'org.ysb33r.gradletest' version '0.5.4'
 }
 
@@ -35,7 +36,7 @@ contacts {
 
 dependencies {
     implementation gradleTestKit()
-    implementation 'com.google.guava:guava:19.0'
+    api 'com.google.guava:guava:19.0'
     implementation 'commons-io:commons-io:2.5'
     api ('org.spockframework:spock-core:1.3-groovy-2.4') {
         exclude group: 'org.codehaus.groovy'
