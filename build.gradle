@@ -37,7 +37,7 @@ contacts {
 dependencies {
     implementation gradleTestKit()
     api 'com.google.guava:guava:19.0'
-    implementation 'commons-io:commons-io:2.5'
+    api 'commons-io:commons-io:2.5'
     api ('org.spockframework:spock-core:1.3-groovy-2.4') {
         exclude group: 'org.codehaus.groovy'
     }
