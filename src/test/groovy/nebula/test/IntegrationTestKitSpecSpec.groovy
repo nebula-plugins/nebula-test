@@ -23,6 +23,15 @@ import nebula.test.dependencies.GradleDependencyGenerator
 import nebula.test.dependencies.ModuleBuilder
 
 class IntegrationTestKitSpecSpec extends IntegrationTestKitSpec {
+
+    def setup() {
+        // used to test trait & groovy setup method https://stackoverflow.com/questions/56464191/public-groovy-method-must-be-public-says-the-compiler
+    }
+
+    def cleanup() {
+        // used to test trait & groovy cleanup method https://stackoverflow.com/questions/56464191/public-groovy-method-must-be-public-says-the-compiler
+    }
+
     def 'dependencies method should list buildfile dependencies'() {
         when:
         def graph = new DependencyGraphBuilder()

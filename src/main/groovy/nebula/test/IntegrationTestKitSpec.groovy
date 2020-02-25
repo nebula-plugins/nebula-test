@@ -27,4 +27,8 @@ abstract class IntegrationTestKitSpec extends Specification implements Integrati
     void setup() {
         IntegrationTestKitBase.super.initialize(getClass(), testName.methodName)
     }
+
+    void cleanup() {
+        traitCleanup()
+    }
 }

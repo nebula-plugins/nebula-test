@@ -55,7 +55,7 @@ abstract trait IntegrationTestKitBase extends IntegrationBase {
         buildFile = new File(projectDir, "build.gradle")
     }
 
-    def cleanup() {
+    def traitCleanup() {
         if (!keepFiles) {
             projectDir.deleteDir()
         }
