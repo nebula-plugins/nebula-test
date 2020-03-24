@@ -223,18 +223,18 @@ class GradleDependencyGeneratorSpec extends Specification {
     }
 
     def 'allow different target compatibility'() {
-        def directory = 'build/testdependencies/ivyxml'
+        def directory = 'build/testdependencies/testmavenrepo'
         def graph = [
-                new DependencyGraphNode(coordinate: new Coordinate(group: 'test.ivy', artifact: 'foo-final', version: '1.0.0'), status: "release", targetCompatibility: JavaVersion.VERSION_1_7),
+                new DependencyGraphNode(coordinate: new Coordinate(group: 'test.maven', artifact: 'foo-final', version: '1.0.0'), status: "release", targetCompatibility: JavaVersion.VERSION_1_7),
         ]
         def generator = new GradleDependencyGenerator(new DependencyGraph(nodes: graph), directory)
 
         when:
-        generator.generateTestIvyRepo()
+        generator.generateTestMavenRepo()
 
         then:
         def repo = new File(directory)
-        new File(repo, 'ivyrepo/test/ivy/foo-final/1.0.0/foo-final-1.0.0.module').text.contains '"org.gradle.jvm.version": 7'
+        new File(repo, 'mavenrepo/test/maven/foo-final/1.0.0/foo-final-1.0.0.module').text.contains '"org.gradle.jvm.version": 7'
     }
 
     def 'check ivy xml'() {
