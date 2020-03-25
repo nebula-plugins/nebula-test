@@ -88,6 +88,7 @@ abstract trait IntegrationBase {
             it.contains("has been deprecated and is scheduled to be removed in Gradle") ||
                     it.contains("Deprecated Gradle features were used in this build") ||
                     it.contains("has been deprecated. This is scheduled to be removed in Gradle") ||
+                    it.contains("This will fail with an error in Gradle") ||
                     it.contains("This behaviour has been deprecated and is scheduled to be removed in Gradle")
         }
         // temporary for known issue with overwriting task
