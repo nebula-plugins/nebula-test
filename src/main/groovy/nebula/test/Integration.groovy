@@ -160,8 +160,10 @@ abstract trait Integration extends IntegrationBase {
     }
 
     ExecutionResult runTasks(String... tasks) {
-        ExecutionResult result = launcher(tasks).run()
+        GradleHandle gradleHandle = launcher(tasks)
+        ExecutionResult result = gradleHandle.run()
         this.result = result
+        gradleHandle.disconnect()
         return checkForDeprecations(result)
     }
 

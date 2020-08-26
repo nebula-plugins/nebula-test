@@ -22,6 +22,7 @@ import nebula.test.functional.internal.GradleHandle
 import nebula.test.functional.internal.GradleHandleBuildListener
 import org.gradle.tooling.BuildException
 import org.gradle.tooling.BuildLauncher
+import org.gradle.tooling.GradleConnector
 import org.gradle.tooling.events.ProgressEvent
 import org.gradle.tooling.events.ProgressListener
 import org.gradle.tooling.events.task.TaskOperationDescriptor
@@ -34,9 +35,10 @@ class BuildLauncherBackedGradleHandle implements GradleHandle {
     final private BuildLauncher launcher;
     final private boolean forkedProcess
     final private List<String> tasksExecuted;
+    final private GradleConnector connector;
     private GradleHandleBuildListener buildListener
 
-    public BuildLauncherBackedGradleHandle(BuildLauncher launcher, boolean forkedProcess) {
+    public BuildLauncherBackedGradleHandle(GradleConnector connector, BuildLauncher launcher, boolean forkedProcess) {
         this.forkedProcess = forkedProcess
         launcher.setStandardOutput(standardOutput);
         launcher.setStandardError(standardError);
@@ -52,6 +54,7 @@ class BuildLauncherBackedGradleHandle implements GradleHandle {
             }
         });
         this.launcher = launcher;
+        this.connector = connector
     }
 
     @Override
@@ -62,6 +65,11 @@ class BuildLauncherBackedGradleHandle implements GradleHandle {
     @Override
     boolean isForkedProcess() {
         forkedProcess
+    }
+
+    @Override
+    void disconnect() {
+        connector.disconnect()
     }
 
     private String getStandardOutput() {
