@@ -41,7 +41,7 @@ public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
 
         ProjectConnection connection = connector.connect();
         BuildLauncher launcher = createBuildLauncher(connection, arguments, jvmArguments)
-        createGradleHandle(connection, launcher, forkedProcess)
+        createGradleHandle(connector, connection, launcher, forkedProcess)
     }
 
     private GradleConnector createGradleConnector(File projectDir) {
@@ -101,9 +101,9 @@ public class ToolingApiGradleHandleFactory implements GradleHandleFactory {
         launcher
     }
 
-    private GradleHandle createGradleHandle(ProjectConnection connection, BuildLauncher launcher, boolean forkedProcess) {
+    private GradleHandle createGradleHandle(GradleConnector connector, ProjectConnection connection, BuildLauncher launcher, boolean forkedProcess) {
         GradleHandleBuildListener toolingApiBuildListener = new ToolingApiBuildListener(connection)
-        BuildLauncherBackedGradleHandle buildLauncherBackedGradleHandle = new BuildLauncherBackedGradleHandle(launcher, forkedProcess)
+        BuildLauncherBackedGradleHandle buildLauncherBackedGradleHandle = new BuildLauncherBackedGradleHandle(connector, launcher, forkedProcess)
         buildLauncherBackedGradleHandle.registerBuildListener(toolingApiBuildListener)
         buildLauncherBackedGradleHandle
     }
