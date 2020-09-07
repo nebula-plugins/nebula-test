@@ -102,7 +102,7 @@ abstract trait IntegrationTestKitBase extends IntegrationBase {
                 : new ArrayList<String>()
         def gradleRunnerBuilder = GradleRunner.create()
                 .withProjectDir(projectDir)
-                .withArguments(calculateArguments(tasks) + pluginArgs)
+                .withArguments(pluginArgs + calculateArguments(tasks))
                 .withDebug(debug)
                 .withPluginClasspath()
 
