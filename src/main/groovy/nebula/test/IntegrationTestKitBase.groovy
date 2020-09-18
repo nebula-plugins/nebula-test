@@ -77,13 +77,15 @@ abstract trait IntegrationTestKitBase extends IntegrationBase {
     BuildResult runTasks(String... tasks) {
         BuildResult result = createRunner(tasks)
                 .build()
-        return checkForDeprecations(result)
+        checkOutput(result.output)
+        return result
     }
 
     BuildResult runTasksAndFail(String... tasks) {
         BuildResult result = createRunner(tasks)
                 .buildAndFail()
-        return checkForDeprecations(result)
+        checkOutput(result.output)
+        return result
     }
 
     def tasksWereSuccessful(BuildResult result, String... tasks) {
@@ -130,10 +132,5 @@ abstract trait IntegrationTestKitBase extends IntegrationBase {
         ClasspathAddingInitScriptBuilder.build(initScript, classLoader, classpathFilter)
 
         return Arrays.asList("--init-script", initScript.getAbsolutePath())
-    }
-
-    BuildResult checkForDeprecations(BuildResult result) {
-        checkForDeprecations(result.output)
-        return result
     }
 }

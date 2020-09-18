@@ -164,12 +164,7 @@ abstract trait Integration extends IntegrationBase {
         ExecutionResult result = gradleHandle.run()
         this.result = result
         gradleHandle.disconnect()
-        return checkForDeprecations(result)
-    }
-
-    ExecutionResult checkForDeprecations(ExecutionResult result) {
-        checkForMutableProjectState(result.standardOutput)
-        checkForDeprecations(result.standardOutput)
+        checkOutput(result.standardOutput)
         return result
     }
 

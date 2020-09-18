@@ -83,6 +83,30 @@ abstract trait IntegrationBase {
         file
     }
 
+    static void checkOutput(String output) {
+        outputBuildScan(output)
+        checkForMutableProjectState(output)
+        checkForDeprecations(output)
+    }
+
+    static void outputBuildScan(String output) {
+        boolean foundPublishingLine = false
+        output.readLines().find {line ->
+            if (foundPublishingLine) {
+                if (line.startsWith("http")) {
+                    println("Build scan: $line")
+                } else {
+                    println("Build scan was enabled but did not publish: $line")
+                }
+                return true
+            }
+            if (line == "Publishing build scan...") {
+                foundPublishingLine = true
+            }
+            return false
+        }
+    }
+
     static void checkForDeprecations(String output) {
         def deprecations = output.readLines().findAll {
             it.contains("has been deprecated and is scheduled to be removed in Gradle") ||
