@@ -24,10 +24,17 @@ import nebula.test.functional.internal.GradleHandle
 public interface GradleRunner {
     // These predicates are here, instead of on GradleRunnerFactory due to a Groovy static compiler bug (https://issues.apache.org/jira/browse/GROOVY-7159)
 
+    static final String SHARED_DEPENDENCY_CACHE_ENVIRONMENT_VARIABLE = 'GRADLE_RO_DEP_CACHE'
+
     static final Predicate<URL> CLASSPATH_GRADLE_CACHE = new Predicate<URL>() {
         @Override
         boolean apply(URL url) {
-            return url.path.contains('/caches/modules-')
+            String gradleSharedDependencyCache = System.getenv(SHARED_DEPENDENCY_CACHE_ENVIRONMENT_VARIABLE)
+            if(gradleSharedDependencyCache) {
+                return url.path.contains('/caches/modules-') ||  url.path.contains("${gradleSharedDependencyCache}/modules-")
+            } else {
+                return url.path.contains('/caches/modules-')
+            }
         }
     }
 

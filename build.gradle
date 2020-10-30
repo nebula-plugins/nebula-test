@@ -43,6 +43,7 @@ dependencies {
     }
     api 'cglib:cglib-nodep:3.2.2'
     api 'org.objenesis:objenesis:2.4'
+    testImplementation('com.github.stefanbirkner:system-rules:1.19.0')
 }
 
 gradleTest {

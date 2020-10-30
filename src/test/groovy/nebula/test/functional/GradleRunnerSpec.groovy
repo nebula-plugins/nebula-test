@@ -17,6 +17,8 @@ package nebula.test.functional
 
 import com.google.common.base.StandardSystemProperty
 import com.google.common.collect.FluentIterable
+import org.junit.Rule
+import org.junit.contrib.java.lang.system.EnvironmentVariables
 import spock.lang.Issue
 import spock.lang.Specification
 
@@ -28,6 +30,10 @@ class GradleRunnerSpec extends Specification {
 
     def workDir = new File(StandardSystemProperty.USER_DIR.value())
     def siblingDir = new File(workDir.parentFile, 'sibling')
+    def sharedDependencyCache = new File(workDir.parentFile, 'sharedDependencyCache')
+
+    @Rule
+    public final EnvironmentVariables environmentVariables = new EnvironmentVariables()
 
     def setup() {
         // Partial real-world classpath from a IntegrationSpec launch, only the workDir/siblingDir paths matter, otherwise these are just string comparisons
@@ -93,7 +99,9 @@ class GradleRunnerSpec extends Specification {
                 new File(workDir, ".gradle/wrapper/dists/gradle-2.2.1-bin/3rn023ng4778ktj66tonmgpbv/gradle-2.2.1/lib/asm-all-5.0.3.jar").toURI() as String,
                 new File(workDir, ".gradle/wrapper/dists/gradle-2.2.1-bin/3rn023ng4778ktj66tonmgpbv/gradle-2.2.1/lib/ant-1.9.3.jar").toURI() as String,
                 new File(workDir, ".gradle/wrapper/dists/gradle-2.2.1-bin/3rn023ng4778ktj66tonmgpbv/gradle-2.2.1/lib/commons-collections-3.2.1.jar").toURI() as String,
-                new File(workDir, ".gradle/wrapper/dists/gradle-2.2.1-bin/3rn023ng4778ktj66tonmgpbv/gradle-2.2.1/lib/commons-io-1.4.jar").toURI() as String
+                new File(workDir, ".gradle/wrapper/dists/gradle-2.2.1-bin/3rn023ng4778ktj66tonmgpbv/gradle-2.2.1/lib/commons-io-1.4.jar").toURI() as String,
+
+                new File(sharedDependencyCache, "/modules-2/files-2.1/junit/junit/4.13/2973d150c0dc1fefe998f834810d68f278ea58ec/junit-4.13.jar").toURI() as String
         ]
         classpath = classpathUris.collect { new URI(it).toURL() }
     }
@@ -102,6 +110,17 @@ class GradleRunnerSpec extends Specification {
         expect:
         def filtered = FluentIterable.from(classpath).filter(GradleRunner.CLASSPATH_GRADLE_CACHE).toList()
         filtered.size() == 5
+    }
+
+
+    def 'gradle distribution predicate matches expected files with GRADLE_RO_DEP_CACHE support'() {
+        setup:
+        environmentVariables.set("GRADLE_RO_DEP_CACHE", sharedDependencyCache.absolutePath)
+
+        expect:
+        def filtered = FluentIterable.from(classpath).filter(GradleRunner.CLASSPATH_GRADLE_CACHE).toList()
+        filtered.size() == 6
+        filtered.any { it.file.contains('junit-4.13') }
     }
 
     def 'jvm predicate matches expected files'() {
