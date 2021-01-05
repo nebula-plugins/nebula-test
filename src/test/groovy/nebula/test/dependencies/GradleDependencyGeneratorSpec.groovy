@@ -247,7 +247,7 @@ class GradleDependencyGeneratorSpec extends Specification {
 
         then:
         def repo = new File(directory)
-        new File(repo, 'test.ivy.foo_1_0_0/build.gradle').text.contains 'compile \'test.ivy:bar:1.1.0\''
+        new File(repo, 'test.ivy.foo_1_0_0/build.gradle').text.contains 'api \'test.ivy:bar:1.1.0\''
         new File(repo, 'ivyrepo/test/ivy/foo/1.0.0/foo-1.0.0-ivy.xml').text.contains '<dependency org="test.ivy" name="bar" rev="1.1.0" conf="compile-&gt;default"/>'
     }
 
@@ -261,7 +261,7 @@ class GradleDependencyGeneratorSpec extends Specification {
 
         then:
         def repo = new File(directory)
-        new File(repo, 'test.maven.foo_1_0_0/build.gradle').text.contains 'compile \'test.maven:bar:1.+\''
+        new File(repo, 'test.maven.foo_1_0_0/build.gradle').text.contains 'api \'test.maven:bar:1.+\''
         def pom = new File(repo, 'mavenrepo/test/maven/foo/1.0.0/foo-1.0.0.pom').text
         pom.contains '<groupId>test.maven</groupId>'
         pom.contains '<artifactId>bar</artifactId>'

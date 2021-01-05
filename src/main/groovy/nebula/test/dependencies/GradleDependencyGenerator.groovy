@@ -29,7 +29,7 @@ class GradleDependencyGenerator {
         subprojects {
             apply plugin: 'maven-publish'
             apply plugin: 'ivy-publish'
-            apply plugin: 'java'
+            apply plugin: 'java-library'
 
             publishing {
                 repositories {
@@ -53,7 +53,7 @@ class GradleDependencyGenerator {
         subprojects {
             apply plugin: 'maven-publish'
             apply plugin: 'ivy-publish'
-            apply plugin: 'java'
+            apply plugin: 'java-library'
 
             publishing {
                 repositories {
@@ -182,7 +182,7 @@ class GradleDependencyGenerator {
         if (node.dependencies) {
             block.withPrintWriter { writer ->
                 writer.println 'dependencies {'
-                node.dependencies.each { writer.println "    compile '${it}'" }
+                node.dependencies.each { writer.println "    api '${it}'" }
                 writer.println '}'
             }
         }
