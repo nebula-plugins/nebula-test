@@ -101,7 +101,9 @@ class GradleRunnerSpec extends Specification {
                 new File(workDir, ".gradle/wrapper/dists/gradle-2.2.1-bin/3rn023ng4778ktj66tonmgpbv/gradle-2.2.1/lib/commons-collections-3.2.1.jar").toURI() as String,
                 new File(workDir, ".gradle/wrapper/dists/gradle-2.2.1-bin/3rn023ng4778ktj66tonmgpbv/gradle-2.2.1/lib/commons-io-1.4.jar").toURI() as String,
 
-                new File(sharedDependencyCache, "/modules-2/files-2.1/junit/junit/4.13/2973d150c0dc1fefe998f834810d68f278ea58ec/junit-4.13.jar").toURI() as String
+                new File(sharedDependencyCache, "/modules-2/files-2.1/junit/junit/4.13/2973d150c0dc1fefe998f834810d68f278ea58ec/junit-4.13.jar").toURI() as String,
+
+                new File(System.getProperty('user.home'), '.m2/repository/com/netflix/genie/genie-common/4.0.0-SNAPSHOT/genie-common-4.0.0-SNAPSHOT.jar').toURI() as String
         ]
         classpath = classpathUris.collect { new URI(it).toURL() }
     }
@@ -135,9 +137,16 @@ class GradleRunnerSpec extends Specification {
         filtered.size() == 14
     }
 
+    def 'maven local dependencies matches expected files'() {
+        expect:
+        def filtered = FluentIterable.from(classpath).filter(GradleRunner.MAVEN_LOCAL).toList()
+        filtered.size() == 1
+        filtered.every {it.file.contains(".m2/repository") }
+    }
+
     def 'default classpath matches only application class paths and dependencies'() {
         expect:
         def filtered = FluentIterable.from(classpath).filter(GradleRunner.CLASSPATH_DEFAULT).toList()
-        filtered.size() == 25
+        filtered.size() == 26
     }
 }

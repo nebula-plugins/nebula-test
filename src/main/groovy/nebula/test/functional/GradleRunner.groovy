@@ -30,11 +30,19 @@ public interface GradleRunner {
         @Override
         boolean apply(URL url) {
             String gradleSharedDependencyCache = System.getenv(SHARED_DEPENDENCY_CACHE_ENVIRONMENT_VARIABLE)
-            if(gradleSharedDependencyCache) {
-                return url.path.contains('/caches/modules-') ||  url.path.contains("${gradleSharedDependencyCache}/modules-")
+            if (gradleSharedDependencyCache) {
+                return url.path.contains('/caches/modules-') || url.path.contains("${gradleSharedDependencyCache}/modules-")
             } else {
                 return url.path.contains('/caches/modules-')
             }
+        }
+    }
+
+    static final Predicate<URL> MAVEN_LOCAL = new Predicate<URL>() {
+        @Override
+        boolean apply(URL url) {
+            String m2RepositoryPrefix = StandardSystemProperty.USER_HOME.value() + "/.m2/repository"
+            return url.path.contains(m2RepositoryPrefix)
         }
     }
 
@@ -57,7 +65,7 @@ public interface GradleRunner {
      * Attempts to provide a classpath that approximates the 'normal' Gradle runtime classpath. Use {@link #CLASSPATH_ALL}
      * to default to pre-2.2.2 behaviour.
      */
-    static final Predicate<URL> CLASSPATH_DEFAULT = Predicates.or(CLASSPATH_PROJECT_DIR, CLASSPATH_GRADLE_CACHE, CLASSPATH_PROJECT_DEPENDENCIES)
+    static final Predicate<URL> CLASSPATH_DEFAULT = Predicates.or(CLASSPATH_PROJECT_DIR, CLASSPATH_GRADLE_CACHE, CLASSPATH_PROJECT_DEPENDENCIES, MAVEN_LOCAL)
 
     /**
      * Accept all URLs. Provides pre-2.2.2 behaviour.
