@@ -2,7 +2,7 @@ Nebula Test
 ===========
 
 ![Support Status](https://img.shields.io/badge/nebula-active-green.svg)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.netflix.nebula/nebula-test/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/com.netflix.nebula/nebula-test)
+[![Maven Central](https://img.shields.io/maven-central/v/com.netflix.nebula/nebula-test)](https://maven-badges.herokuapp.com/maven-central/com.netflix.nebula/nebula-test)
 ![CI](https://github.com/nebula-plugins/nebula-test/actions/workflows/ci.yml/badge.svg)
 ![Publish](https://github.com/nebula-plugins/nebula-test/actions/workflows/publish.yml/badge.svg)
 [![Apache 2.0](https://img.shields.io/github/license/nebula-plugins/nebula-test.svg)](http://www.apache.org/licenses/LICENSE-2.0)
