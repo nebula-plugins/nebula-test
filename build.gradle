@@ -29,56 +29,16 @@ contacts {
     }
 }
 
-java {
-    registerFeature('groovy2') {
-        usingSourceSet(sourceSets.main)
-        capability(project.group.toString(), project.name, project.version.toString())
-    }
-}
-
-configurations {
-    commonApi
-    ['apiElements', 'runtimeElements'].each { configuration ->
-        it[configuration].attributes {
-            attribute(Attribute.of("nebula.plugins.gradle.groovy-version", Integer.class), 3)
-        }
-    }
-    groovy2Api {
-       extendsFrom(commonApi)
-    }
-    api {
-        extendsFrom(commonApi)
-    }
-}
-
 dependencies {
     implementation gradleTestKit()
-    commonApi 'com.google.guava:guava:19.0'
-    commonApi 'commons-io:commons-io:2.5'
-    groovy2Api ('org.spockframework:spock-core:1.3-groovy-2.4')  {
+    api 'com.google.guava:guava:19.0'
+    api 'commons-io:commons-io:2.5'
+    api ('org.spockframework:spock-core:1.3-groovy-2.4') {
         exclude group: 'org.codehaus.groovy'
     }
-    api('org.spockframework:spock-core:2.0-M4-groovy-3.0') {
-        exclude group: 'org.codehaus.groovy'
-    }
-    api 'org.spockframework:spock-junit4:2.0-M4-groovy-3.0'
-    commonApi 'cglib:cglib-nodep:3.2.2'
-    commonApi 'org.objenesis:objenesis:2.4'
-    testImplementation 'com.github.stefanbirkner:system-rules:1.19.0'
-}
-
-afterEvaluate {
-    publishing {
-        publications {
-            publications.withType(org.gradle.api.publish.maven.MavenPublication) { MavenPublication publication ->
-                publication.versionMapping { VersionMappingStrategy versionMappingStrategy ->
-                    versionMappingStrategy.allVariants() {
-                        usePublishedVersions = false
-                    }
-                }
-            }
-        }
-    }
+    api 'cglib:cglib-nodep:3.2.2'
+    api 'org.objenesis:objenesis:2.4'
+    testImplementation('com.github.stefanbirkner:system-rules:1.19.0')
 }
 
 publishPlugins.enabled = false
