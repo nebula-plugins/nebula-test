@@ -134,7 +134,9 @@ abstract trait IntegrationBase {
     static void checkForMutableProjectState(String output) {
         def mutableProjectStateWarnings = output.readLines().findAll {
             it.contains("was resolved without accessing the project in a safe manner") ||
-                    it.contains("This may happen when a configuration is resolved from a thread not managed by Gradle or from a different project")
+                    it.contains("This may happen when a configuration is resolved from a thread not managed by Gradle or from a different project") ||
+                    it.contains("was resolved from a thread not managed by Gradle.") ||
+                    it.contains("was attempted from a context different than the project context")
 
         }
 

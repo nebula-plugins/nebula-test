@@ -5,10 +5,6 @@ import spock.lang.IgnoreIf
 @IgnoreIf({ System.getenv('TITUS_TASK_ID') })
 class MutableProjectStateWarningCheckIntegrationSpec extends IntegrationSpec {
 
-    def setup() {
-        gradleVersion = "5.1"
-    }
-
     def 'mutable project state warning when configuration in another project is resolved unsafely'() {
         given:
         settingsFile << """

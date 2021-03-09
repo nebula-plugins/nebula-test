@@ -165,6 +165,7 @@ abstract trait Integration extends IntegrationBase {
         this.result = result
         gradleHandle.disconnect()
         checkOutput(result.standardOutput)
+        checkOutput(result.standardError)
         return result
     }
 
