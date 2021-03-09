@@ -9,13 +9,19 @@ class DeprecationCheckIntegrationSpec extends IntegrationSpec {
         buildFile << """
             apply plugin: 'java'
             
-            tasks.jar.deleteAllActions()
+            repositories {
+                mavenCentral()
+            }
+            
+            dependencies {
+                implementation('com.google.guava:guava:19.0') {
+                    force = true
+                }
+            }
         """
 
-        gradleVersion = '4.7'
-
         when:
-        runTasks()
+        runTasks('help')
 
         then:
         def e = thrown(IllegalArgumentException)

@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.Test
+
 /*
  * Copyright 2014-2019 Netflix, Inc.
  *
@@ -40,6 +42,10 @@ dependencies {
     api 'cglib:cglib-nodep:3.2.2'
     api 'org.objenesis:objenesis:2.4'
     testImplementation 'com.github.stefanbirkner:system-rules:1.19.0'
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform()
 }
 
 publishPlugins.enabled = false

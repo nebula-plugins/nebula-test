@@ -34,22 +34,26 @@ class SpecifiedGradleVersionIntegrationSpec extends IntegrationSpec {
             writeHelloWorld('nebula.test.hello')
             buildFile << '''
                 apply plugin: 'java'
+                
+                task showVersion {
+                    doLast {
+                        println "Gradle Version: ${gradle.gradleVersion}"
+                    }
+                }
             '''.stripIndent()
-        and:
-            logLevel = LogLevel.DEBUG
 
         and:
             gradleVersion = requestedGradleVersion
 
         when:
-            def result = runTasksSuccessfully('build')
+            def result = runTasksSuccessfully('showVersion')
 
         then:
 
-        result.standardOutput.contains("gradle\\$requestedGradleVersion\\taskArtifacts")
+        result.standardOutput.contains("Gradle Version: $requestedGradleVersion")
 
         where:
-            requestedGradleVersion << ['2.8', '2.9']
+            requestedGradleVersion << ['7.0-milestone-2']
     }
 
     @IgnoreIf({ OperatingSystem.current.windows || jvm.isJava9Compatible() })
@@ -59,23 +63,27 @@ class SpecifiedGradleVersionIntegrationSpec extends IntegrationSpec {
         writeHelloWorld('nebula.test.hello')
         buildFile << '''
                 apply plugin: 'java'
+                
+                task showVersion {
+                    doLast {
+                        println "Gradle Version: ${gradle.gradleVersion}"
+                    }
+                }
             '''.stripIndent()
-        and:
-        logLevel = LogLevel.DEBUG
 
         and:
         gradleVersion = requestedGradleVersion
 
         when:
-        def result = runTasksSuccessfully('build')
+        def result = runTasksSuccessfully('showVersion')
 
         then:
 
-        result.standardOutput.contains("gradle/$requestedGradleVersion/taskArtifacts")
+        result.standardOutput.contains("Gradle Version: $requestedGradleVersion")
 
 
         where:
-        requestedGradleVersion << ['2.8', '2.9']
+        requestedGradleVersion << ['7.0-milestone-2']
     }
 
     static final String CUSTOM_DISTRIBUTION = 'https://dl.bintray.com/nebula/gradle-distributions/1.12-20140608201532+0000/gradle-1.12-20140608201532+0000-bin.zip'
