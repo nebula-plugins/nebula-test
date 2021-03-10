@@ -111,7 +111,7 @@ class GradleRunnerSpec extends Specification {
     def 'gradle distribution predicate matches expected files'() {
         expect:
         def filtered = FluentIterable.from(classpath).filter(GradleRunner.CLASSPATH_GRADLE_CACHE).toList()
-        filtered.size() == 5
+        filtered.size() == 3
     }
 
 
@@ -121,8 +121,8 @@ class GradleRunnerSpec extends Specification {
 
         expect:
         def filtered = FluentIterable.from(classpath).filter(GradleRunner.CLASSPATH_GRADLE_CACHE).toList()
-        filtered.size() == 6
-        filtered.any { it.file.contains('junit-4.13') }
+        filtered.size() == 3
+        filtered.any { it.file.contains('commons-lang-2.6') }
     }
 
     def 'jvm predicate matches expected files'() {

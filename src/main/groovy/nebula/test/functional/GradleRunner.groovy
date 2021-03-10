@@ -31,10 +31,14 @@ public interface GradleRunner {
         boolean apply(URL url) {
             String gradleSharedDependencyCache = System.getenv(SHARED_DEPENDENCY_CACHE_ENVIRONMENT_VARIABLE)
             if (gradleSharedDependencyCache) {
-                return url.path.contains('/caches/modules-') || url.path.contains("${gradleSharedDependencyCache}/modules-")
+                return (url.path.contains('/caches/modules-') || url.path.contains("${gradleSharedDependencyCache}/modules-")) && !isTestingFramework(url)
             } else {
-                return url.path.contains('/caches/modules-')
+                return url.path.contains('/caches/modules-') && !isTestingFramework(url)
             }
+        }
+
+        static boolean isTestingFramework(URL url) {
+            return url.path.contains("spock-") || url.path.contains("junit-")
         }
     }
 
