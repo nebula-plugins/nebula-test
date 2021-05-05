@@ -20,7 +20,6 @@ import nebula.test.gradle.GradleVersionComparator
 import org.gradle.api.invocation.Gradle
 
 class GradleDependencyGenerator {
-    private static final String DEFAULT_GRADLE_VERSION = '5.2.1'
     private static final String GRADLE_FIVE_ZERO = '5.0.0'
     private static final String LEGACY_PATTERN_LAYOUT = "layout('pattern')"
     private static final String PATTERN_LAYOUT = "patternLayout"
@@ -97,7 +96,7 @@ class GradleDependencyGenerator {
     }
 
     GradleDependencyGenerator(DependencyGraph graph, String directory = 'build/testrepogen') {
-        this(DEFAULT_GRADLE_VERSION, graph, directory)
+        this((String)null, graph, directory)
     }
 
     File generateTestMavenRepo() {
@@ -136,7 +135,7 @@ class GradleDependencyGenerator {
 
     String getIvyRepositoryBlock() {
         use(GradleVersionComparator) {
-            boolean isGradleOlderThanGradleFive = gradleVersion.versionLessThan(GRADLE_FIVE_ZERO)
+            boolean isGradleOlderThanGradleFive = gradleVersion != null && gradleVersion.versionLessThan(GRADLE_FIVE_ZERO)
             String layoutPattern = isGradleOlderThanGradleFive ? LEGACY_PATTERN_LAYOUT : PATTERN_LAYOUT
             return """\
             ivy {
@@ -161,7 +160,7 @@ class GradleDependencyGenerator {
 
             gradleRoot.mkdirs()
             def rootBuildGradle = new File(gradleRoot, BUILD_GRADLE)
-            rootBuildGradle.text = gradleVersion.versionLessThan(GRADLE_FIVE_ZERO) ? LEGACY_STANDARD_SUBPROJECT_BLOCK : STANDARD_SUBPROJECT_BLOCK
+            rootBuildGradle.text = gradleVersion != null && gradleVersion.versionLessThan(GRADLE_FIVE_ZERO) ? LEGACY_STANDARD_SUBPROJECT_BLOCK : STANDARD_SUBPROJECT_BLOCK
             def includes = []
             graph.nodes.each { DependencyGraphNode n ->
                 String subName = "${n.group}.${n.artifact}_${n.version.replaceAll(/\./, '_')}"
@@ -213,7 +212,7 @@ class GradleDependencyGenerator {
     }
 
     private void runTasks(String tasks) {
-        def runner = GradleRunnerFactory.createTooling() // Could optionally use Launcher
+        def runner = GradleRunnerFactory.createTooling(false, gradleVersion) // Could optionally use Launcher
         runner.run(gradleRoot, tasks.tokenize()).rethrowFailure()
     }
 }
