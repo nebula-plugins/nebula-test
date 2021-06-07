@@ -56,10 +56,6 @@ abstract trait IntegrationBase {
         return LogLevel.valueOf(levelFromEnv.toUpperCase())
     }
 
-    void setLogLevel(LogLevel logLevel) {
-        this.logLevel = logLevel
-    }
-
     /* Setup */
 
     File directory(String path, File baseDir = getProjectDir()) {
