@@ -1,14 +1,13 @@
 package nebula.test.functional.internal.classpath
 
-import com.google.common.base.Function
-import com.google.common.base.Predicate
-import com.google.common.collect.FluentIterable
 import groovy.transform.CompileStatic
 import org.gradle.internal.ErroringAction
 import org.gradle.internal.IoActions
 import org.gradle.internal.classloader.ClasspathUtil
 import org.gradle.internal.classpath.ClassPath
 import org.gradle.util.TextUtil
+
+import java.util.function.Predicate
 
 @CompileStatic
 class ClasspathAddingInitScriptBuilder {
@@ -48,12 +47,9 @@ class ClasspathAddingInitScriptBuilder {
 
     public static List<File> getClasspathAsFiles(ClassLoader classLoader, Predicate<URL> classpathFilter) {
         List<URL> classpathUrls = getClasspathUrls(classLoader)
-        return FluentIterable.from(classpathUrls).filter(classpathFilter).transform(new Function<URL, File>() {
-            @Override
-            File apply(URL url) {
-                return new File(url.toURI());
-            }
-        }).toList()
+        return classpathUrls.findAll {classpathFilter.test(it) }.collect {
+            new File(it.toURI())
+        }
     }
 
     private static List<URL> getClasspathUrls(ClassLoader classLoader) {

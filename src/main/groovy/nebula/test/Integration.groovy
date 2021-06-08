@@ -15,7 +15,6 @@
  */
 package nebula.test
 
-import com.google.common.base.Predicate
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 import nebula.test.functional.ExecutionResult
@@ -24,8 +23,10 @@ import nebula.test.functional.GradleRunnerFactory
 import nebula.test.functional.PreExecutionAction
 import nebula.test.functional.internal.GradleHandle
 import nebula.test.multiproject.MultiProjectIntegrationHelper
-import org.apache.commons.io.FileUtils
 import org.gradle.api.logging.LogLevel
+import org.gradle.util.GFileUtils
+
+import java.util.function.Predicate
 
 /**
  * @author Justin Ryan
@@ -108,9 +109,9 @@ abstract trait Integration extends IntegrationBase {
         File destinationFile = file(destination)
         File resourceFile = new File(resource.toURI())
         if (resourceFile.file) {
-            FileUtils.copyFile(resourceFile, destinationFile)
+            GFileUtils.copyFile(resourceFile, destinationFile)
         } else {
-            FileUtils.copyDirectory(resourceFile, destinationFile)
+            GFileUtils.copyDirectory(resourceFile, destinationFile)
         }
     }
 

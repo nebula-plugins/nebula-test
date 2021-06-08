@@ -33,13 +33,11 @@ contacts {
 
 dependencies {
     implementation gradleTestKit()
-    api 'com.google.guava:guava:19.0'
-    api 'commons-io:commons-io:2.5'
     api ('org.spockframework:spock-core:1.3-groovy-2.4') {
         exclude group: 'org.codehaus.groovy'
     }
-    api 'cglib:cglib-nodep:3.2.2'
-    api 'org.objenesis:objenesis:2.4'
+    runtimeOnly 'cglib:cglib-nodep:3.2.2'
+    runtimeOnly 'org.objenesis:objenesis:2.4'
     testImplementation('com.github.stefanbirkner:system-rules:1.19.0')
 }
 

@@ -1,11 +1,12 @@
 package nebula.test.functional
 
-import com.google.common.base.Predicate
 import groovy.transform.CompileStatic
 import nebula.test.functional.internal.DefaultGradleRunner
 import nebula.test.functional.internal.GradleHandleFactory
 import nebula.test.functional.internal.classpath.ClasspathInjectingGradleHandleFactory
 import nebula.test.functional.internal.toolingapi.ToolingApiGradleHandleFactory
+
+import java.util.function.Predicate
 
 @CompileStatic
 class GradleRunnerFactory {

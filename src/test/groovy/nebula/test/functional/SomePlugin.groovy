@@ -15,7 +15,7 @@ class SomePlugin implements Plugin<Project> {
 
             doLast {
                 new Thing() // Class in another package
-                org.apache.commons.io.FileUtils // is a compile dependency, test it's available
+                org.hamcrest.Matcher // is a compile dependency, test it's available
                 project.logger.quiet "I ran!"
             }
         }
