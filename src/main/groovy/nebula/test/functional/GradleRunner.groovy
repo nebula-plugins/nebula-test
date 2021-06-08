@@ -16,19 +16,18 @@
 
 package nebula.test.functional
 
-import com.google.common.base.Predicate
-import com.google.common.base.Predicates
-import com.google.common.base.StandardSystemProperty
 import nebula.test.functional.internal.GradleHandle
 
-public interface GradleRunner {
+import java.util.function.Predicate
+
+interface GradleRunner {
     // These predicates are here, instead of on GradleRunnerFactory due to a Groovy static compiler bug (https://issues.apache.org/jira/browse/GROOVY-7159)
 
     static final String SHARED_DEPENDENCY_CACHE_ENVIRONMENT_VARIABLE = 'GRADLE_RO_DEP_CACHE'
 
     static final Predicate<URL> CLASSPATH_GRADLE_CACHE = new Predicate<URL>() {
         @Override
-        boolean apply(URL url) {
+        boolean test(URL url) {
             String gradleSharedDependencyCache = System.getenv(SHARED_DEPENDENCY_CACHE_ENVIRONMENT_VARIABLE)
             if (gradleSharedDependencyCache) {
                 return (url.path.contains('/caches/modules-') || url.path.contains("${gradleSharedDependencyCache}/modules-")) && !isTestingFramework(url)
@@ -44,23 +43,23 @@ public interface GradleRunner {
 
     static final Predicate<URL> MAVEN_LOCAL = new Predicate<URL>() {
         @Override
-        boolean apply(URL url) {
-            String m2RepositoryPrefix = StandardSystemProperty.USER_HOME.value() + "/.m2/repository"
+        boolean test(URL url) {
+            String m2RepositoryPrefix = System.getProperty("user.home") + "/.m2/repository"
             return url.path.contains(m2RepositoryPrefix)
         }
     }
 
     static final Predicate<URL> CLASSPATH_PROJECT_DIR = new Predicate<URL>() {
         @Override
-        boolean apply(URL url) {
-            File userDir = new File(StandardSystemProperty.USER_DIR.value())
+        boolean test(URL url) {
+            File userDir = new File(System.getProperty("user.dir"))
             return url.path.startsWith(userDir.toURI().toURL().path)
         }
     }
 
     static final Predicate<URL> CLASSPATH_PROJECT_DEPENDENCIES = new Predicate<URL>() {
         @Override
-        boolean apply(URL url) {
+        boolean test(URL url) {
             return url.path.contains('/build/classes') || url.path.contains('/build/resources') || url.path.contains('/build/libs') || url.path.contains('/out/')
         }
     }
@@ -69,14 +68,19 @@ public interface GradleRunner {
      * Attempts to provide a classpath that approximates the 'normal' Gradle runtime classpath. Use {@link #CLASSPATH_ALL}
      * to default to pre-2.2.2 behaviour.
      */
-    static final Predicate<URL> CLASSPATH_DEFAULT = Predicates.or(CLASSPATH_PROJECT_DIR, CLASSPATH_GRADLE_CACHE, CLASSPATH_PROJECT_DEPENDENCIES, MAVEN_LOCAL)
+    static final Predicate<URL> CLASSPATH_DEFAULT = new Predicate<URL>() {
+        @Override
+        boolean test(URL url) {
+            return CLASSPATH_PROJECT_DIR.test(url) || CLASSPATH_GRADLE_CACHE.test(url) || CLASSPATH_PROJECT_DEPENDENCIES.test(url) || MAVEN_LOCAL.test(url)
+        }
+    }
 
     /**
      * Accept all URLs. Provides pre-2.2.2 behaviour.
      */
     static final Predicate<URL> CLASSPATH_ALL = new Predicate<URL>() {
         @Override
-        boolean apply(URL url) {
+        boolean test(URL url) {
             return true
         }
     }

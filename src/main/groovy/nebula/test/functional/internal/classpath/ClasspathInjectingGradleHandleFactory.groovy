@@ -1,10 +1,11 @@
 package nebula.test.functional.internal.classpath
 
-import com.google.common.base.Predicate
 import groovy.transform.CompileStatic
 import nebula.test.functional.internal.GradleHandle
 import nebula.test.functional.internal.GradleHandleFactory
 import org.gradle.util.GFileUtils
+
+import java.util.function.Predicate
 
 @CompileStatic
 class ClasspathInjectingGradleHandleFactory implements GradleHandleFactory {

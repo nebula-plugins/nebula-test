@@ -7,6 +7,6 @@ import java.util.List;
 /**
  * Executes actions before gradle is called.
  */
-interface PreExecutionAction {
+public interface PreExecutionAction {
   void execute(File projectDir, List<String> arguments, List<String> jvmArguments);
 }

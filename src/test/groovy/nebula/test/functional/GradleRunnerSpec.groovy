@@ -15,11 +15,8 @@
  */
 package nebula.test.functional
 
-import com.google.common.base.StandardSystemProperty
-import com.google.common.collect.FluentIterable
 import org.junit.Rule
 import org.junit.contrib.java.lang.system.EnvironmentVariables
-import spock.lang.Issue
 import spock.lang.Specification
 
 /**
@@ -28,7 +25,7 @@ import spock.lang.Specification
 class GradleRunnerSpec extends Specification {
     List<URL> classpath
 
-    def workDir = new File(StandardSystemProperty.USER_DIR.value())
+    def workDir = new File(System.getProperty("user.dir"))
     def siblingDir = new File(workDir.parentFile, 'sibling')
     def sharedDependencyCache = new File(workDir.parentFile, 'sharedDependencyCache')
 
@@ -110,7 +107,7 @@ class GradleRunnerSpec extends Specification {
 
     def 'gradle distribution predicate matches expected files'() {
         expect:
-        def filtered = FluentIterable.from(classpath).filter(GradleRunner.CLASSPATH_GRADLE_CACHE).toList()
+        def filtered = classpath.findAll {GradleRunner.CLASSPATH_GRADLE_CACHE.test(it) }
         filtered.size() == 3
     }
 
@@ -120,33 +117,33 @@ class GradleRunnerSpec extends Specification {
         environmentVariables.set("GRADLE_RO_DEP_CACHE", sharedDependencyCache.absolutePath)
 
         expect:
-        def filtered = FluentIterable.from(classpath).filter(GradleRunner.CLASSPATH_GRADLE_CACHE).toList()
+        def filtered = classpath.findAll {GradleRunner.CLASSPATH_GRADLE_CACHE.test(it) }
         filtered.size() == 3
         filtered.any { it.file.contains('commons-lang-2.6') }
     }
 
     def 'jvm predicate matches expected files'() {
         expect:
-        def filtered = FluentIterable.from(classpath).filter(GradleRunner.CLASSPATH_PROJECT_DIR).toList()
+        def filtered = classpath.findAll {GradleRunner.CLASSPATH_PROJECT_DIR.test(it) }
         filtered.size() == 15
     }
 
     def 'project dependencies matches expected files'() {
         expect:
-        def filtered = FluentIterable.from(classpath).filter(GradleRunner.CLASSPATH_PROJECT_DEPENDENCIES).toList()
+        def filtered = classpath.findAll {GradleRunner.CLASSPATH_PROJECT_DEPENDENCIES.test(it) }
         filtered.size() == 14
     }
 
     def 'maven local dependencies matches expected files'() {
         expect:
-        def filtered = FluentIterable.from(classpath).filter(GradleRunner.MAVEN_LOCAL).toList()
+        def filtered = classpath.findAll {GradleRunner.MAVEN_LOCAL.test(it) }
         filtered.size() == 1
         filtered.every {it.file.contains(".m2/repository") }
     }
 
     def 'default classpath matches only application class paths and dependencies'() {
         expect:
-        def filtered = FluentIterable.from(classpath).filter(GradleRunner.CLASSPATH_DEFAULT).toList()
+        def filtered = classpath.findAll {GradleRunner.CLASSPATH_DEFAULT.test(it) }
         filtered.size() == 26
     }
 }
