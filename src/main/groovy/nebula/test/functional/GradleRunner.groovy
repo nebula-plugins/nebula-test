@@ -29,11 +29,10 @@ interface GradleRunner {
         @Override
         boolean test(URL url) {
             String gradleSharedDependencyCache = System.getenv(SHARED_DEPENDENCY_CACHE_ENVIRONMENT_VARIABLE)
-            if (gradleSharedDependencyCache) {
-                return (url.path.contains('/caches/modules-') || url.path.contains("${gradleSharedDependencyCache}/modules-")) && !isTestingFramework(url)
-            } else {
-                return url.path.contains('/caches/modules-') && !isTestingFramework(url)
-            }
+            boolean cachedModule = url.path.contains('/caches/modules-')
+            boolean readOnlyCachedModule = gradleSharedDependencyCache && url.path.contains("${gradleSharedDependencyCache}/modules-")
+            boolean testDistributionOrphanedFile = url.path.contains('/orphan-files/') // test distribution orphans read-only dependency cache files
+            return (cachedModule || readOnlyCachedModule || testDistributionOrphanedFile) && !isTestingFramework(url)
         }
 
         static boolean isTestingFramework(URL url) {
