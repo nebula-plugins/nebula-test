@@ -116,6 +116,6 @@ class BuildLauncherBackedGradleHandle implements GradleHandle {
     }
 
     private boolean containsOutput(String stdout, String taskName, String stateIdentifier) {
-        stdout.contains("$taskName $stateIdentifier".toString())
+        stdout.contains(" $taskName $stateIdentifier".toString())
     }
 }
