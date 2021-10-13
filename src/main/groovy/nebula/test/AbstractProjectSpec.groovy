@@ -4,6 +4,7 @@ import groovy.transform.CompileStatic
 import nebula.test.multiproject.MultiProjectHelper
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
+import org.gradle.testfixtures.internal.ProjectBuilderImpl
 import org.junit.Rule
 import org.junit.rules.TestName
 import spock.lang.Specification
@@ -34,7 +35,11 @@ public abstract class AbstractProjectSpec extends Specification {
         }
         ourProjectDir.mkdirs()
         canonicalName = testName.getMethodName().replaceAll(' ', '-')
-        project = ProjectBuilder.builder().withName(canonicalName).withProjectDir(ourProjectDir).build()
+        ProjectBuilder builder =  ProjectBuilder.builder().withName(canonicalName).withProjectDir(ourProjectDir)
+        try {
+            ProjectBuilderImpl.getGlobalServices()
+        } catch (Throwable ignore) { }
+        project = builder.build()
         helper = new MultiProjectHelper(project)
     }
 
