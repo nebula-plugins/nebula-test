@@ -35,11 +35,7 @@ public abstract class AbstractProjectSpec extends Specification {
         }
         ourProjectDir.mkdirs()
         canonicalName = testName.getMethodName().replaceAll(' ', '-')
-        ProjectBuilder builder =  ProjectBuilder.builder().withName(canonicalName).withProjectDir(ourProjectDir)
-        try {
-            ProjectBuilderImpl.getGlobalServices()
-        } catch (Throwable ignore) { }
-        project = builder.build()
+        project = ProjectBuilder.builder().withName(canonicalName).withProjectDir(ourProjectDir).build()
         helper = new MultiProjectHelper(project)
     }
 
