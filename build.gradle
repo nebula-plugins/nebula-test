@@ -33,10 +33,10 @@ contacts {
 
 dependencies {
     implementation gradleTestKit()
-    api('org.spockframework:spock-core:2.0-M4-groovy-3.0') {
+    api('org.spockframework:spock-core:2.1-M2-groovy-3.0') {
         exclude group: 'org.codehaus.groovy'
     }
-    api 'org.spockframework:spock-junit4:2.0-M4-groovy-3.0'
+    api 'org.spockframework:spock-junit4:2.1-M2-groovy-3.0'
     runtimeOnly 'cglib:cglib-nodep:3.2.2'
     runtimeOnly 'org.objenesis:objenesis:2.4'
     testImplementation 'com.github.stefanbirkner:system-rules:1.19.0'
