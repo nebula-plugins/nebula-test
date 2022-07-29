@@ -16,7 +16,6 @@ import org.gradle.api.tasks.testing.Test
  * limitations under the License.
  */
 
-
 plugins {
     id 'nebula.plugin-plugin' version '16.2.0'
     id 'java-library'
@@ -39,15 +38,11 @@ dependencies {
     api 'org.spockframework:spock-junit4:2.1-M2-groovy-3.0'
     runtimeOnly 'cglib:cglib-nodep:3.2.2'
     runtimeOnly 'org.objenesis:objenesis:2.4'
-    testImplementation 'com.github.stefanbirkner:system-rules:1.19.0'
+    testImplementation 'uk.org.webcompere:system-stubs-junit4:2.0.1'
 }
 
 tasks.withType(Test) {
     useJUnitPlatform()
-    if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
-        // This is required for test distribution per https://github.com/gradle/gradle/issues/18647#issuecomment-944459338
-        jvmArgs("--add-opens", "java.base/java.util=ALL-UNNAMED", "--add-opens", "java.base/java.lang=ALL-UNNAMED")
-    }
 }
 
 publishPlugins.enabled = false

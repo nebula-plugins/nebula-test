@@ -15,9 +15,8 @@
  */
 package nebula.test.functional
 
-import org.junit.Rule
-import org.junit.contrib.java.lang.system.EnvironmentVariables
 import spock.lang.Specification
+import uk.org.webcompere.systemstubs.environment.EnvironmentVariables
 
 /**
  * Tests for predicates that live on {@link GradleRunner}.
@@ -28,9 +27,6 @@ class GradleRunnerSpec extends Specification {
     def workDir = new File(System.getProperty("user.dir"))
     def siblingDir = new File(workDir.parentFile, 'sibling')
     def sharedDependencyCache = new File(workDir.parentFile, 'sharedDependencyCache')
-
-    @Rule
-    public final EnvironmentVariables environmentVariables = new EnvironmentVariables()
 
     def setup() {
         // Partial real-world classpath from a IntegrationSpec launch, only the workDir/siblingDir paths matter, otherwise these are just string comparisons
@@ -114,10 +110,13 @@ class GradleRunnerSpec extends Specification {
 
     def 'gradle distribution predicate matches expected files with GRADLE_RO_DEP_CACHE support'() {
         setup:
+        EnvironmentVariables environmentVariables = new EnvironmentVariables()
         environmentVariables.set("GRADLE_RO_DEP_CACHE", sharedDependencyCache.absolutePath)
 
         expect:
-        def filtered = classpath.findAll {GradleRunner.CLASSPATH_GRADLE_CACHE.test(it) }
+        def filtered = environmentVariables.execute(() ->
+                classpath.findAll {GradleRunner.CLASSPATH_GRADLE_CACHE.test(it) }
+        )
         filtered.size() == 3
         filtered.any { it.file.contains('commons-lang-2.6') }
     }
