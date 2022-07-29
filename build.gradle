@@ -44,6 +44,10 @@ dependencies {
 
 tasks.withType(Test) {
     useJUnitPlatform()
+    if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
+        // This is required for test distribution per https://github.com/gradle/gradle/issues/18647#issuecomment-944459338
+        jvmArgs("--add-opens", "java.base/java.util=ALL-UNNAMED", "--add-opens", "java.base/java.lang=ALL-UNNAMED")
+    }
 }
 
 publishPlugins.enabled = false
