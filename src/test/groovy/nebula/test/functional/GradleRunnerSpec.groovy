@@ -27,6 +27,7 @@ class GradleRunnerSpec extends Specification {
     def workDir = new File(System.getProperty("user.dir"))
     def siblingDir = new File(workDir.parentFile, 'sibling')
     def sharedDependencyCache = new File(workDir.parentFile, 'sharedDependencyCache')
+    def testDistributionWorkspace = new File(workDir.parentFile, 'gradle-enterprise-test-distribution-agent-workspace')
 
     def setup() {
         // Partial real-world classpath from a IntegrationSpec launch, only the workDir/siblingDir paths matter, otherwise these are just string comparisons
@@ -95,6 +96,8 @@ class GradleRunnerSpec extends Specification {
                 new File(workDir, ".gradle/wrapper/dists/gradle-2.2.1-bin/3rn023ng4778ktj66tonmgpbv/gradle-2.2.1/lib/commons-io-1.4.jar").toURI() as String,
 
                 new File(sharedDependencyCache, "/modules-2/files-2.1/junit/junit/4.13/2973d150c0dc1fefe998f834810d68f278ea58ec/junit-4.13.jar").toURI() as String,
+                new File(testDistributionWorkspace, "/modules-2/files-2.1/junit/junit/4.12/2973d150c0dc1fefe998f834810d68f278ea58dc/junit-4.12.jar").toURI() as String,
+                new File(testDistributionWorkspace, "/modules-2/files-2.1/commons-lang/commons-lang/2.2/ce1edb914c94ebc388f086c6827e8bdeec71ac1/commons-lang-2.2.jar").toURI() as String,
 
                 new File(System.getProperty('user.home'), '.m2/repository/com/netflix/genie/genie-common/4.0.0-SNAPSHOT/genie-common-4.0.0-SNAPSHOT.jar').toURI() as String
         ]
@@ -104,7 +107,7 @@ class GradleRunnerSpec extends Specification {
     def 'gradle distribution predicate matches expected files'() {
         expect:
         def filtered = classpath.findAll {GradleRunner.CLASSPATH_GRADLE_CACHE.test(it) }
-        filtered.size() == 3
+        filtered.size() == 4
     }
 
 
@@ -117,8 +120,16 @@ class GradleRunnerSpec extends Specification {
         def filtered = environmentVariables.execute(() ->
                 classpath.findAll {GradleRunner.CLASSPATH_GRADLE_CACHE.test(it) }
         )
-        filtered.size() == 3
+        filtered.size() == 4
         filtered.any { it.file.contains('commons-lang-2.6') }
+    }
+
+    def 'gradle distribution predicate matches expected files with test distribution folder support'() {
+        expect:
+        def filtered = classpath.findAll {GradleRunner.CLASSPATH_GRADLE_CACHE.test(it) }
+
+        filtered.size() == 4
+        filtered.any { it.file.contains('commons-lang-2.2') }
     }
 
     def 'jvm predicate matches expected files'() {
@@ -143,6 +154,6 @@ class GradleRunnerSpec extends Specification {
     def 'default classpath matches only application class paths and dependencies'() {
         expect:
         def filtered = classpath.findAll {GradleRunner.CLASSPATH_DEFAULT.test(it) }
-        filtered.size() == 26
+        filtered.size() == 27
     }
 }

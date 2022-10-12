@@ -32,7 +32,8 @@ interface GradleRunner {
             boolean cachedModule = url.path.contains('/caches/modules-')
             boolean readOnlyCachedModule = gradleSharedDependencyCache && url.path.contains("${gradleSharedDependencyCache}/modules-")
             boolean testDistributionOrphanedFile = url.path.contains('/orphan-files/') // test distribution orphans read-only dependency cache files
-            return (cachedModule || readOnlyCachedModule || testDistributionOrphanedFile) && !isTestingFramework(url)
+            boolean testDistributionFolder = url.path.contains('/gradle-enterprise-test-distribution-agent-workspace/') // test distribution orphans read-only dependency cache files
+            return (cachedModule || readOnlyCachedModule || testDistributionOrphanedFile || testDistributionFolder) && !isTestingFramework(url)
         }
 
         static boolean isTestingFramework(URL url) {
