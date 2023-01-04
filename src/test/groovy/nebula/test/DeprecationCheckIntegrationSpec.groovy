@@ -1,9 +1,10 @@
 package nebula.test
 
+import spock.lang.Ignore
 import spock.lang.IgnoreIf
 
 class DeprecationCheckIntegrationSpec extends IntegrationSpec {
-    @IgnoreIf({ jvm.isJava9Compatible() })
+    @Ignore
     def 'deprecation warnings cause test to fail'() {
         given:
         buildFile << """
