@@ -21,6 +21,9 @@ import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.util.GFileUtils
 
+import java.lang.management.ManagementFactory
+import java.lang.management.RuntimeMXBean
+
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 
@@ -48,7 +51,7 @@ abstract trait IntegrationTestKitBase extends IntegrationBase {
     @Override
     def initialize(Class<?> testClass, String testMethodName) {
         super.initialize(testClass, testMethodName)
-        if (! settingsFile) {
+        if (!settingsFile) {
             settingsFile = new File(projectDir, "settings.gradle")
             settingsFile.text = "rootProject.name='${moduleName}'\n"
         }
@@ -102,6 +105,7 @@ abstract trait IntegrationTestKitBase extends IntegrationBase {
         List<String> pluginArgs = definePluginOutsideOfPluginBlock
                 ? createGradleTestKitInitArgs()
                 : new ArrayList<String>()
+        debug = debug ? true : isJwdpLoaded()
         def gradleRunnerBuilder = GradleRunner.create()
                 .withProjectDir(projectDir)
                 .withArguments(pluginArgs + calculateArguments(tasks))
@@ -134,4 +138,11 @@ abstract trait IntegrationTestKitBase extends IntegrationBase {
 
         return Arrays.asList("--init-script", initScript.getAbsolutePath())
     }
+
+    static boolean isJwdpLoaded() {
+        RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean()
+        List<String> args = runtime.getInputArguments()
+        return args.toString().contains("-agentlib:jdwp")
+    }
+
 }

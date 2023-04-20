@@ -19,6 +19,9 @@ import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 import org.gradle.api.logging.LogLevel
 
+import java.lang.management.ManagementFactory
+import java.lang.management.RuntimeMXBean
+
 /**
  * Base class which provides useful methods for testing a gradle plugin.
  *
@@ -278,4 +281,5 @@ abstract trait IntegrationBase {
                 .collect { it.split(/\s+/)[1].replaceAll(/['"]/, '') }
                 .sort()
     }
+
 }
