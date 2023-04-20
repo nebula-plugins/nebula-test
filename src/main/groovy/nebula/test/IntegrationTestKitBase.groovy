@@ -108,8 +108,9 @@ abstract trait IntegrationTestKitBase extends IntegrationBase {
                 .withDebug(debug)
                 .withPluginClasspath()
 
-        if(forwardOutput) {
-            gradleRunnerBuilder.forwardOutput()
+        gradleRunnerBuilder.forwardStdError(new PrintWriter(System.err))
+        if (forwardOutput) {
+            gradleRunnerBuilder.forwardStdOutput(new PrintWriter(System.out))
         }
         if (gradleVersion != null) {
             gradleRunnerBuilder.withGradleVersion(gradleVersion)
