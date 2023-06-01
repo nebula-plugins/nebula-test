@@ -15,6 +15,7 @@
  */
 package nebula.test.functional
 
+import spock.lang.IgnoreIf
 import spock.lang.Specification
 import uk.org.webcompere.systemstubs.environment.EnvironmentVariables
 
@@ -110,7 +111,7 @@ class GradleRunnerSpec extends Specification {
         filtered.size() == 4
     }
 
-
+    @IgnoreIf({ !jvm.isJava8()})
     def 'gradle distribution predicate matches expected files with GRADLE_RO_DEP_CACHE support'() {
         setup:
         EnvironmentVariables environmentVariables = new EnvironmentVariables()
