@@ -9,19 +9,9 @@ class MutableProjectStateWarningCheckIntegrationSpec extends IntegrationSpec {
         given:
         settingsFile << """
             rootProject.name = "foo"
-            include ":bar"
         """
-
-        buildFile << """
-             task resolve {
-                doLast {
-                    println project(':bar').configurations.bar.files
-                }
-            }
-
-            
-            project(':bar') {
-                repositories {
+        addSubproject('bar', """
+ repositories {
                     mavenCentral()
                 }
                 
@@ -32,7 +22,13 @@ class MutableProjectStateWarningCheckIntegrationSpec extends IntegrationSpec {
                 dependencies {
                     bar group: 'junit', name: 'junit', version: '4.12'
                 }
-            }       
+""")
+        buildFile << """
+             task resolve {
+                doLast {
+                    println project(':bar').configurations.bar.files
+                }
+            }    
         """
 
 
@@ -48,23 +44,9 @@ class MutableProjectStateWarningCheckIntegrationSpec extends IntegrationSpec {
         given:
         settingsFile << """
             rootProject.name = "foo"
-            include ":bar"
         """
-
-        buildFile << """
-             task resolve {
-                def thread = new Thread({
-                    println project(':bar').configurations.bar.files
-                })
-                doFirst {
-                    thread.start()
-                    thread.join()
-                }
-            }
-
-            
-            project(':bar') {
-                repositories {
+        addSubproject('bar', """
+ repositories {
                     mavenCentral()
                 }
                 
@@ -75,7 +57,17 @@ class MutableProjectStateWarningCheckIntegrationSpec extends IntegrationSpec {
                 dependencies {
                     bar group: 'junit', name: 'junit', version: '4.12'
                 }
-            }       
+""")
+        buildFile << """
+             task resolve {
+                def thread = new Thread({
+                    println project(':bar').configurations.bar.files
+                })
+                doFirst {
+                    thread.start()
+                    thread.join()
+                }
+            }   
         """
 
 

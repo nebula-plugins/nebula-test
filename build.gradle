@@ -17,7 +17,7 @@ import org.gradle.api.tasks.testing.Test
  */
 
 plugins {
-    id 'com.netflix.nebula.plugin-plugin' version '20.8.1'
+    id 'com.netflix.nebula.plugin-plugin' version '20.9.0'
     id 'java-library'
 }
 
