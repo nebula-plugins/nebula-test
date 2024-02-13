@@ -23,6 +23,13 @@ import groovy.transform.CompileStatic
  * @author Marcin Erdmann
  */
 @CompileStatic
+/**
+ * IntegrationSpec is not recommended as it is not compatible with Gradle's instrumentation mechanisms
+ * ex. https://github.com/gradle/gradle/issues/27956 and https://github.com/gradle/gradle/issues/27639
+*
+ * This will be removed in the next nebula-test major version
+ */
+@Deprecated
 abstract class IntegrationSpec extends BaseIntegrationSpec implements Integration {
     def setup() {
         Integration.super.initialize(getClass(), testName.methodName)

@@ -24,6 +24,12 @@ import spock.lang.Specification
  * {@link Specification} implementation of the {@link IntegrationBase}.
  */
 @CompileStatic
+/**
+ * BaseIntegrationSpec is not recommended as it is not compatible with Gradle's instrumentation mechanisms
+ * ex. https://github.com/gradle/gradle/issues/27956 and https://github.com/gradle/gradle/issues/27639
+ *
+ * This will be removed in the next nebula-test major version
+ */
 abstract class BaseIntegrationSpec extends Specification implements IntegrationBase {
     @Rule
     TestName testName = new TestName()
