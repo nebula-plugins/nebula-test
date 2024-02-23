@@ -49,8 +49,8 @@ abstract trait IntegrationTestKitBase extends IntegrationBase {
     boolean definePluginOutsideOfPluginBlock = false
 
     @Override
-    def initialize(Class<?> testClass, String testMethodName) {
-        super.initialize(testClass, testMethodName)
+    def initialize(Class<?> testClass, String testMethodName, String baseFolderName = 'nebulatest') {
+        super.initialize(testClass, testMethodName, baseFolderName)
         if (!settingsFile) {
             settingsFile = new File(projectDir, "settings.gradle")
             settingsFile.text = "rootProject.name='${moduleName}'\n"

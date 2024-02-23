@@ -24,8 +24,12 @@ abstract class IntegrationTestKitSpec extends Specification implements Integrati
     @Rule
     TestName testName = new TestName()
 
+    String getProjectBaseFolderName() {
+        return 'nebulatest'
+    }
+
     void setup() {
-        IntegrationTestKitBase.super.initialize(getClass(), testName.methodName)
+        IntegrationTestKitBase.super.initialize(getClass(), testName.methodName, getProjectBaseFolderName())
     }
 
     void cleanup() {

@@ -38,8 +38,8 @@ abstract trait IntegrationBase {
 
     private static final String LOGGING_LEVEL_ENV_VARIABLE = "NEBULA_TEST_LOGGING_LEVEL"
 
-    def initialize(Class<?> testClass, String testMethodName) {
-        projectDir = new File("build/nebulatest/${testClass.canonicalName}/${testMethodName.replaceAll(/\W+/, '-')}").absoluteFile
+    def initialize(Class<?> testClass, String testMethodName, String baseFolderName = 'nebulatest') {
+        projectDir = new File("build/${baseFolderName}/${testClass.canonicalName}/${testMethodName.replaceAll(/\W+/, '-')}").absoluteFile
         if (projectDir.exists()) {
             projectDir.deleteDir()
         }
