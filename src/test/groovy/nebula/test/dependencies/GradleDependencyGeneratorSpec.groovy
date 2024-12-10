@@ -329,7 +329,7 @@ class GradleDependencyGeneratorSpec extends Specification {
         def generator = new GradleDependencyGenerator(new DependencyGraph(['test.ivy:foo:1.0.0']), 'build/test')
         String expectedBlock = """\
             ivy {
-                url '${generator.getIvyRepoUrl()}'
+                url = '${generator.getIvyRepoUrl()}'
                 patternLayout {
                     ivy '[organisation]/[module]/[revision]/[module]-[revision]-ivy.[ext]'
                     artifact '[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]'
@@ -378,7 +378,7 @@ class GradleDependencyGeneratorSpec extends Specification {
     def 'integration spec maven repository block is available'() {
         def generator = new GradleDependencyGenerator(new DependencyGraph(['test.maven:foo:1.0.0']), 'build/test')
         String expectedBlock = """\
-            maven { url '${generator.getMavenRepoUrl()}' }
+            maven { url = '${generator.getMavenRepoUrl()}' }
         """.stripIndent()
 
         when:

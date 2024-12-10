@@ -17,7 +17,7 @@ class DependenciesSpec extends IntegrationSpec {
         buildFile << """\
             apply plugin: 'war'
             repositories {
-                maven { url '${mavenrepo.absolutePath}' }
+                maven { url = '${mavenrepo.absolutePath}' }
             }
             dependencies {
                 compile 'testjava:a:0.1.0'
