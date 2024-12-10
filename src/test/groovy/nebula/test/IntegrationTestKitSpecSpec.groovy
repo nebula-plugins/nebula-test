@@ -44,7 +44,7 @@ class IntegrationTestKitSpecSpec extends IntegrationTestKitSpec {
         buildFile << """
             apply plugin 'java-library'
             repositories {
-                maven { url '${mavenrepo.absolutePath}' }
+                maven { url = '${mavenrepo.absolutePath}' }
             }
             dependencies {
                 implementation 'testjava:a:0.1.0'

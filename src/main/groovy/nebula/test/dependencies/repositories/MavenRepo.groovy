@@ -26,7 +26,7 @@ class MavenRepo {
 
     String repoString() {
         """\
-            maven { url '${root.absolutePath}' }
+            maven { url = '${root.absolutePath}' }
             """.stripIndent()
     }
 

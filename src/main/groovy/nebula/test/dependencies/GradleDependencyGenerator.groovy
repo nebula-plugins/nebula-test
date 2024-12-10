@@ -34,10 +34,10 @@ class GradleDependencyGenerator {
             publishing {
                 repositories {
                     maven {
-                        url "../mavenrepo"
+                        url = "../mavenrepo"
                     }
                     ivy {
-                        url "../ivyrepo"
+                        url = "../ivyrepo"
                         patternLayout {
                             ivy '[organisation]/[module]/[revision]/[module]-[revision]-ivy.[ext]'
                             artifact '[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]'
@@ -58,10 +58,10 @@ class GradleDependencyGenerator {
             publishing {
                 repositories {
                     maven {
-                        url "../mavenrepo"
+                        url = "../mavenrepo"
                     }
                     ivy {
-                        url "../ivyrepo"
+                        url = "../ivyrepo"
                         layout('pattern') {
                             ivy '[organisation]/[module]/[revision]/[module]-[revision]-ivy.[ext]'
                             artifact '[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]'
@@ -116,7 +116,7 @@ class GradleDependencyGenerator {
 
     String getMavenRepositoryBlock() {
         """\
-            maven { url '${getMavenRepoUrl()}' }
+            maven { url = '${getMavenRepoUrl()}' }
         """.stripIndent()
     }
 
@@ -140,7 +140,7 @@ class GradleDependencyGenerator {
             String layoutPattern = isGradleOlderThanGradleFive ? LEGACY_PATTERN_LAYOUT : PATTERN_LAYOUT
             return """\
             ivy {
-                url '${getIvyRepoUrl()}'
+                url = '${getIvyRepoUrl()}'
                 ${layoutPattern} {
                     ivy '[organisation]/[module]/[revision]/[module]-[revision]-ivy.[ext]'
                     artifact '[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]'
