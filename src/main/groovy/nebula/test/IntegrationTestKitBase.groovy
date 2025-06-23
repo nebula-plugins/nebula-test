@@ -19,7 +19,6 @@ import groovy.transform.CompileStatic
 import nebula.test.functional.internal.classpath.ClasspathAddingInitScriptBuilder
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
-import org.gradle.util.GFileUtils
 
 import java.lang.management.ManagementFactory
 import java.lang.management.RuntimeMXBean

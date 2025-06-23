@@ -24,7 +24,6 @@ import nebula.test.functional.PreExecutionAction
 import nebula.test.functional.internal.GradleHandle
 import nebula.test.multiproject.MultiProjectIntegrationHelper
 import org.gradle.api.logging.LogLevel
-import org.gradle.util.GFileUtils
 
 import java.util.function.Predicate
 

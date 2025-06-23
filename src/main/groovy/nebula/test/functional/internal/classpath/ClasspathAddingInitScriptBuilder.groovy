@@ -5,7 +5,7 @@ import org.gradle.internal.ErroringAction
 import org.gradle.internal.IoActions
 import org.gradle.internal.classloader.ClasspathUtil
 import org.gradle.internal.classpath.ClassPath
-import org.gradle.util.TextUtil
+import org.gradle.internal.impldep.org.apache.commons.lang3.StringEscapeUtils
 
 import java.util.function.Predicate
 
@@ -41,8 +41,12 @@ class ClasspathAddingInitScriptBuilder {
     public static writeClasspath(Writer writer, List<File> classpath) {
         for (File file : classpath) {
             // Commons-lang 2.4 does not escape forward slashes correctly, https://issues.apache.org/jira/browse/LANG-421
-            writer.write(String.format("      classpath files('%s')\n", TextUtil.escapeString(file.getAbsolutePath())));
+            writer.write(String.format("      classpath files('%s')\n", escapeString(file.getAbsolutePath())));
         }
+    }
+
+    public static String escapeString(Object obj) {
+        return obj == null ? null : StringEscapeUtils.escapeJava(obj.toString());
     }
 
     public static List<File> getClasspathAsFiles(ClassLoader classLoader, Predicate<URL> classpathFilter) {

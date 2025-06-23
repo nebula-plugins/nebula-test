@@ -1,7 +1,6 @@
 package nebula.test.functional.internal.classpath
 
 import nebula.test.ProjectSpec
-import org.gradle.util.TextUtil
 
 class ClasspathAddingInitScriptBuilderIntegrationTest extends ProjectSpec {
     def 'can build init script with huge amount of dependencies'() {
@@ -17,7 +16,7 @@ class ClasspathAddingInitScriptBuilderIntegrationTest extends ProjectSpec {
         String initScriptContent = initScript.text
 
         libs.each { lib ->
-            assert initScriptContent.contains("classpath files('${TextUtil.escapeString(lib.getAbsolutePath())}')")
+            assert initScriptContent.contains("classpath files('${ClasspathAddingInitScriptBuilder.escapeString(lib.getAbsolutePath())}')")
         }
     }
 }

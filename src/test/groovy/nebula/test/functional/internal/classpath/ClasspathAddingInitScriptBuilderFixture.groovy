@@ -1,6 +1,7 @@
 package nebula.test.functional.internal.classpath
 
-import org.gradle.util.GFileUtils
+import nebula.test.GFileUtils
+
 
 final class ClasspathAddingInitScriptBuilderFixture {
     private ClasspathAddingInitScriptBuilderFixture() {}

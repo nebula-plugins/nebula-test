@@ -1,31 +1,22 @@
 package nebula.test
 
 class BuildScanIntegrationSpec extends IntegrationTestKitSpec {
-    def origOut = System.out
-    def out = new ByteArrayOutputStream()
-
     def setup() {
         new File(projectDir, "settings.gradle") << """
-gradleEnterprise {
+develocity {
     buildScan {
-        termsOfServiceUrl = 'https://gradle.com/terms-of-service'
-        termsOfServiceAgree = 'yes'
+        termsOfUseUrl = 'https://gradle.com/terms-of-service'
+        termsOfUseAgree = 'yes'
     }
 }
 """
-        def printStream = new PrintStream(out)
-        System.setOut(printStream)
-    }
-
-    def cleanup() {
-        System.setOut(origOut)
     }
 
     def 'build scan url is reported in test output'() {
         when:
-        runTasks('help', '--scan')
+        def result = runTasks('help', '--scan')
 
         then:
-        out.toString("UTF-8").contains("Build scan:")
+        result.output.contains("https://gradle.com/s/")
     }
 }

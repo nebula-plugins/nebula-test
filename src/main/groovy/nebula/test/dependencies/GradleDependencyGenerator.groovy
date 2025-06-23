@@ -194,7 +194,11 @@ class GradleDependencyGenerator {
                 artifactName = '${node.artifact}'
             }
             
-            targetCompatibility = ${node.targetCompatibility}
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(${node.targetCompatibility})
+                }
+            }
             
             publishing {
                 publications {
