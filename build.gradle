@@ -45,4 +45,10 @@ tasks.withType(Test).configureEach {
     useJUnitPlatform()
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
 publishPlugins.enabled = false
