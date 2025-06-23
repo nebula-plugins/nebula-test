@@ -1,5 +1,6 @@
 package nebula.test.dependencies.repositories
 
+import groovy.xml.XmlSlurper
 import nebula.test.dependencies.maven.ArtifactType
 import nebula.test.dependencies.maven.Pom
 import spock.lang.Specification

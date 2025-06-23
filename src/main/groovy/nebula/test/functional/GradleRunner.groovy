@@ -24,11 +24,13 @@ interface GradleRunner {
     // These predicates are here, instead of on GradleRunnerFactory due to a Groovy static compiler bug (https://issues.apache.org/jira/browse/GROOVY-7159)
 
     static final String SHARED_DEPENDENCY_CACHE_ENVIRONMENT_VARIABLE = 'GRADLE_RO_DEP_CACHE'
+    static final String gradleSharedDependencyCache = System.getenv(SHARED_DEPENDENCY_CACHE_ENVIRONMENT_VARIABLE)
+    static final String m2RepositoryPrefix = System.getProperty("user.home") + "/.m2/repository"
+    static final File userDir = new File(System.getProperty("user.dir"))
 
     static final Predicate<URL> CLASSPATH_GRADLE_CACHE = new Predicate<URL>() {
         @Override
         boolean test(URL url) {
-            String gradleSharedDependencyCache = System.getenv(SHARED_DEPENDENCY_CACHE_ENVIRONMENT_VARIABLE)
             boolean cachedModule = url.path.contains('/caches/modules-')
             boolean readOnlyCachedModule = gradleSharedDependencyCache && url.path.contains("${gradleSharedDependencyCache}/modules-")
             boolean testDistributionOrphanedFile = url.path.contains('/orphan-files/') // test distribution orphans read-only dependency cache files
@@ -44,7 +46,6 @@ interface GradleRunner {
     static final Predicate<URL> MAVEN_LOCAL = new Predicate<URL>() {
         @Override
         boolean test(URL url) {
-            String m2RepositoryPrefix = System.getProperty("user.home") + "/.m2/repository"
             return url.path.contains(m2RepositoryPrefix)
         }
     }
@@ -52,7 +53,6 @@ interface GradleRunner {
     static final Predicate<URL> CLASSPATH_PROJECT_DIR = new Predicate<URL>() {
         @Override
         boolean test(URL url) {
-            File userDir = new File(System.getProperty("user.dir"))
             return url.path.startsWith(userDir.toURI().toURL().path)
         }
     }
