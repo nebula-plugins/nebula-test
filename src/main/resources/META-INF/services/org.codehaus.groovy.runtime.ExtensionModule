@@ -1,0 +1,3 @@
+moduleName=Example Groovy extension.
+moduleVersion=1.0.0
+extensionClasses=nebula.test.dsl.GroovyDsl

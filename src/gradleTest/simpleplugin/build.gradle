@@ -1,19 +1,32 @@
 plugins {
+    id("java-gradle-plugin")
     id 'groovy'
 }
 
 repositories {
-    flatDir {
-        dirs '../../../libs'
-    }
     mavenCentral()
 }
 
 dependencies {
-    compile localGroovy()
-    compile gradleApi()
-    testCompile 'com.netflix.nebula:nebula-test:%%VERSION%%'
-    testCompile('org.spockframework:spock-core:1.0-groovy-2.3') { exclude group: 'org.codehaus.groovy' }
+    testImplementation("com.netflix.nebula:nebula-test")
+    testImplementation('org.spockframework:spock-core:2.3-groovy-4.0')
+    testImplementation("org.spockframework:spock-junit4:2.3-groovy-4.0")
+    testImplementation("org.junit.vintage:junit-vintage-engine")
 }
 
-task runGradleTest(dependsOn: ['test'])
+testing {
+    suites {
+        test {
+            useJUnitJupiter()
+        }
+    }
+}
+
+gradlePlugin {
+    plugins {
+        simplePlugin {
+            id = "test.simple-plugin"
+            implementationClass = "simple.SimplePlugin"
+        }
+    }
+}

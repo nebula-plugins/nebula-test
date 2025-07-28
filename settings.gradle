@@ -1,5 +1,5 @@
 plugins {
-    id 'com.gradle.enterprise' version '3.8.1'
+    id 'com.gradle.enterprise' version '3.13.1'
 }
 
 gradleEnterprise {
@@ -11,3 +11,8 @@ gradleEnterprise {
 }
 
 rootProject.name='nebula-test'
+
+includeBuild(".") // allows included build to depend on root project
+includeBuild("src/gradleTest/simpleplugin"){
+    name = "gradleTest"
+}
