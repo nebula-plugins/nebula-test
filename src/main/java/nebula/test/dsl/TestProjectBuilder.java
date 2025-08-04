@@ -1,0 +1,63 @@
+package nebula.test.dsl;
+
+import org.jspecify.annotations.NullMarked;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * This class is the entry point into the "test project builder" API.
+ * Although it may be used form Java, it is most effective when used via the Groovy or Kotlin DSLs.
+ * See {@link GroovyTestProjectBuilder} and {@link KotlinTestProjectBuilderKt} for more information on the DSLs.
+ */
+@NullMarked
+public class TestProjectBuilder {
+
+    private final ProjectBuilder rootProject;
+    private final Map<String, ProjectBuilder> subProjects = new HashMap<>();
+    private final File projectDir;
+    private final SettingsBuilder settings;
+
+    TestProjectBuilder(File projectDir) {
+        this.projectDir = projectDir;
+        rootProject = new ProjectBuilder(projectDir);
+        settings = new SettingsBuilder(projectDir);
+    }
+
+    static TestProjectBuilder testProject(File testProjectDir) {
+        return new TestProjectBuilder(testProjectDir);
+    }
+
+    /**
+     * configure the root project of the build
+     * @return builder for the root project
+     */
+    ProjectBuilder rootProject() {
+        return rootProject;
+    }
+
+    /**
+     * configure the settings (settings.gradle.kts)
+     * @return builder for the settings
+     */
+    public SettingsBuilder settings() {
+        return settings;
+    }
+
+    ProjectBuilder subProject(String name) {
+        final var subProjectDir = projectDir.toPath().resolve(name).toFile();
+        subProjectDir.mkdirs();
+        final var project = new ProjectBuilder(subProjectDir);
+        subProjects.put(name, project);
+        settings.includeProject(name);
+        return project;
+    }
+
+    TestProjectRunner build() {
+        settings.build();
+        rootProject.build();
+        subProjects.values().forEach(ProjectBuilder::build);
+        return new TestProjectRunner(projectDir);
+    }
+}
