@@ -21,6 +21,10 @@ class GroovyDsl {
         self.plugins().with(config)
     }
 
+    static void subProject(TestProjectBuilder self, String name, @DelegatesTo(ProjectBuilder) Closure config) {
+        self.subProject(name).with(config)
+    }
+
     static void plugins(ProjectBuilder self, @DelegatesTo(PluginsBuilder) Closure config) {
         self.plugins().with(config)
     }
