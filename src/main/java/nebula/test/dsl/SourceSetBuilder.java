@@ -18,7 +18,7 @@ public class SourceSetBuilder {
      * @param file     the relative path to the java file
      * @param contents the contents of the file
      */
-    void java(String file, String contents) {
+    public void java(String file, String contents) {
         final Path pathToSourceFile = sourcesDir.toPath().resolve("java").resolve(file);
         pathToSourceFile.getParent().toFile().mkdirs();
         try {
