@@ -45,7 +45,7 @@ public class TestProjectBuilder {
         return settings;
     }
 
-    ProjectBuilder subProject(String name) {
+    public ProjectBuilder subProject(String name) {
         final var subProjectDir = projectDir.toPath().resolve(name).toFile();
         subProjectDir.mkdirs();
         final var project = new ProjectBuilder(subProjectDir);

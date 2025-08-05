@@ -16,7 +16,7 @@ public class PluginsBuilder {
         return plugin;
     }
 
-    void java() {
+    public void java() {
         plugins.add(new Plugin("java"));
     }
 
