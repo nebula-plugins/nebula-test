@@ -12,15 +12,15 @@ public class SourcesBuilder {
         this.sourcesDir = sourcesDir;
     }
 
-    SourceSetBuilder sourceSet(String name) {
+    public SourceSetBuilder sourceSet(String name) {
         return new SourceSetBuilder(sourcesDir.toPath().resolve(name).toFile());
     }
 
-    SourceSetBuilder main() {
+    public SourceSetBuilder main() {
         return sourceSet("main");
     }
 
-    SourceSetBuilder test() {
+    public SourceSetBuilder test() {
         return sourceSet("test");
     }
 }

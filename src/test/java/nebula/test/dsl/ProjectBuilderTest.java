@@ -33,6 +33,7 @@ public class ProjectBuilderTest {
                             id("groovy")
                         }""");
     }
+
     @Test
     public void testDependencies(@TempDir File testProjectDir) {
         final var instance = new ProjectBuilder(testProjectDir);
@@ -45,5 +46,20 @@ public class ProjectBuilderTest {
                         dependencies {
                             testImplementation("org.assertj:assertj-core:3.27.3")
                         }""");
+    }
+
+    @Test
+    public void testSourceSet(@TempDir File testProjectDir) {
+        final var instance = new ProjectBuilder(testProjectDir);
+        instance.src().sourceSet("integTest").java("netflix/Test.java",
+                // language=java
+                """
+                        package netflix;
+                        class Test {
+                        }
+                        """);
+        instance.build();
+
+        assertThat(testProjectDir.toPath().resolve("src/integTest/java/netflix/Test.java")).exists();
     }
 }

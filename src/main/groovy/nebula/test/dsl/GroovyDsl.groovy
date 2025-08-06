@@ -33,6 +33,10 @@ class GroovyDsl {
         self.src().with(config)
     }
 
+    static void sourceSet(SourcesBuilder self, String name, @DelegatesTo(SourceSetBuilder) Closure config) {
+        self.sourceSet(name).with(config)
+    }
+
     static void main(SourcesBuilder self, @DelegatesTo(SourceSetBuilder) Closure config) {
         self.main().with(config)
     }
