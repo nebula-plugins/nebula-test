@@ -21,6 +21,7 @@ plugins {
     id("com.netflix.nebula.plugin-plugin") version ("21.3.5")
     id("java-library")
     `kotlin-dsl`
+    jacoco
 }
 
 description = "Test harness for Gradle plugins. Hopefully retiring in favor of Gradle TestKit"
@@ -52,6 +53,8 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    maxParallelForks = 2
+    finalizedBy(tasks.named("jacocoTestReport"))
 }
 
 tasks.named("build") {
