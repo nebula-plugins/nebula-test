@@ -30,6 +30,11 @@ fun ProjectBuilder.src(config: SourcesBuilder.() -> Unit) {
 }
 
 @NebulaTestKitDsl
+fun SourcesBuilder.sourceSet(name: String, config: SourceSetBuilder.() -> Unit) {
+    sourceSet(name).apply(config)
+}
+
+@NebulaTestKitDsl
 fun SourcesBuilder.main(config: SourceSetBuilder.() -> Unit) {
     main().apply(config)
 }
