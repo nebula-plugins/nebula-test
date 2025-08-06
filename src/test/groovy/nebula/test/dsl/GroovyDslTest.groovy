@@ -78,4 +78,18 @@ public class Main {
         assertThat(result).task(":sub1:compileJava").hasOutcome(TaskOutcome.SUCCESS)
         assertThat(result).task(":sub1:build").hasOutcome(TaskOutcome.SUCCESS)
     }
+
+    @Test
+    void testPluginDsl() {
+        GroovyTestProjectBuilder.testProject(testProjectDir) {
+            rootProject {
+                plugins {
+                    java()
+                    id("org.springframework.boot") version "3.5.3"
+                }
+            }
+        }
+        assertThat(testProjectDir.toPath().resolve("build.gradle.kts"))
+                .content().contains('id("org.springframework.boot") version ("3.5.3")')
+    }
 }

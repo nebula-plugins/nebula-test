@@ -25,6 +25,11 @@ fun ProjectBuilder.plugins(config: PluginsBuilder.() -> Unit) {
 }
 
 @NebulaTestKitDsl
+infix fun PluginsBuilder.Plugin.version(version: String) {
+    version(version)
+}
+
+@NebulaTestKitDsl
 fun ProjectBuilder.src(config: SourcesBuilder.() -> Unit) {
     src().apply(config)
 }
