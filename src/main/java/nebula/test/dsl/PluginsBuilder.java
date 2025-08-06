@@ -10,12 +10,21 @@ import java.util.List;
 public class PluginsBuilder {
     private final List<Plugin> plugins = new ArrayList<>();
 
+    /**
+     * add a plugin by id
+     *
+     * @param id the string ID of a plugin
+     * @return a {@link Plugin} reference to optionally use to set a plugin version
+     */
     public Plugin id(String id) {
         final var plugin = new Plugin(id);
         plugins.add(plugin);
         return plugin;
     }
 
+    /**
+     * Adds the java plugin
+     */
     public void java() {
         plugins.add(new Plugin("java"));
     }
@@ -41,7 +50,13 @@ public class PluginsBuilder {
             this.id = id;
         }
 
-        void version(String version) {
+        /**
+         * Set the version of the plugin.
+         * This only needs to be called for plugins not already on the classpath
+         *
+         * @param version the version of the plugin
+         */
+        public void version(String version) {
             this.version = version;
         }
 
@@ -49,7 +64,7 @@ public class PluginsBuilder {
             final var stringBuilder = new StringBuilder();
             stringBuilder.append("id(\"").append(id).append("\")");
             if (version != null) {
-                stringBuilder.append(" version(\"").append(version).append("\")");
+                stringBuilder.append(" version (\"").append(version).append("\")");
             }
             return stringBuilder.toString();
         }

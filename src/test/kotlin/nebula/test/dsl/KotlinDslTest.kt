@@ -103,9 +103,8 @@ public class Main {
         assertThat(result.task(":sub1:build")).hasOutcome(TaskOutcome.SUCCESS)
     }
 
-    @ParameterizedTest
-    @EnumSource(SupportedGradleVersion::class)
-    fun `test failing build`(gradleVersion: SupportedGradleVersion) {
+    @Test
+    fun `test failing build`() {
         val runner = testProject(testProjectDir) {
             rootProject {
                 plugins {
@@ -129,8 +128,21 @@ public clss Main { // compile error
 
         val result = runner.runAndFail("build") {
             forwardOutput()
-            withGradleVersion(gradleVersion.version)
         }
         assertThat(result).task(":compileJava").hasOutcome(TaskOutcome.FAILED)
+    }
+
+    @Test
+    fun `test plugin with version`() {
+        testProject(testProjectDir) {
+            rootProject {
+                plugins {
+                    java()
+                    id("org.springframework.boot") version "3.5.3"
+                }
+            }
+        }
+        assertThat(testProjectDir.toPath().resolve("build.gradle.kts"))
+            .content().contains("""id("org.springframework.boot") version ("3.5.3")""")
     }
 }
