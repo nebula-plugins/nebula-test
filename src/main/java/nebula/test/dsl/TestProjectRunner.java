@@ -21,15 +21,15 @@ public class TestProjectRunner {
         this.projectDir = projectDir;
     }
 
-    BuildResult run(String... args) {
+    public BuildResult run(String... args) {
         return run(GradleRunner.create().forwardOutput(), Arrays.asList(args));
     }
 
-    BuildResult run(GradleRunner gradleRunner, String... args) {
+    public BuildResult run(GradleRunner gradleRunner, String... args) {
         return run(gradleRunner, Arrays.asList(args));
     }
 
-    BuildResult run(GradleRunner gradleRunner, List<String> args) {
+    public BuildResult run(GradleRunner gradleRunner, List<String> args) {
         final var fullArgsList = new ArrayList<>(args);
         fullArgsList.add("--warning-mode=all");
         return gradleRunner
@@ -39,15 +39,15 @@ public class TestProjectRunner {
                 .build();
     }
 
-    BuildResult runAndFail(String... args) {
+    public BuildResult runAndFail(String... args) {
         return runAndFail(GradleRunner.create().forwardOutput(), args);
     }
 
-    BuildResult runAndFail(GradleRunner gradleRunner, String... args) {
+    public BuildResult runAndFail(GradleRunner gradleRunner, String... args) {
         return runAndFail(gradleRunner, Arrays.asList(args));
     }
 
-    BuildResult runAndFail(GradleRunner gradleRunner, List<String> args) {
+    public BuildResult runAndFail(GradleRunner gradleRunner, List<String> args) {
         final var fullArgsList = new ArrayList<>(args);
         fullArgsList.add("--warning-mode=all");
         return gradleRunner

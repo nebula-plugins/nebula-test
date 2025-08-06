@@ -33,6 +33,12 @@ class GroovyDsl {
         self.src().with(config)
     }
 
+    /**
+     * Create source files in a custom source set
+     * @param self self-reference for DSL
+     * @param name name of the source set
+     * @param config closure for configuration of the source set
+     */
     static void sourceSet(SourcesBuilder self, String name, @DelegatesTo(SourceSetBuilder) Closure config) {
         self.sourceSet(name).with(config)
     }
@@ -49,9 +55,23 @@ class GroovyDsl {
         self.java(name, source.get())
     }
 
+    /**
+     * Run a build with expectation of success.
+     * This method will throw an exception if the build fails.
+     */
     static BuildResult run(TestProjectRunner self, List<String> args, @DelegatesTo(GradleRunner) Closure config) {
         final var runner = GradleRunner.create()
         runner.with(config)
         return self.run(runner, args)
+    }
+
+    /**
+     * Run a build with expectation of failure.
+     * This method will throw an exception if the build succeeds.
+     */
+    static BuildResult runAndFail(TestProjectRunner self, List<String> args, @DelegatesTo(GradleRunner) Closure config) {
+        final var runner = GradleRunner.create()
+        runner.with(config)
+        return self.runAndFail(runner, args)
     }
 }

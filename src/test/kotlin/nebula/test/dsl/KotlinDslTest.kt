@@ -102,4 +102,35 @@ public class Main {
         assertThat(result.task(":sub1:build")).hasOutcome(TaskOutcome.SUCCESS)
         assertThat(result.task(":sub1:build")).hasOutcome(TaskOutcome.SUCCESS)
     }
+
+    @ParameterizedTest
+    @EnumSource(SupportedGradleVersion::class)
+    fun `test failing build`(gradleVersion: SupportedGradleVersion) {
+        val runner = testProject(testProjectDir) {
+            rootProject {
+                plugins {
+                    java()
+                }
+                src {
+                    main {
+                        java("Main.java") {
+                            // language=java
+                            """
+public clss Main { // compile error
+    public static void main(String[] args) {
+    }
+}
+"""
+                        }
+                    }
+                }
+            }
+        }
+
+        val result = runner.runAndFail("build") {
+            forwardOutput()
+            withGradleVersion(gradleVersion.version)
+        }
+        assertThat(result).task(":compileJava").hasOutcome(TaskOutcome.FAILED)
+    }
 }

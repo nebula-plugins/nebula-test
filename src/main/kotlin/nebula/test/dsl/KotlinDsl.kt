@@ -29,6 +29,11 @@ fun ProjectBuilder.src(config: SourcesBuilder.() -> Unit) {
     src().apply(config)
 }
 
+/**
+ * Create source files in a custom source set
+ * @param name name of the source set
+ * @param config closure for configuration of the source set
+ */
 @NebulaTestKitDsl
 fun SourcesBuilder.sourceSet(name: String, config: SourceSetBuilder.() -> Unit) {
     sourceSet(name).apply(config)
@@ -54,6 +59,18 @@ fun SourceSetBuilder.java(fileName: String, source: () -> String) {
     java(fileName, source())
 }
 
+/**
+ * Run a build with expectation of success.
+ * This method will throw an exception if the build fails.
+ */
 fun TestProjectRunner.run(vararg args: String, customizer: GradleRunner.() -> Unit): BuildResult {
     return run(GradleRunner.create().apply(customizer), args.asList())
+}
+
+/**
+ * Run a build with expectation of failure.
+ * This method will throw an exception if the build succeeds.
+ */
+fun TestProjectRunner.runAndFail(vararg args: String, customizer: GradleRunner.() -> Unit): BuildResult {
+    return runAndFail(GradleRunner.create().apply(customizer), args.asList())
 }
