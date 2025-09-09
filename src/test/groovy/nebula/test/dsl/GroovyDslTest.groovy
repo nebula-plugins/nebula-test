@@ -13,10 +13,27 @@ class GroovyDslTest {
     @Test
     void testGroovyDsl() {
         final var runner = GroovyTestProjectBuilder.testProject(testProjectDir) {
+            settings {
+                pluginManagement {
+                    repositories {
+
+                    }
+                    plugins {
+
+                    }
+                }
+                plugins {
+
+                }
+            }
             rootProject {
                 plugins {
                     java()
                 }
+                repositories {
+                    mavenCentral()
+                }
+                dependencies("implementation 'org.jspecify:jspecify:1.0.0'")
                 src {
                     main {
                         java("Main.java") {
@@ -89,7 +106,7 @@ public class Main {
                 }
             }
         }
-        assertThat(testProjectDir.toPath().resolve("build.gradle.kts"))
-                .content().contains('id("org.springframework.boot") version ("3.5.3")')
+        assertThat(testProjectDir.toPath().resolve("build.gradle"))
+                .content().contains("id 'org.springframework.boot' version '3.5.3'")
     }
 }

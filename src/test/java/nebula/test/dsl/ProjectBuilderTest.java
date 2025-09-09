@@ -12,7 +12,7 @@ public class ProjectBuilderTest {
     public void testJavaPlugin(@TempDir File testProjectDir) {
         final var instance = new ProjectBuilder(testProjectDir);
         instance.plugins().java();
-        instance.build();
+        instance.build(BuildscriptLanguage.KOTLIN);
 
         assertThat(testProjectDir.toPath().resolve("build.gradle.kts")).content()
                 .contains("""
@@ -25,7 +25,7 @@ public class ProjectBuilderTest {
     public void testPlugin(@TempDir File testProjectDir) {
         final var instance = new ProjectBuilder(testProjectDir);
         instance.plugins().id("groovy");
-        instance.build();
+        instance.build(BuildscriptLanguage.KOTLIN);
 
         assertThat(testProjectDir.toPath().resolve("build.gradle.kts")).content()
                 .contains("""
@@ -39,7 +39,7 @@ public class ProjectBuilderTest {
         final var instance = new ProjectBuilder(testProjectDir);
         instance.dependencies("""
                 testImplementation("org.assertj:assertj-core:3.27.3")""");
-        instance.build();
+        instance.build(BuildscriptLanguage.KOTLIN);
 
         assertThat(testProjectDir.toPath().resolve("build.gradle.kts")).content()
                 .contains("""
@@ -58,7 +58,7 @@ public class ProjectBuilderTest {
                         class Test {
                         }
                         """);
-        instance.build();
+        instance.build(BuildscriptLanguage.KOTLIN);
 
         assertThat(testProjectDir.toPath().resolve("src/integTest/java/netflix/Test.java")).exists();
     }

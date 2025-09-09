@@ -49,6 +49,59 @@ public class Main {
         assertThat(result).task(":build").hasOutcome(TaskOutcome.SUCCESS)
     }
 
+    @ParameterizedTest
+    @EnumSource(SupportedGradleVersion::class)
+    fun `test single project build with dependencies`(gradleVersion: SupportedGradleVersion) {
+        val runner = testProject(testProjectDir) {
+            settings {
+                plugins{
+
+                }
+                pluginManagement {
+                    plugins {
+
+                    }
+                    repositories {
+
+                    }
+                }
+            }
+            rootProject {
+                plugins {
+                    java()
+                }
+                repositories {
+                    mavenCentral()
+                }
+                dependencies("""implementation("org.jspecify:jspecify:1.0.0")""")
+                src {
+                    main {
+                        java("Main.java") {
+                            // language=java
+                            """
+public class Main {
+    public static void main(String[] args) {
+    }
+}
+"""
+                        }
+                    }
+                }
+            }
+        }
+
+        val result = runner.run("build") {
+            forwardOutput()
+            withGradleVersion(gradleVersion.version)
+        }
+
+        assertThat(result)
+            .hasNoDeprecationWarnings()
+            .hasNoMutableStateWarnings()
+        assertThat(result).task(":compileJava").hasOutcome(TaskOutcome.SUCCESS)
+        assertThat(result).task(":build").hasOutcome(TaskOutcome.SUCCESS)
+    }
+
 
     @Test
     fun `test multi project build with sources`() {

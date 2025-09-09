@@ -7,6 +7,6 @@ class GroovyTestProjectBuilder {
     static TestProjectRunner testProject(File testProjectDir, @DelegatesTo(TestProjectBuilder) Closure config) {
         final TestProjectBuilder testProjectBuilder = new TestProjectBuilder(testProjectDir)
         testProjectBuilder.with(config)
-        return testProjectBuilder.build()
+        return testProjectBuilder.build(BuildscriptLanguage.GROOVY)
     }
 }

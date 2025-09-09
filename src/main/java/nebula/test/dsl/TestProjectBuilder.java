@@ -31,6 +31,7 @@ public class TestProjectBuilder {
 
     /**
      * configure the root project of the build
+     *
      * @return builder for the root project
      */
     ProjectBuilder rootProject() {
@@ -39,6 +40,7 @@ public class TestProjectBuilder {
 
     /**
      * configure the settings (settings.gradle.kts)
+     *
      * @return builder for the settings
      */
     public SettingsBuilder settings() {
@@ -55,9 +57,13 @@ public class TestProjectBuilder {
     }
 
     TestProjectRunner build() {
-        settings.build();
-        rootProject.build();
-        subProjects.values().forEach(ProjectBuilder::build);
+        return build(BuildscriptLanguage.KOTLIN);
+    }
+
+    TestProjectRunner build(BuildscriptLanguage language) {
+        settings.build(language);
+        rootProject.build(language);
+        subProjects.values().forEach(subProject -> subProject.build(language));
         return new TestProjectRunner(projectDir);
     }
 }
