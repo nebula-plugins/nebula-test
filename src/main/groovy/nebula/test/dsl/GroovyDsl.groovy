@@ -17,12 +17,28 @@ class GroovyDsl {
         self.settings().with(config)
     }
 
+    static void pluginManagement(SettingsBuilder self, @DelegatesTo(PluginManagementBuilder) Closure config) {
+        self.pluginManagement().with(config)
+    }
+
+    static void repositories(PluginManagementBuilder self, @DelegatesTo(RepositoriesBuilder) Closure config) {
+        self.repositories().with(config)
+    }
+
+    static void plugins(PluginManagementBuilder self, @DelegatesTo(PluginsBuilder) Closure config) {
+        self.plugins().with(config)
+    }
+
     static void plugins(SettingsBuilder self, @DelegatesTo(PluginsBuilder) Closure config) {
         self.plugins().with(config)
     }
 
     static void subProject(TestProjectBuilder self, String name, @DelegatesTo(ProjectBuilder) Closure config) {
         self.subProject(name).with(config)
+    }
+
+    static void repositories(ProjectBuilder self, @DelegatesTo(RepositoriesBuilder) Closure config) {
+        self.repositories().with(config)
     }
 
     static void plugins(ProjectBuilder self, @DelegatesTo(PluginsBuilder) Closure config) {

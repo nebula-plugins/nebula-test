@@ -16,6 +16,7 @@ public class PluginsBuilder {
      * @param id the string ID of a plugin
      * @return a {@link Plugin} reference to optionally use to set a plugin version
      */
+    @NebulaTestKitDsl
     public Plugin id(String id) {
         final var plugin = new Plugin(id);
         plugins.add(plugin);
@@ -25,22 +26,28 @@ public class PluginsBuilder {
     /**
      * Adds the java plugin
      */
+    @NebulaTestKitDsl
     public void java() {
         plugins.add(new Plugin("java"));
     }
 
-    String build() {
+    boolean hasContent() {
+        return !plugins.isEmpty();
+    }
+
+    String build(BuildscriptLanguage language, int indentation) {
         final var stringBuilder = new StringBuilder();
-        if (!plugins.isEmpty()) {
-            stringBuilder.append("plugins {\n");
+        if (hasContent()) {
+            stringBuilder.append(" ".repeat(indentation)).append("plugins {\n");
             for (var plugin : plugins) {
-                stringBuilder.append("    ").append(plugin.render()).append("\n");
+                stringBuilder.append(" ".repeat(indentation + 4)).append(plugin.render(language)).append("\n");
             }
-            stringBuilder.append("}\n");
+            stringBuilder.append(" ".repeat(indentation)).append("}\n");
         }
         return stringBuilder.toString();
     }
 
+    // TODO support "built-in" plugins like java similar to the repository builtins like mavenCentral()
     public static class Plugin {
         private final String id;
         @Nullable
@@ -56,15 +63,25 @@ public class PluginsBuilder {
          *
          * @param version the version of the plugin
          */
+        @NebulaTestKitDsl
         public void version(String version) {
             this.version = version;
         }
 
-        String render() {
+        String render(BuildscriptLanguage language) {
             final var stringBuilder = new StringBuilder();
-            stringBuilder.append("id(\"").append(id).append("\")");
+            if (language == BuildscriptLanguage.GROOVY) {
+                stringBuilder.append("id '").append(id).append("'");
+            } else if (language == BuildscriptLanguage.KOTLIN) {
+                stringBuilder.append("id(\"").append(id).append("\")");
+            }
+
             if (version != null) {
-                stringBuilder.append(" version (\"").append(version).append("\")");
+                if (language == BuildscriptLanguage.GROOVY) {
+                    stringBuilder.append(" version '").append(version).append("'");
+                } else if (language == BuildscriptLanguage.KOTLIN) {
+                    stringBuilder.append(" version (\"").append(version).append("\")");
+                }
             }
             return stringBuilder.toString();
         }

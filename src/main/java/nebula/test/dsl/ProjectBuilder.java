@@ -14,6 +14,7 @@ import java.util.List;
 public class ProjectBuilder {
     private final File projectDir;
     private final PluginsBuilder plugins = new PluginsBuilder();
+    private final RepositoriesBuilder repositoriesBuilder = new RepositoriesBuilder();
     private final SourcesBuilder sources;
     private final List<String> dependencies = new ArrayList<>();
     @Nullable
@@ -26,14 +27,22 @@ public class ProjectBuilder {
         sources = new SourcesBuilder(projectDir.toPath().resolve("src").toFile());
     }
 
+    @NebulaTestKitDsl
     public PluginsBuilder plugins() {
         return plugins;
     }
 
+    @NebulaTestKitDsl
+    public RepositoriesBuilder repositories() {
+        return repositoriesBuilder;
+    }
+
+    @NebulaTestKitDsl
     public void javaToolchain(Integer javaToolchain) {
         this.javaToolchain = javaToolchain;
     }
 
+    @NebulaTestKitDsl
     public void dependencies(String... dependencies) {
         this.dependencies.addAll(Arrays.asList(dependencies));
     }
@@ -42,13 +51,15 @@ public class ProjectBuilder {
         rawBuildScript = buildScript;
     }
 
+    @NebulaTestKitDsl
     public SourcesBuilder src() {
         return sources;
     }
 
-    void build() {
+    void build(BuildscriptLanguage language) {
         StringBuilder buildFileText = new StringBuilder();
-        buildFileText.append(plugins.build());
+        buildFileText.append(plugins.build(language, 0));
+        buildFileText.append(repositoriesBuilder.build(language, 0));
         if (!dependencies.isEmpty()) {
             buildFileText.append("dependencies {\n");
             dependencies.forEach(dependency -> buildFileText.append("    ").append(dependency).append("\n"));
@@ -62,7 +73,8 @@ public class ProjectBuilder {
         if (rawBuildScript != null) {
             buildFileText.append(rawBuildScript);
         }
-        final var buildFile = projectDir.toPath().resolve("build.gradle.kts");
+        final var ext = language == BuildscriptLanguage.GROOVY ? "gradle" : "gradle.kts";
+        final var buildFile = projectDir.toPath().resolve("build." + ext);
         try {
             buildFile.toFile().createNewFile();
             Files.writeString(buildFile, buildFileText.toString());

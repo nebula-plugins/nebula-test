@@ -20,8 +20,32 @@ fun TestProjectBuilder.settings(config: SettingsBuilder.() -> Unit) {
 }
 
 @NebulaTestKitDsl
+fun SettingsBuilder.pluginManagement(config: PluginManagementBuilder.() -> Unit) {
+    pluginManagement().apply(config)
+}
+
+@NebulaTestKitDsl
+fun PluginManagementBuilder.repositories(config: RepositoriesBuilder.() -> Unit) {
+    repositories ().apply(config)
+}
+
+@NebulaTestKitDsl
+fun PluginManagementBuilder.plugins(config: PluginsBuilder.() -> Unit) {
+    plugins().apply(config)
+}
+
+@NebulaTestKitDsl
+fun SettingsBuilder.plugins(config: PluginsBuilder.() -> Unit) {
+    plugins().apply(config)
+}
+@NebulaTestKitDsl
 fun ProjectBuilder.plugins(config: PluginsBuilder.() -> Unit) {
     plugins().apply(config)
+}
+
+@NebulaTestKitDsl
+fun ProjectBuilder.repositories(config: RepositoriesBuilder.() -> Unit) {
+    repositories().apply(config)
 }
 
 @NebulaTestKitDsl
