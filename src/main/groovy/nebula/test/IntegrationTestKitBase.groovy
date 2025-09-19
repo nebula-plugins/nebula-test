@@ -19,9 +19,11 @@ import groovy.transform.CompileStatic
 import nebula.test.functional.internal.classpath.ClasspathAddingInitScriptBuilder
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
+import org.gradle.testkit.runner.internal.PluginUnderTestMetadataReading
 
 import java.lang.management.ManagementFactory
 import java.lang.management.RuntimeMXBean
+import java.util.function.Predicate
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
@@ -32,6 +34,11 @@ import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 @CompileStatic
 abstract trait IntegrationTestKitBase extends IntegrationBase {
     static final String LINE_END = System.getProperty('line.separator')
+    static final Predicate<URL> PLUGIN_UNDER_TEST_METADATA = { URL url ->
+        PluginUnderTestMetadataReading.readImplementationClasspath().any {
+            url.path.startsWith(it.toURI().toURL().path) || it.toURI().toURL().path.startsWith(url.path)
+        }
+    }
     boolean keepFiles = false
     boolean debug
     File buildFile
@@ -132,8 +139,7 @@ abstract trait IntegrationTestKitBase extends IntegrationBase {
 
         File initScript = new File(testKitDir, "init.gradle")
         ClassLoader classLoader = this.getClass().getClassLoader()
-        def classpathFilter = nebula.test.functional.GradleRunner.CLASSPATH_DEFAULT
-        ClasspathAddingInitScriptBuilder.build(initScript, classLoader, classpathFilter)
+        ClasspathAddingInitScriptBuilder.build(initScript, classLoader, PLUGIN_UNDER_TEST_METADATA)
 
         return Arrays.asList("--init-script", initScript.getAbsolutePath())
     }
