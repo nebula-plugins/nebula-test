@@ -1,18 +1,17 @@
 plugins {
-    id 'com.gradle.enterprise' version '3.13.1'
+    id 'com.gradle.develocity' version '4.2'
 }
 
-gradleEnterprise {
+develocity {
     buildScan {
-        publishAlways()
-        termsOfServiceUrl = 'https://gradle.com/terms-of-service'
-        termsOfServiceAgree = 'yes'
+        termsOfUseUrl = 'https://gradle.com/terms-of-service'
+        termsOfUseAgree = 'yes'
     }
 }
 
-rootProject.name='nebula-test'
+rootProject.name = 'nebula-test'
 
 includeBuild(".") // allows included build to depend on root project
-includeBuild("src/gradleTest/simpleplugin"){
+includeBuild("src/gradleTest/simpleplugin") {
     name = "gradleTest"
 }
