@@ -37,7 +37,7 @@ dependencies {
     compileOnly(localGroovy())
     api("org.jspecify:jspecify:1.0.0")
     api("org.assertj:assertj-core:3.27.3")
-    implementation(gradleTestKit())
+    compileOnly(gradleTestKit())
     compileOnly("org.spockframework:spock-core:2.3-groovy-4.0")
     compileOnly("org.spockframework:spock-junit4:2.3-groovy-4.0")
     api("org.junit.platform:junit-platform-launcher:1.+")
@@ -55,6 +55,16 @@ tasks.withType<Test> {
     useJUnitPlatform()
     maxParallelForks = 2
     finalizedBy(tasks.named("jacocoTestReport"))
+    javaLauncher = javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+tasks.named<JavaCompile>("compileTestJava") {
+    javaCompiler.set(
+        javaToolchains.compilerFor {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
+    )
 }
 
 tasks.named("build") {
@@ -63,13 +73,13 @@ tasks.named("build") {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(11)
     }
 }
 
 kotlin {
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)
+        jvmTarget.set(JvmTarget.JVM_11)
         languageVersion.set(KotlinVersion.KOTLIN_2_0)
         apiVersion.set(KotlinVersion.KOTLIN_2_0)
     }

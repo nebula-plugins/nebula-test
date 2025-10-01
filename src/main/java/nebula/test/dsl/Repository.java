@@ -1,6 +1,10 @@
 package nebula.test.dsl;
 
-public sealed class Repository permits BuiltIn, Maven {
+// TODO: use sealed class in java 17
+// public sealed class Repository permits BuiltIn, Maven {
+// }
+
+public abstract class Repository {
 }
 
 final class BuiltIn extends Repository {
