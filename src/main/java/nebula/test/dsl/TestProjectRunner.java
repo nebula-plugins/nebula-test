@@ -30,7 +30,7 @@ public class TestProjectRunner {
     }
 
     public BuildResult run(GradleRunner gradleRunner, List<String> args) {
-        final var fullArgsList = new ArrayList<>(args);
+        final List<String> fullArgsList = new ArrayList<>(args);
         fullArgsList.add("--warning-mode=all");
         return gradleRunner
                 .withProjectDir(projectDir)
@@ -48,7 +48,7 @@ public class TestProjectRunner {
     }
 
     public BuildResult runAndFail(GradleRunner gradleRunner, List<String> args) {
-        final var fullArgsList = new ArrayList<>(args);
+        final List<String> fullArgsList = new ArrayList<>(args);
         fullArgsList.add("--warning-mode=all");
         return gradleRunner
                 .withProjectDir(projectDir)

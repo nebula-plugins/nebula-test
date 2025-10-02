@@ -30,8 +30,10 @@ import java.util.function.Predicate
 /**
  * @author Justin Ryan
  * @author Marcin Erdmann
+ * @deprecated in favor of Gradle TestKit-based tests
  */
 @CompileStatic
+@Deprecated
 abstract trait Integration extends IntegrationBase {
     private static final String DEFAULT_REMOTE_DEBUG_JVM_ARGUMENTS = "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
     private static final Integer DEFAULT_DAEMON_MAX_IDLE_TIME_IN_SECONDS_IN_MEMORY_SAFE_MODE = 15;

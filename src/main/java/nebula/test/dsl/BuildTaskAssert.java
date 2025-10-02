@@ -8,6 +8,7 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -49,7 +50,7 @@ public class BuildTaskAssert extends AbstractAssert<BuildTaskAssert, @Nullable B
     @Contract("_ -> this")
     public BuildTaskAssert hasOutcome(TaskOutcome... outcomes) {
         this.objects.assertNotNull(this.info, actual);
-        final var expected = Arrays.asList(outcomes);
+        final List<TaskOutcome> expected = Arrays.asList(outcomes);
         if (!expected.contains(actual.getOutcome())) {
             failWithMessage("Expected outcome of task <%s> to be one of <%s> but was <%s>",
                     actual.getPath(),

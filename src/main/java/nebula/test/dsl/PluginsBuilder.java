@@ -6,6 +6,8 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static nebula.test.dsl.StringUtils.repeat;
+
 @NullMarked
 public class PluginsBuilder {
     private final List<Plugin> plugins = new ArrayList<>();
@@ -18,7 +20,7 @@ public class PluginsBuilder {
      */
     @NebulaTestKitDsl
     public Plugin id(String id) {
-        final var plugin = new Plugin(id);
+        final Plugin plugin = new Plugin(id);
         plugins.add(plugin);
         return plugin;
     }
@@ -36,13 +38,13 @@ public class PluginsBuilder {
     }
 
     String build(BuildscriptLanguage language, int indentation) {
-        final var stringBuilder = new StringBuilder();
+        final StringBuilder stringBuilder = new StringBuilder();
         if (hasContent()) {
-            stringBuilder.append(" ".repeat(indentation)).append("plugins {\n");
-            for (var plugin : plugins) {
-                stringBuilder.append(" ".repeat(indentation + 4)).append(plugin.render(language)).append("\n");
+            stringBuilder.append(repeat(" ", indentation)).append("plugins {\n");
+            for (Plugin plugin : plugins) {
+                stringBuilder.append(repeat(" ", indentation + 4)).append(plugin.render(language)).append("\n");
             }
-            stringBuilder.append(" ".repeat(indentation)).append("}\n");
+            stringBuilder.append(repeat(" ", indentation)).append("}\n");
         }
         return stringBuilder.toString();
     }
@@ -69,7 +71,7 @@ public class PluginsBuilder {
         }
 
         String render(BuildscriptLanguage language) {
-            final var stringBuilder = new StringBuilder();
+            final StringBuilder stringBuilder = new StringBuilder();
             if (language == BuildscriptLanguage.GROOVY) {
                 stringBuilder.append("id '").append(id).append("'");
             } else if (language == BuildscriptLanguage.KOTLIN) {

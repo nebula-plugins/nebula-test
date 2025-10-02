@@ -5,7 +5,9 @@ import org.jspecify.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -73,11 +75,11 @@ public class ProjectBuilder {
         if (rawBuildScript != null) {
             buildFileText.append(rawBuildScript);
         }
-        final var ext = language == BuildscriptLanguage.GROOVY ? "gradle" : "gradle.kts";
-        final var buildFile = projectDir.toPath().resolve("build." + ext);
+        final String ext = language == BuildscriptLanguage.GROOVY ? "gradle" : "gradle.kts";
+        final Path buildFile = projectDir.toPath().resolve("build." + ext);
         try {
             buildFile.toFile().createNewFile();
-            Files.writeString(buildFile, buildFileText.toString());
+            Files.write(buildFile, buildFileText.toString().getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             throw new RuntimeException("Error writing to " + buildFile.toAbsolutePath(), e);
         }
