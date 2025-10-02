@@ -7,8 +7,12 @@ import java.io.File
  * @param
  */
 @NebulaTestKitDsl
-fun testProject(testProjectDir: File, config: TestProjectBuilder.() -> Unit): TestProjectRunner {
+fun testProject(
+    testProjectDir: File,
+    language: BuildscriptLanguage = BuildscriptLanguage.KOTLIN,
+    config: TestProjectBuilder.() -> Unit
+): TestProjectRunner {
     val testProjectBuilder = TestProjectBuilder(testProjectDir)
     testProjectBuilder.apply(config)
-    return testProjectBuilder.build()
+    return testProjectBuilder.build(language)
 }

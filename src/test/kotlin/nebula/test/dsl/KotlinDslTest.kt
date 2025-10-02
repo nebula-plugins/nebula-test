@@ -54,7 +54,7 @@ public class Main {
     fun `test single project build with dependencies`(gradleVersion: SupportedGradleVersion) {
         val runner = testProject(testProjectDir) {
             settings {
-                plugins{
+                plugins {
 
                 }
                 pluginManagement {
@@ -103,8 +103,9 @@ public class Main {
     }
 
 
-    @Test
-    fun `test multi project build with sources`() {
+    @ParameterizedTest
+    @EnumSource(SupportedGradleVersion::class)
+    fun `test multi project build with sources`(gradleVersion: SupportedGradleVersion) {
         val runner = testProject(testProjectDir) {
             subProject("sub1") {
                 plugins {
@@ -147,7 +148,7 @@ public class Main {
 
         val result = runner.run("build") {
             forwardOutput()
-            withGradleVersion("8.14.1")
+            withGradleVersion(gradleVersion.version)
         }
 
         assertThat(result.task(":sub1:compileJava")).hasOutcome(TaskOutcome.SUCCESS)
@@ -197,5 +198,19 @@ public clss Main { // compile error
         }
         assertThat(testProjectDir.toPath().resolve("build.gradle.kts"))
             .content().contains("""id("org.springframework.boot") version ("3.5.3")""")
+    }
+
+    @Test
+    fun `test groovy script`() {
+        testProject(testProjectDir, BuildscriptLanguage.GROOVY) {
+            rootProject {
+                plugins {
+                    java()
+                }
+            }
+        }
+        assertThat(testProjectDir.toPath().resolve("build.gradle"))
+            .exists()
+            .content().contains("""id 'java'""")
     }
 }

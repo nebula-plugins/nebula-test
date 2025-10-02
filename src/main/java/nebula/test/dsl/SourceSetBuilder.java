@@ -2,6 +2,7 @@ package nebula.test.dsl;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -23,9 +24,9 @@ public class SourceSetBuilder {
         pathToSourceFile.getParent().toFile().mkdirs();
         try {
             pathToSourceFile.toFile().createNewFile();
-            Files.writeString(pathToSourceFile, contents);
+            Files.write(pathToSourceFile, contents.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
-            final var message = "Error writing java file to " + file;
+            final String message = "Error writing java file to " + file;
             throw new RuntimeException(message, e);
         }
     }

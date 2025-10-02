@@ -5,6 +5,8 @@ import org.jspecify.annotations.NullMarked;
 import java.util.ArrayList;
 import java.util.List;
 
+import static nebula.test.dsl.StringUtils.repeat;
+
 @NullMarked
 public class RepositoriesBuilder {
     private final List<Repository> repositories = new ArrayList<>();
@@ -32,24 +34,24 @@ public class RepositoriesBuilder {
     }
 
     String build(BuildscriptLanguage buildscriptLanguage, int baseIndentation) {
-        final var stringBuilder = new StringBuilder();
+        final StringBuilder stringBuilder = new StringBuilder();
         if (hasContent()) {
-            stringBuilder.append(" ".repeat(baseIndentation)).append("repositories {\n");
-            for (var repository : repositories) {
+            stringBuilder.append(repeat(" ", baseIndentation)).append("repositories {\n");
+            for (Repository repository : repositories) {
                 if (repository instanceof BuiltIn) {
-                    stringBuilder.append(" ".repeat(baseIndentation)).append("    ").append(((BuiltIn) repository).functionName).append("\n");
+                    stringBuilder.append(repeat(" ", baseIndentation)).append("    ").append(((BuiltIn) repository).functionName).append("\n");
                 } else if (repository instanceof Maven) {
                     if (buildscriptLanguage == BuildscriptLanguage.GROOVY) {
-                        stringBuilder.append(" ".repeat(baseIndentation + 4)).append("maven {").append("\n")
-                                .append(" ".repeat(baseIndentation + 8)).append("url = '").append(((Maven) repository).url).append("'").append("\n")
-                                .append(" ".repeat(baseIndentation)).append("    }").append("\n");
+                        stringBuilder.append(repeat(" ", baseIndentation + 4)).append("maven {").append("\n")
+                                .append(repeat(" ", baseIndentation + 8)).append("url = '").append(((Maven) repository).url).append("'").append("\n")
+                                .append(repeat(" ", baseIndentation)).append("    }").append("\n");
                     } else if (buildscriptLanguage == BuildscriptLanguage.KOTLIN) {
-                        stringBuilder.append(" ".repeat(baseIndentation)).append("    ").append("maven(")
+                        stringBuilder.append(repeat(" ", baseIndentation)).append("    ").append("maven(")
                                 .append("url = \"").append(((Maven) repository).url).append("\"").append(")").append("\n");
                     }
                 }
             }
-            stringBuilder.append(" ".repeat(baseIndentation)).append("}\n");
+            stringBuilder.append(repeat(" ", baseIndentation)).append("}\n");
         }
         return stringBuilder.toString();
     }

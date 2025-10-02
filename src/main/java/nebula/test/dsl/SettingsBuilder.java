@@ -4,7 +4,9 @@ import org.jspecify.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -63,11 +65,11 @@ public class SettingsBuilder {
         } else if (language == BuildscriptLanguage.GROOVY) {
             projects.forEach(name -> textBuilder.append("include ':").append(name).append("'\n"));
         }
-        final var ext = language == BuildscriptLanguage.GROOVY ? "gradle" : "gradle.kts";
-        final var settingsFile = projectDir.toPath().resolve("settings." + ext);
+        final String ext = language == BuildscriptLanguage.GROOVY ? "gradle" : "gradle.kts";
+        final Path settingsFile = projectDir.toPath().resolve("settings." + ext);
         try {
             settingsFile.toFile().createNewFile();
-            Files.writeString(settingsFile, textBuilder.toString());
+            Files.write(settingsFile, textBuilder.toString().getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             throw new RuntimeException("Error writing to " + settingsFile.toAbsolutePath(), e);
         }
