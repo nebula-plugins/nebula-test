@@ -68,7 +68,6 @@ public class SettingsBuilder {
         final String ext = language == BuildscriptLanguage.GROOVY ? "gradle" : "gradle.kts";
         final Path settingsFile = projectDir.toPath().resolve("settings." + ext);
         try {
-            settingsFile.toFile().createNewFile();
             Files.write(settingsFile, textBuilder.toString().getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             throw new RuntimeException("Error writing to " + settingsFile.toAbsolutePath(), e);

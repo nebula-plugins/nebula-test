@@ -1,5 +1,6 @@
-package nebula.test.dsl;
+package nebula.test.dsl
 
+import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -108,5 +109,44 @@ public class Main {
         }
         assertThat(testProjectDir.toPath().resolve("build.gradle"))
                 .content().contains("id 'org.springframework.boot' version '3.5.3'")
+    }
+
+
+    @Test
+    void testPropertiesAndCaching() {
+        final var runner = GroovyTestProjectBuilder.testProject(testProjectDir) {
+            properties {
+                gradleCache(true)
+                property("org.gradle.caching.debug", "true")
+            }
+            rootProject {
+                plugins {
+                    java()
+                }
+                src {
+                    main {
+                        java("Main.java") {
+                            // language=java
+                            """
+public class Main {
+    public static void main(String[] args) {
+    }
+}
+"""
+                        }
+                    }
+                }
+            }
+        }
+
+        BuildResult result1 = runner.run(["build", "--rerun-tasks"]) {
+            forwardOutput()
+        }
+
+        assertThat(result1).task(":compileJava").hasOutcome(TaskOutcome.SUCCESS)
+        BuildResult result2 = runner.run(["clean", "build"]) {
+            forwardOutput()
+        }
+        assertThat(result2).task(":compileJava").hasOutcome(TaskOutcome.FROM_CACHE)
     }
 }

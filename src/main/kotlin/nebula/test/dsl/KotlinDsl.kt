@@ -10,6 +10,11 @@ import org.gradle.testkit.runner.GradleRunner
 annotation class NebulaTestKitDsl
 
 @NebulaTestKitDsl
+fun TestProjectBuilder.properties(config: ProjectProperties.() -> Unit) {
+    properties().apply(config)
+}
+
+@NebulaTestKitDsl
 fun TestProjectBuilder.rootProject(config: ProjectBuilder.() -> Unit) {
     rootProject().apply(config)
 }
