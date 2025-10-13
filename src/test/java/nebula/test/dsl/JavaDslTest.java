@@ -17,6 +17,7 @@ public class JavaDslTest {
     @EnumSource(SupportedGradleVersion.class)
     public void testJavaDsl(SupportedGradleVersion gradleVersion, @TempDir File testProjectDir) {
         final var builder = TestProjectBuilder.testProject(testProjectDir);
+        builder.properties().property("test","value");
         builder.rootProject().plugins().java();
         final var runner = builder.build();
 
@@ -29,5 +30,9 @@ public class JavaDslTest {
                 .hasNoMutableStateWarnings();
         assertThat(result).task(":compileJava").hasOutcome(TaskOutcome.NO_SOURCE);
         assertThat(result).task(":build").hasOutcome(TaskOutcome.SUCCESS);
+        assertThat(testProjectDir.toPath().resolve("gradle.properties"))
+                .exists()
+                .content()
+                .contains("test=value");
     }
 }

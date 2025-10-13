@@ -213,4 +213,45 @@ public clss Main { // compile error
             .exists()
             .content().contains("""id 'java'""")
     }
+
+    @ParameterizedTest
+    @EnumSource(SupportedGradleVersion::class)
+    fun `test properties and caching`(gradleVersion: SupportedGradleVersion) {
+        val runner = testProject(testProjectDir) {
+            properties {
+                gradleCache(true)
+                property("org.gradle.caching.debug", "true")
+            }
+            rootProject {
+                plugins {
+                    java()
+                }
+                src {
+                    main {
+                        java("Main.java") {
+                            // language=java
+                            """
+public class Main {
+    public static void main(String[] args) {
+    }
+}
+"""
+                        }
+                    }
+                }
+            }
+        }
+
+        val result1 = runner.run("build", "--rerun-tasks") {
+            forwardOutput()
+            withGradleVersion(gradleVersion.version)
+        }
+
+        assertThat(result1).task(":compileJava").hasOutcome(TaskOutcome.SUCCESS)
+        val result2 = runner.run("clean", "build") {
+            forwardOutput()
+            withGradleVersion(gradleVersion.version)
+        }
+        assertThat(result2).task(":compileJava").hasOutcome(TaskOutcome.FROM_CACHE)
+    }
 }

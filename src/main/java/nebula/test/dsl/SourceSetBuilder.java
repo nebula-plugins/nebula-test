@@ -23,7 +23,6 @@ public class SourceSetBuilder {
         final Path pathToSourceFile = sourcesDir.toPath().resolve("java").resolve(file);
         pathToSourceFile.getParent().toFile().mkdirs();
         try {
-            pathToSourceFile.toFile().createNewFile();
             Files.write(pathToSourceFile, contents.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             final String message = "Error writing java file to " + file;

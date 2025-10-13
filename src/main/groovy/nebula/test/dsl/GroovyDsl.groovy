@@ -9,6 +9,10 @@ import java.util.function.Supplier
  * Extension methods for idiomatic Groovy DSL usage.
  */
 class GroovyDsl {
+    static void properties(TestProjectBuilder self, @DelegatesTo(ProjectProperties) Closure config) {
+        self.properties().with(config)
+    }
+
     static void rootProject(TestProjectBuilder self, @DelegatesTo(ProjectBuilder) Closure config) {
         self.rootProject().with(config)
     }

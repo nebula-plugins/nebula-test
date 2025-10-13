@@ -18,11 +18,13 @@ public class TestProjectBuilder {
     private final Map<String, ProjectBuilder> subProjects = new HashMap<>();
     private final File projectDir;
     private final SettingsBuilder settings;
+    private final ProjectProperties properties;
 
     TestProjectBuilder(File projectDir) {
         this.projectDir = projectDir;
         rootProject = new ProjectBuilder(projectDir);
         settings = new SettingsBuilder(projectDir);
+        properties = new ProjectProperties(projectDir);
     }
 
     static TestProjectBuilder testProject(File testProjectDir) {
@@ -36,6 +38,10 @@ public class TestProjectBuilder {
      */
     ProjectBuilder rootProject() {
         return rootProject;
+    }
+
+    ProjectProperties properties() {
+        return properties;
     }
 
     /**
@@ -61,6 +67,7 @@ public class TestProjectBuilder {
     }
 
     TestProjectRunner build(BuildscriptLanguage language) {
+        properties().build();
         settings.build(language);
         rootProject.build(language);
         subProjects.values().forEach(subProject -> subProject.build(language));
