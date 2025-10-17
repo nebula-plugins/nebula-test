@@ -8,6 +8,10 @@ import nebula.test.functional.internal.toolingapi.ToolingApiGradleHandleFactory
 
 import java.util.function.Predicate
 
+/**
+ * @deprecated in favor of TestKit-based tooling
+ */
+@Deprecated
 @CompileStatic
 class GradleRunnerFactory {
     public static GradleRunner createTooling(boolean fork = false, String version = null, Integer daemonMaxIdleTimeInSeconds = null,

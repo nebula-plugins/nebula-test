@@ -15,14 +15,12 @@
  */
 package nebula.test.dependencies
 
-import nebula.test.functional.GradleRunnerFactory
+
 import nebula.test.gradle.GradleVersionComparator
 import org.gradle.api.invocation.Gradle
+import org.gradle.testkit.runner.GradleRunner
 
 class GradleDependencyGenerator {
-    private static final String DEFAULT_GRADLE_VERSION = '5.2.1'
-    private static final String GRADLE_FIVE_ZERO = '5.0.0'
-    private static final String LEGACY_PATTERN_LAYOUT = "layout('pattern')"
     private static final String PATTERN_LAYOUT = "patternLayout"
 
     static final String STANDARD_SUBPROJECT_BLOCK = '''\
@@ -49,30 +47,6 @@ class GradleDependencyGenerator {
         }
     '''.stripIndent()
 
-    static final String LEGACY_STANDARD_SUBPROJECT_BLOCK = '''\
-        subprojects {
-            apply plugin: 'maven-publish'
-            apply plugin: 'ivy-publish'
-            apply plugin: 'java-library'
-
-            publishing {
-                repositories {
-                    maven {
-                        url = "../mavenrepo"
-                    }
-                    ivy {
-                        url = "../ivyrepo"
-                        layout('pattern') {
-                            ivy '[organisation]/[module]/[revision]/[module]-[revision]-ivy.[ext]'
-                            artifact '[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]'
-                            m2compatible = true
-                        }
-                    }
-                }
-            }
-        }
-    '''.stripIndent()
-
     static final String BUILD_GRADLE = 'build.gradle'
 
     private boolean generated = false
@@ -81,7 +55,7 @@ class GradleDependencyGenerator {
     File gradleRoot
     File ivyRepoDir
     File mavenRepoDir
-    String gradleVersion
+    String gradleVersion = null
 
     GradleDependencyGenerator(String gradleVersion, DependencyGraph graph, String directory = 'build/testrepogen') {
         this.graph = graph
@@ -89,7 +63,7 @@ class GradleDependencyGenerator {
         this.ivyRepoDir = new File(directory, 'ivyrepo')
         this.mavenRepoDir = new File(directory, 'mavenrepo')
         this.gradleVersion = gradleVersion
-        generateGradleFiles(gradleVersion)
+        generateGradleFiles()
     }
 
     GradleDependencyGenerator(Gradle gradle, DependencyGraph graph, String directory = 'build/testrepogen') {
@@ -97,7 +71,7 @@ class GradleDependencyGenerator {
     }
 
     GradleDependencyGenerator(DependencyGraph graph, String directory = 'build/testrepogen') {
-        this(DEFAULT_GRADLE_VERSION, graph, directory)
+        this(null as String, graph, directory)
     }
 
     File generateTestMavenRepo() {
@@ -136,8 +110,7 @@ class GradleDependencyGenerator {
 
     String getIvyRepositoryBlock() {
         use(GradleVersionComparator) {
-            boolean isGradleOlderThanGradleFive = gradleVersion.versionLessThan(GRADLE_FIVE_ZERO)
-            String layoutPattern = isGradleOlderThanGradleFive ? LEGACY_PATTERN_LAYOUT : PATTERN_LAYOUT
+            String layoutPattern = PATTERN_LAYOUT
             return """\
             ivy {
                 url = '${getIvyRepoUrl()}'
@@ -151,7 +124,7 @@ class GradleDependencyGenerator {
         }
     }
 
-    private void generateGradleFiles(String gradleVersion) {
+    private void generateGradleFiles() {
         use(GradleVersionComparator) {
             if (generated) {
                 return
@@ -161,7 +134,7 @@ class GradleDependencyGenerator {
 
             gradleRoot.mkdirs()
             def rootBuildGradle = new File(gradleRoot, BUILD_GRADLE)
-            rootBuildGradle.text = gradleVersion.versionLessThan(GRADLE_FIVE_ZERO) ? LEGACY_STANDARD_SUBPROJECT_BLOCK : STANDARD_SUBPROJECT_BLOCK
+            rootBuildGradle.text = STANDARD_SUBPROJECT_BLOCK
             def includes = []
             graph.nodes.each { DependencyGraphNode n ->
                 String subName = "${n.group}.${n.artifact}_${n.version.replaceAll(/\./, '_')}"
@@ -217,7 +190,10 @@ class GradleDependencyGenerator {
     }
 
     private void runTasks(String tasks) {
-        def runner = GradleRunnerFactory.createTooling() // Could optionally use Launcher
-        runner.run(gradleRoot, tasks.tokenize()).rethrowFailure()
+        def runner = GradleRunner.create().withProjectDir(gradleRoot).withArguments(tasks.tokenize())
+        if (gradleVersion != null) {
+            runner = runner.withGradleVersion(gradleVersion)
+        }
+        runner.run()
     }
 }
