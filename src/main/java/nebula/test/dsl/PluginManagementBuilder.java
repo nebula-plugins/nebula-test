@@ -9,6 +9,7 @@ public class PluginManagementBuilder {
 
     /**
      * Apply settings plugins
+     * @return plugins DSL builder
      */
     public PluginsBuilder plugins() {
         return plugins;
@@ -16,6 +17,7 @@ public class PluginManagementBuilder {
 
     /**
      * Configure project plugin management
+     * @return repositories DSL builder
      */
     public RepositoriesBuilder repositories() {
         return repositoriesBuilder;

@@ -62,4 +62,30 @@ public class ProjectBuilderTest {
 
         assertThat(testProjectDir.toPath().resolve("src/integTest/java/netflix/Test.java")).exists();
     }
+
+    @Test
+    public void testGroup(@TempDir File testProjectDir) {
+        final var instance = new ProjectBuilder(testProjectDir);
+        instance.group("sample.group");
+        instance.build(BuildscriptLanguage.KOTLIN);
+        assertThat(testProjectDir.toPath().resolve("build.gradle.kts"))
+                .exists()
+                .content()
+                .contains("""
+                        group = "sample.group"
+                        """);
+    }
+
+    @Test
+    public void testVersion(@TempDir File testProjectDir) {
+        final var instance = new ProjectBuilder(testProjectDir);
+        instance.version("1.0.0");
+        instance.build(BuildscriptLanguage.KOTLIN);
+        assertThat(testProjectDir.toPath().resolve("build.gradle.kts"))
+                .exists()
+                .content()
+                .contains("""
+                        version = "1.0.0"
+                        """);
+    }
 }

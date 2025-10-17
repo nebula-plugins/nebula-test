@@ -65,6 +65,7 @@ public class Main {
 
                     }
                 }
+                name("library")
             }
             rootProject {
                 plugins {
@@ -73,6 +74,8 @@ public class Main {
                 repositories {
                     mavenCentral()
                 }
+                group("com.example")
+                version("1.0.0")
                 dependencies("""implementation("org.jspecify:jspecify:1.0.0")""")
                 src {
                     main {
@@ -100,6 +103,7 @@ public class Main {
             .hasNoMutableStateWarnings()
         assertThat(result).task(":compileJava").hasOutcome(TaskOutcome.SUCCESS)
         assertThat(result).task(":build").hasOutcome(TaskOutcome.SUCCESS)
+        assertThat(testProjectDir.resolve("build/libs/library-1.0.0.jar")).exists()
     }
 
 

@@ -43,7 +43,7 @@ public class Main {
         }
 
         when:
-        final var result = runner.run(["build"]) {
+        final var result = runner.run(["build", "--stacktrace"]) {
             withGradleVersion(gradle.version)
             forwardOutput()
         }
