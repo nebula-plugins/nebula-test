@@ -23,6 +23,10 @@ public class ProjectBuilder {
     private Integer javaToolchain = null;
     @Nullable
     private String rawBuildScript;
+    @Nullable
+    private String group = null;
+    @Nullable
+    private String version = null;
 
     ProjectBuilder(File projectDir) {
         this.projectDir = projectDir;
@@ -58,9 +62,33 @@ public class ProjectBuilder {
         return sources;
     }
 
+    /**
+     * Set project group
+     * @param group group name to set on project
+     */
+    @NebulaTestKitDsl
+    public void group(String group) {
+        this.group = group;
+    }
+
+    /**
+     * Set project version, which is equivalent to passing -Pversion on the command line
+     * @param version group name to set on project
+     */
+    @NebulaTestKitDsl
+    public void version(String version) {
+        this.version = version;
+    }
+
     void build(BuildscriptLanguage language) {
         StringBuilder buildFileText = new StringBuilder();
         buildFileText.append(plugins.build(language, 0));
+        if (group != null) {
+            buildFileText.append("group = \"").append(group).append("\"\n");
+        }
+        if (version != null) {
+            buildFileText.append("version = \"").append(version).append("\"\n");
+        }
         buildFileText.append(repositoriesBuilder.build(language, 0));
         if (!dependencies.isEmpty()) {
             buildFileText.append("dependencies {\n");

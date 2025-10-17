@@ -24,6 +24,7 @@ public class SettingsBuilder {
         this.projectDir = projectDir;
     }
 
+    @NebulaTestKitDsl
     public void name(String name) {
         this.name = name;
     }
