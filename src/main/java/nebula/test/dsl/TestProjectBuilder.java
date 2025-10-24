@@ -36,11 +36,11 @@ public class TestProjectBuilder {
      *
      * @return builder for the root project
      */
-    ProjectBuilder rootProject() {
+    public ProjectBuilder rootProject() {
         return rootProject;
     }
 
-    ProjectProperties properties() {
+    public ProjectProperties properties() {
         return properties;
     }
 
