@@ -62,11 +62,11 @@ public class TestProjectBuilder {
         return project;
     }
 
-    TestProjectRunner build() {
+    public TestProjectRunner build() {
         return build(BuildscriptLanguage.KOTLIN);
     }
 
-    TestProjectRunner build(BuildscriptLanguage language) {
+    public TestProjectRunner build(BuildscriptLanguage language) {
         properties().build();
         settings.build(language);
         rootProject.build(language);
