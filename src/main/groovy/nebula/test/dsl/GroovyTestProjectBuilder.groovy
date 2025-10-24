@@ -5,7 +5,7 @@ package nebula.test.dsl
  */
 class GroovyTestProjectBuilder {
     static TestProjectRunner testProject(File testProjectDir, @DelegatesTo(TestProjectBuilder) Closure config) {
-        final TestProjectBuilder testProjectBuilder = new TestProjectBuilder(testProjectDir)
+        final TestProjectBuilder testProjectBuilder = TestProjectBuilder.testProject(testProjectDir)
         testProjectBuilder.with(config)
         return testProjectBuilder.build(BuildscriptLanguage.GROOVY)
     }

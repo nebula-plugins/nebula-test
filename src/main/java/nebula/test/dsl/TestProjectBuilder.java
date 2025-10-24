@@ -20,14 +20,14 @@ public class TestProjectBuilder {
     private final SettingsBuilder settings;
     private final ProjectProperties properties;
 
-    TestProjectBuilder(File projectDir) {
+    private TestProjectBuilder(File projectDir) {
         this.projectDir = projectDir;
         rootProject = new ProjectBuilder(projectDir);
         settings = new SettingsBuilder(projectDir);
         properties = new ProjectProperties(projectDir);
     }
 
-    static TestProjectBuilder testProject(File testProjectDir) {
+    public static TestProjectBuilder testProject(File testProjectDir) {
         return new TestProjectBuilder(testProjectDir);
     }
 
