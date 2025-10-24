@@ -12,7 +12,7 @@ fun testProject(
     language: BuildscriptLanguage = BuildscriptLanguage.KOTLIN,
     config: TestProjectBuilder.() -> Unit
 ): TestProjectRunner {
-    val testProjectBuilder = TestProjectBuilder(testProjectDir)
+    val testProjectBuilder = TestProjectBuilder.testProject(testProjectDir)
     testProjectBuilder.apply(config)
     return testProjectBuilder.build(language)
 }
