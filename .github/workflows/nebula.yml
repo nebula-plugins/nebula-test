@@ -53,7 +53,7 @@ jobs:
           restore-keys: |
             - ${{ runner.os }}-gradlewrapper-
       - name: Gradle build
-        run: ./gradlew --info --stacktrace build
+        run: ./gradlew --stacktrace build
         env:
           JDK_VERSION_FOR_TESTS: ${{ matrix.java }}
   validatepluginpublication:

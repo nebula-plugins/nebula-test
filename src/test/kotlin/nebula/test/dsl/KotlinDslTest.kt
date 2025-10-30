@@ -21,19 +21,7 @@ internal class KotlinDslTest {
                 plugins {
                     java()
                 }
-                src {
-                    main {
-                        java("Main.java") {
-                            // language=java
-                            """
-public class Main {
-    public static void main(String[] args) {
-    }
-}
-"""
-                        }
-                    }
-                }
+                mainSource()
             }
         }
 
@@ -77,19 +65,7 @@ public class Main {
                 group("com.example")
                 version("1.0.0")
                 dependencies("""implementation("org.jspecify:jspecify:1.0.0")""")
-                src {
-                    main {
-                        java("Main.java") {
-                            // language=java
-                            """
-public class Main {
-    public static void main(String[] args) {
-    }
-}
-"""
-                        }
-                    }
-                }
+                mainSource()
             }
         }
 
@@ -134,19 +110,7 @@ public class Main {
                 plugins {
                     java()
                 }
-                src {
-                    main {
-                        java("Main.java") {
-                            // language=java
-                            """
-public class Main {
-    public static void main(String[] args) {
-    }
-}
-"""
-                        }
-                    }
-                }
+                mainSource()
             }
         }
 
@@ -230,19 +194,7 @@ public clss Main { // compile error
                 plugins {
                     java()
                 }
-                src {
-                    main {
-                        java("Main.java") {
-                            // language=java
-                            """
-public class Main {
-    public static void main(String[] args) {
-    }
-}
-"""
-                        }
-                    }
-                }
+                mainSource()
             }
         }
 
@@ -257,5 +209,50 @@ public class Main {
             withGradleVersion(gradleVersion.version)
         }
         assertThat(result2).task(":compileJava").hasOutcome(TaskOutcome.FROM_CACHE)
+    }
+
+    @ParameterizedTest
+    @EnumSource(SupportedGradleVersion::class)
+    fun `test rawBuildScript is additive`(gradleVersion: SupportedGradleVersion) {
+        val runner = testProject(testProjectDir) {
+            settings {
+                name("library")
+            }
+            rootProject {
+                mainSource()
+                rawBuildScript("plugins { java }")
+                rawBuildScript("repositories { mavenCentral() }")
+                rawBuildScript("""group = "com.example"""")
+                rawBuildScript("""version = "1.0.0"""")
+            }
+        }
+
+        val result = runner.run("build") {
+            forwardOutput()
+            withGradleVersion(gradleVersion.version)
+        }
+
+        assertThat(result)
+            .hasNoDeprecationWarnings()
+            .hasNoMutableStateWarnings()
+        assertThat(result).task(":compileJava").hasOutcome(TaskOutcome.SUCCESS)
+        assertThat(result).task(":build").hasOutcome(TaskOutcome.SUCCESS)
+        assertThat(testProjectDir.resolve("build/libs/library-1.0.0.jar")).exists()
+    }
+
+    fun ProjectBuilder.mainSource(){
+        src {
+            main {
+                java("Main.java") {
+                    // language=java
+                    """
+public class Main {
+    public static void main(String[] args) {
+    }
+}
+"""
+                }
+            }
+        }
     }
 }

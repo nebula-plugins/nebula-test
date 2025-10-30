@@ -18,7 +18,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
  * limitations under the License.
  */
 plugins {
-    id("com.netflix.nebula.plugin-plugin") version ("21.3.5")
+    id("com.netflix.nebula.plugin-plugin") version ("23.1.0")
     id("java-library")
     `kotlin-dsl`
     jacoco

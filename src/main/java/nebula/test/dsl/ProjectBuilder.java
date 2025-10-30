@@ -21,8 +21,7 @@ public class ProjectBuilder {
     private final List<String> dependencies = new ArrayList<>();
     @Nullable
     private Integer javaToolchain = null;
-    @Nullable
-    private String rawBuildScript;
+    private final List<String> rawBuildScript = new ArrayList<>();
     @Nullable
     private String group = null;
     @Nullable
@@ -54,7 +53,7 @@ public class ProjectBuilder {
     }
 
     public void rawBuildScript(String buildScript) {
-        rawBuildScript = buildScript;
+        rawBuildScript.add(buildScript);
     }
 
     @NebulaTestKitDsl
@@ -64,6 +63,7 @@ public class ProjectBuilder {
 
     /**
      * Set project group
+     *
      * @param group group name to set on project
      */
     @NebulaTestKitDsl
@@ -73,6 +73,7 @@ public class ProjectBuilder {
 
     /**
      * Set project version, which is equivalent to passing -Pversion on the command line
+     *
      * @param version group name to set on project
      */
     @NebulaTestKitDsl
@@ -100,13 +101,10 @@ public class ProjectBuilder {
             buildFileText.append("        languageVersion = JavaLanguageVersion.of(").append(javaToolchain).append(")\n");
             buildFileText.append("    }\n}\n");
         }
-        if (rawBuildScript != null) {
-            buildFileText.append(rawBuildScript);
-        }
+        buildFileText.append(String.join("\n", rawBuildScript));
         final String ext = language == BuildscriptLanguage.GROOVY ? "gradle" : "gradle.kts";
         final Path buildFile = projectDir.toPath().resolve("build." + ext);
         try {
-            buildFile.toFile().createNewFile();
             Files.write(buildFile, buildFileText.toString().getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             throw new RuntimeException("Error writing to " + buildFile.toAbsolutePath(), e);
