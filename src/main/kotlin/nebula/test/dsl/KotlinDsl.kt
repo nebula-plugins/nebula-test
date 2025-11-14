@@ -54,7 +54,7 @@ fun ProjectBuilder.repositories(config: RepositoriesBuilder.() -> Unit) {
 }
 
 @NebulaTestKitDsl
-infix fun PluginsBuilder.Plugin.version(version: String) {
+infix fun Plugin.version(version: String) {
     version(version)
 }
 

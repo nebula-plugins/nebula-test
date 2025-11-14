@@ -17,7 +17,7 @@ public class ProjectBuilderTest {
         assertThat(testProjectDir.toPath().resolve("build.gradle.kts")).content()
                 .contains("""
                         plugins {
-                            id("java")
+                            java
                         }""");
     }
 

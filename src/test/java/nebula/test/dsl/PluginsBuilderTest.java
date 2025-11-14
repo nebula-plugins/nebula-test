@@ -55,7 +55,7 @@ public class PluginsBuilderTest {
         //language=groovy
         assertThat(actual).isEqualTo("""
                 plugins {
-                    id("java")
+                    java
                 }
                 """);
     }
@@ -72,4 +72,58 @@ public class PluginsBuilderTest {
                 }
                 """);
     }
+
+    @Test
+    public void testKotlinJvm_kotlin(){
+        final var builder = new PluginsBuilder();
+        builder.kotlin("jvm").version("0.0.0");
+        final var actual = builder.build(BuildscriptLanguage.KOTLIN,0);
+        //language=kotlin
+        assertThat(actual).isEqualTo("""
+                plugins {
+                    kotlin("jvm") version ("0.0.0")
+                }
+                """);
+    }
+
+
+    @Test
+    public void testKotlinJvm_groovy(){
+        final var builder = new PluginsBuilder();
+        builder.kotlin("jvm").version("0.0.0");
+        final var actual = builder.build(BuildscriptLanguage.GROOVY,0);
+        //language=groovy
+        assertThat(actual).isEqualTo("""
+                plugins {
+                    id 'org.jetbrains.kotlin.jvm' version '0.0.0'
+                }
+                """);
+    }
+
+    @Test
+    public void testKotlinDsl_kotlin(){
+        final var builder = new PluginsBuilder();
+        builder.kotlinDsl();
+        final var actual = builder.build(BuildscriptLanguage.KOTLIN,0);
+        //language=kotlin
+        assertThat(actual).isEqualTo("""
+                plugins {
+                    `kotlin-dsl`
+                }
+                """);
+    }
+
+    @Test
+    public void testKotlinDsl_groovy(){
+        final var builder = new PluginsBuilder();
+        builder.kotlinDsl().version("0.0.0");
+        final var actual = builder.build(BuildscriptLanguage.GROOVY,0);
+        //language=groovy
+        assertThat(actual).isEqualTo("""
+                plugins {
+                    id 'org.gradle.kotlin.kotlin-dsl' version '0.0.0'
+                }
+                """);
+    }
+
 }

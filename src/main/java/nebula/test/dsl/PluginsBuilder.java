@@ -1,7 +1,6 @@
 package nebula.test.dsl;
 
 import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +29,23 @@ public class PluginsBuilder {
      */
     @NebulaTestKitDsl
     public void java() {
-        plugins.add(new Plugin("java"));
+        id("java").builtIn("java");
+    }
+
+    /**
+     * Adds a kotlin plugin
+     */
+    @NebulaTestKitDsl
+    public Plugin kotlin(String platform) {
+        return id("org.jetbrains.kotlin." + platform).builtIn("kotlin").builtInParam(platform);
+    }
+
+    /**
+     * Adds kotlin-dsl plugin
+     */
+    @NebulaTestKitDsl
+    public Plugin kotlinDsl() {
+        return id("org.gradle.kotlin.kotlin-dsl").builtIn("kotlin-dsl");
     }
 
     boolean hasContent() {
@@ -47,45 +62,5 @@ public class PluginsBuilder {
             stringBuilder.append(repeat(" ", indentation)).append("}\n");
         }
         return stringBuilder.toString();
-    }
-
-    // TODO support "built-in" plugins like java similar to the repository builtins like mavenCentral()
-    public static class Plugin {
-        private final String id;
-        @Nullable
-        private String version;
-
-        Plugin(String id) {
-            this.id = id;
-        }
-
-        /**
-         * Set the version of the plugin.
-         * This only needs to be called for plugins not already on the classpath
-         *
-         * @param version the version of the plugin
-         */
-        @NebulaTestKitDsl
-        public void version(String version) {
-            this.version = version;
-        }
-
-        String render(BuildscriptLanguage language) {
-            final StringBuilder stringBuilder = new StringBuilder();
-            if (language == BuildscriptLanguage.GROOVY) {
-                stringBuilder.append("id '").append(id).append("'");
-            } else if (language == BuildscriptLanguage.KOTLIN) {
-                stringBuilder.append("id(\"").append(id).append("\")");
-            }
-
-            if (version != null) {
-                if (language == BuildscriptLanguage.GROOVY) {
-                    stringBuilder.append(" version '").append(version).append("'");
-                } else if (language == BuildscriptLanguage.KOTLIN) {
-                    stringBuilder.append(" version (\"").append(version).append("\")");
-                }
-            }
-            return stringBuilder.toString();
-        }
     }
 }
