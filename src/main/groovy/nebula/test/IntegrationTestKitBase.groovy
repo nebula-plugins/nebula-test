@@ -104,7 +104,7 @@ abstract trait IntegrationTestKitBase extends IntegrationBase {
         List<String> pluginArgs = definePluginOutsideOfPluginBlock
                 ? createGradleTestKitInitArgs()
                 : new ArrayList<String>()
-        debug = debug ? true : isJwdpLoaded()
+        debug = debug ? true : JavaRuntimeUtil.isJwdpLoaded()
         def gradleRunnerBuilder = GradleRunner.create()
                 .withProjectDir(projectDir)
                 .withArguments(pluginArgs + calculateArguments(tasks))
@@ -137,11 +137,4 @@ abstract trait IntegrationTestKitBase extends IntegrationBase {
 
         return Arrays.asList("--init-script", initScript.getAbsolutePath())
     }
-
-    static boolean isJwdpLoaded() {
-        RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean()
-        List<String> args = runtime.getInputArguments()
-        return args.toString().contains("-agentlib:jdwp")
-    }
-
 }
