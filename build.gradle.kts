@@ -1,6 +1,7 @@
 import nebula.plugin.contacts.Contact
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 /*
  * Copyright 2014-2019 Netflix, Inc.
@@ -18,7 +19,9 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
  * limitations under the License.
  */
 plugins {
-    id("com.netflix.nebula.plugin-plugin") version ("23.1.0")
+    id("com.netflix.nebula.plugin-plugin") version ("24.+")
+    id("com.netflix.nebula.archrules.runner") version ("0.1.+")
+    id("com.netflix.nebula.archrules.library") version ("0.1.+")
     id("java-library")
     `kotlin-dsl`
     jacoco
@@ -32,8 +35,8 @@ contacts {
         github = "nebula-plugins"
     }
 }
-
 dependencies {
+    archRules("com.netflix.nebula:archrules-deprecation:0.+")
     compileOnly(localGroovy())
     api("org.jspecify:jspecify:1.0.0")
     api("org.assertj:assertj-core:3.27.3")
@@ -66,6 +69,13 @@ tasks.named<JavaCompile>("compileTestJava") {
         }
     )
 }
+tasks.named<KotlinCompile>("compileTestKotlin") {
+    kotlinJavaToolchain.toolchain.use(
+        javaToolchains.launcherFor {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
+    )
+}
 
 tasks.named("build") {
     dependsOn(gradle.includedBuild("gradleTest").task(":build"))
@@ -73,7 +83,7 @@ tasks.named("build") {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(8)
+        languageVersion = JavaLanguageVersion.of(11)
     }
 }
 
@@ -86,12 +96,6 @@ kotlin {
 }
 
 tasks.named("publishPlugins") { enabled = false }
-
-configurations.named("runtimeClasspath") {
-    attributes {
-        attribute(GradlePluginApiVersion.GRADLE_PLUGIN_API_VERSION_ATTRIBUTE, objects.named("8.11"))
-    }
-}
 
 tasks.wrapper {
     distributionType = Wrapper.DistributionType.BIN

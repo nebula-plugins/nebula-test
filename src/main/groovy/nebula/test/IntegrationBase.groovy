@@ -51,7 +51,7 @@ abstract trait IntegrationBase {
      */
     LogLevel getLogLevel() {
         String levelFromEnv = System.getenv(LOGGING_LEVEL_ENV_VARIABLE)
-        if(!levelFromEnv) {
+        if (!levelFromEnv) {
             return logLevel
         }
         return LogLevel.valueOf(levelFromEnv.toUpperCase())
@@ -88,64 +88,8 @@ abstract trait IntegrationBase {
         file
     }
 
-    static void checkOutput(String output) {
-        outputBuildScan(output)
-        checkForMutableProjectState(output)
-        checkForDeprecations(output)
-    }
-
-    static void outputBuildScan(String output) {
-        boolean foundPublishingLine = false
-        output.readLines().find {line ->
-            if (foundPublishingLine) {
-                if (line.startsWith("http")) {
-                    println("Build scan: $line")
-                } else {
-                    println("Build scan was enabled but did not publish: $line")
-                }
-                return true
-            }
-            if (line == "Publishing build scan...") {
-                foundPublishingLine = true
-            }
-            return false
-        }
-    }
-
-    static void checkForDeprecations(String output) {
-        def deprecations = output.readLines().findAll {
-            it.contains("has been deprecated and is scheduled to be removed in Gradle") ||
-                    it.contains("Deprecated Gradle features were used in this build") ||
-                    it.contains("has been deprecated. This is scheduled to be removed in Gradle") ||
-                    it.contains("This will fail with an error in Gradle") ||
-                    it.contains("This behaviour has been deprecated and is scheduled to be removed in Gradle")
-        }
-        // temporary for known issue with overwriting task
-        // overridden task expected to not be needed in future version
-        if (deprecations.size() == 1 && deprecations.first().contains("Creating a custom task named 'dependencyInsight' has been deprecated and is scheduled to be removed in Gradle 5.0.")) {
-            return
-        }
-        if (!System.getProperty("ignoreDeprecations") && !deprecations.isEmpty()) {
-            throw new IllegalArgumentException("Deprecation warnings were found (Set the ignoreDeprecations system property during the test to ignore):\n" + deprecations.collect {
-                " - $it"
-            }.join("\n"))
-        }
-    }
-
-    static void checkForMutableProjectState(String output) {
-        def mutableProjectStateWarnings = output.readLines().findAll {
-            it.contains("was resolved without accessing the project in a safe manner") ||
-                    it.contains("This may happen when a configuration is resolved from a thread not managed by Gradle or from a different project") ||
-                    it.contains("was resolved from a thread not managed by Gradle.") ||
-                    it.contains("was attempted from a context different than the project context")
-
-        }
-
-        if (!System.getProperty("ignoreMutableProjectStateWarnings") && !mutableProjectStateWarnings.isEmpty()) {
-            throw new IllegalArgumentException("Mutable Project State warnings were found (Set the ignoreMutableProjectStateWarnings system property during the test to ignore):\n" + mutableProjectStateWarnings.collect {
-                " - $it"
-            }.join("\n"))
-        }
+    void checkOutput(String output) {
+        TestKitOutputUtil.checkOutput(output)
     }
 
     void writeHelloWorld(File baseDir = getProjectDir()) {
@@ -164,7 +108,7 @@ abstract trait IntegrationBase {
             """.stripIndent(), 'src/main/java', baseDir)
     }
 
-    void writeJavaSourceFile(String source, File projectDir  = getProjectDir()) {
+    void writeJavaSourceFile(String source, File projectDir = getProjectDir()) {
         writeJavaSourceFile(source, 'src/main/java', projectDir)
     }
 
@@ -262,7 +206,7 @@ abstract trait IntegrationBase {
                 arguments += '--debug'
                 break
         }
-        if(parallelEnabled) {
+        if (parallelEnabled) {
             arguments += '--parallel'
         }
         arguments += '--stacktrace'
