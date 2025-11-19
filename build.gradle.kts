@@ -19,9 +19,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
  * limitations under the License.
  */
 plugins {
-    id("com.netflix.nebula.plugin-plugin") version ("24.+")
-    id("com.netflix.nebula.archrules.runner") version ("0.1.+")
-    id("com.netflix.nebula.archrules.library") version ("0.1.+")
+    id("com.netflix.nebula.plugin-plugin")
+    id("com.netflix.nebula.archrules.library")
     id("java-library")
     `kotlin-dsl`
     jacoco
@@ -35,8 +34,8 @@ contacts {
         github = "nebula-plugins"
     }
 }
+
 dependencies {
-    archRules("com.netflix.nebula:archrules-deprecation:0.+")
     compileOnly(localGroovy())
     api("org.jspecify:jspecify:1.0.0")
     api("org.assertj:assertj-core:3.27.3")
