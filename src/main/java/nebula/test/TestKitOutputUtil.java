@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TestKitOutputUtil {
     private TestKitOutputUtil() {
@@ -17,7 +18,7 @@ public class TestKitOutputUtil {
 
     public static void outputBuildScan(String output) {
         AtomicBoolean foundPublishingLine = new AtomicBoolean(false);
-        output.lines().forEach(line -> {
+        Stream.of(output.split("\\r?\\n")).forEach(line -> {
             if (foundPublishingLine.get()) {
                 if (line.startsWith("http")) {
                     System.out.println("Build scan: $line");
@@ -32,7 +33,7 @@ public class TestKitOutputUtil {
     }
 
     public static void checkForDeprecations(String output) {
-        final List<String> deprecations = output.lines().filter(it ->
+        final List<String> deprecations = Stream.of(output.split("\\r?\\n")).filter(it ->
                 it.contains("has been deprecated and is scheduled to be removed in Gradle") ||
                 it.contains("Deprecated Gradle features were used in this build") ||
                 it.contains("has been deprecated. This is scheduled to be removed in Gradle") ||
@@ -56,7 +57,7 @@ public class TestKitOutputUtil {
     }
 
     static void checkForMutableProjectState(String output) {
-        final List<String> mutableProjectStateWarnings = output.lines().filter(it ->
+        final List<String> mutableProjectStateWarnings = Stream.of(output.split("\\r?\\n")).filter(it ->
                 it.contains("was resolved without accessing the project in a safe manner") ||
                 it.contains("This may happen when a configuration is resolved from a thread not managed by Gradle or from a different project") ||
                 it.contains("was resolved from a thread not managed by Gradle.") ||

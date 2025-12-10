@@ -5,6 +5,7 @@ import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.Priority;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 
+import java.util.Collections;
 import java.util.Map;
 
 import static com.tngtech.archunit.core.domain.JavaAccess.Predicates.target;
@@ -25,6 +26,6 @@ public class NebulaTestArchRules implements ArchRulesService {
 
     @Override
     public Map<String, ArchRule> getRules() {
-        return Map.of("noDeprecatedNebulaTest", noDeprecatedNebulaTest);
+        return Collections.singletonMap("noDeprecatedNebulaTest", noDeprecatedNebulaTest);
     }
 }

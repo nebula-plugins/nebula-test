@@ -58,50 +58,11 @@ jobs:
         run: ./gradlew --stacktrace build
         env:
           JDK_VERSION_FOR_TESTS: ${{ matrix.java }}
-  validatepluginpublication:
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: validation
-    runs-on: ubuntu-latest
-    name: Gradle Plugin Publication Validation
-    env:
-      NETFLIX_OSS_SONATYPE_USERNAME: ${{ secrets.ORG_SONATYPE_USERNAME }}
-      NETFLIX_OSS_SONATYPE_PASSWORD: ${{ secrets.ORG_SONATYPE_PASSWORD }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup git user
-        run: |
-          git config --global user.name "Nebula Plugin Maintainers"
-          git config --global user.email "nebula-plugins-oss@netflix.com"
-      - name: Set up JDKs
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: |
-            17
-            21
-          java-package: jdk
-      - uses: actions/cache@v4
-        id: gradle-cache
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/gradle/dependency-locks/*.lockfile') }}
-          restore-keys: |
-            - ${{ runner.os }}-gradle-
-      - uses: actions/cache@v4
-        id: gradle-wrapper-cache
-        with:
-          path: ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradlewrapper-${{ hashFiles('gradle/wrapper/*') }}
-          restore-keys: |
-            - ${{ runner.os }}-gradlewrapper-
-      - name: Verify plugin publication
-        if: |
-          startsWith(github.ref, 'refs/tags/v') &&
-          (!contains(github.ref, '-rc.'))
-        run: ./gradlew  --stacktrace -Dgradle.publish.key=${{ secrets.gradlePublishKey }} -Dgradle.publish.secret=${{ secrets.gradlePublishSecret }}  -Prelease.useLastTag=true final publishPlugin --validate-only -x check -x signPluginMavenPublication
   publish:
+    environment:
+      name: Publish
+      url: "https://repo1.maven.org/maven2/com/netflix/nebula/nebula-test/"
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: validatepluginpublication
     runs-on: ubuntu-latest
     name: Gradle Build and Publish
     env:
@@ -139,6 +100,11 @@ jobs:
           key: ${{ runner.os }}-gradlewrapper-${{ hashFiles('gradle/wrapper/*') }}
           restore-keys: |
             - ${{ runner.os }}-gradlewrapper-
+      - name: Verify plugin publication
+        if: |
+          startsWith(github.ref, 'refs/tags/v') &&
+          (!contains(github.ref, '-rc.'))
+        run: ./gradlew  --stacktrace -Dgradle.publish.key=${{ secrets.gradlePublishKey }} -Dgradle.publish.secret=${{ secrets.gradlePublishSecret }}  -Prelease.useLastTag=true final publishPlugin --validate-only -x check -x signPluginMavenPublication
       - name: Publish candidate
         if: |
           startsWith(github.ref, 'refs/tags/v') &&
