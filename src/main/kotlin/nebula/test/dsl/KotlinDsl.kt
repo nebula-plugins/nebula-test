@@ -88,11 +88,6 @@ fun TestProjectBuilder.subProject(name: String, config: ProjectBuilder.() -> Uni
     subProject(name).apply(config)
 }
 
-@NebulaTestKitDsl
-fun SourceSetBuilder.java(fileName: String, source: () -> String) {
-    java(fileName, source())
-}
-
 /**
  * Run a build with expectation of success.
  * This method will throw an exception if the build fails.

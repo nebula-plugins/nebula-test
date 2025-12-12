@@ -17,6 +17,9 @@ internal class KotlinDslTest {
     @EnumSource(SupportedGradleVersion::class)
     fun `test single project build with sources`(gradleVersion: SupportedGradleVersion) {
         val runner = testProject(testProjectDir) {
+            properties {
+                buildCache(true)
+            }
             rootProject {
                 plugins {
                     java()
@@ -33,7 +36,7 @@ internal class KotlinDslTest {
         assertThat(result)
             .hasNoDeprecationWarnings()
             .hasNoMutableStateWarnings()
-        assertThat(result).task(":compileJava").hasOutcome(TaskOutcome.SUCCESS)
+        assertThat(result).task(":compileJava").hasOutcome(TaskOutcome.SUCCESS, TaskOutcome.FROM_CACHE)
         assertThat(result).task(":build").hasOutcome(TaskOutcome.SUCCESS)
     }
 
@@ -41,6 +44,9 @@ internal class KotlinDslTest {
     @EnumSource(SupportedGradleVersion::class)
     fun `test single project build with dependencies`(gradleVersion: SupportedGradleVersion) {
         val runner = testProject(testProjectDir) {
+            properties {
+                buildCache(true)
+            }
             settings {
                 plugins {
 
@@ -77,7 +83,7 @@ internal class KotlinDslTest {
         assertThat(result)
             .hasNoDeprecationWarnings()
             .hasNoMutableStateWarnings()
-        assertThat(result).task(":compileJava").hasOutcome(TaskOutcome.SUCCESS)
+        assertThat(result).task(":compileJava").hasOutcome(TaskOutcome.SUCCESS, TaskOutcome.FROM_CACHE)
         assertThat(result).task(":build").hasOutcome(TaskOutcome.SUCCESS)
         assertThat(testProjectDir.resolve("build/libs/library-1.0.0.jar")).exists()
     }
@@ -87,6 +93,9 @@ internal class KotlinDslTest {
     @EnumSource(SupportedGradleVersion::class)
     fun `test multi project build with sources`(gradleVersion: SupportedGradleVersion) {
         val runner = testProject(testProjectDir) {
+            properties {
+                buildCache(true)
+            }
             subProject("sub1") {
                 plugins {
                     java()
@@ -119,8 +128,10 @@ public class Main {
             withGradleVersion(gradleVersion.version)
         }
 
-        assertThat(result.task(":sub1:compileJava")).hasOutcome(TaskOutcome.SUCCESS)
-        assertThat(result.task(":sub2:compileJava")).hasOutcome(TaskOutcome.SUCCESS)
+        assertThat(result.task(":sub1:compileJava"))
+            .hasOutcome(TaskOutcome.SUCCESS, TaskOutcome.FROM_CACHE)
+        assertThat(result.task(":sub2:compileJava"))
+            .hasOutcome(TaskOutcome.SUCCESS, TaskOutcome.FROM_CACHE)
         assertThat(result.task(":sub1:build")).hasOutcome(TaskOutcome.SUCCESS)
         assertThat(result.task(":sub1:build")).hasOutcome(TaskOutcome.SUCCESS)
     }
@@ -157,6 +168,9 @@ public clss Main { // compile error
     @Test
     fun `test plugin with version`() {
         testProject(testProjectDir) {
+            properties {
+                buildCache(true)
+            }
             rootProject {
                 plugins {
                     java()
@@ -171,6 +185,9 @@ public clss Main { // compile error
     @Test
     fun `test groovy script`() {
         testProject(testProjectDir, BuildscriptLanguage.GROOVY) {
+            properties {
+                buildCache(true)
+            }
             rootProject {
                 plugins {
                     java()
@@ -187,7 +204,7 @@ public clss Main { // compile error
     fun `test properties and caching`(gradleVersion: SupportedGradleVersion) {
         val runner = testProject(testProjectDir) {
             properties {
-                gradleCache(true)
+                buildCache(true)
                 property("org.gradle.caching.debug", "true")
             }
             rootProject {
@@ -215,6 +232,9 @@ public clss Main { // compile error
     @EnumSource(SupportedGradleVersion::class)
     fun `test rawBuildScript is additive`(gradleVersion: SupportedGradleVersion) {
         val runner = testProject(testProjectDir) {
+            properties {
+                buildCache(true)
+            }
             settings {
                 name("library")
             }
@@ -235,12 +255,12 @@ public clss Main { // compile error
         assertThat(result)
             .hasNoDeprecationWarnings()
             .hasNoMutableStateWarnings()
-        assertThat(result).task(":compileJava").hasOutcome(TaskOutcome.SUCCESS)
+        assertThat(result).task(":compileJava").hasOutcome(TaskOutcome.SUCCESS, TaskOutcome.FROM_CACHE)
         assertThat(result).task(":build").hasOutcome(TaskOutcome.SUCCESS)
         assertThat(testProjectDir.resolve("build/libs/library-1.0.0.jar")).exists()
     }
 
-    fun ProjectBuilder.mainSource(){
+    fun ProjectBuilder.mainSource() {
         src {
             main {
                 java("Main.java") {

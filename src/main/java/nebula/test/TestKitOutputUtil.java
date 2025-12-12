@@ -1,11 +1,14 @@
 package nebula.test;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@NullMarked
 public class TestKitOutputUtil {
     private TestKitOutputUtil() {
     }
