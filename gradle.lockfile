@@ -2,7 +2,7 @@
 # Manual edits can break the build and are not advised.
 # This file is expected to be part of source control.
 cglib:cglib-nodep:3.2.2=archRulesTestRuntimeClasspath,integTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
-com.netflix.nebula:nebula-archrules-core:0.5.2=archRulesCompileClasspath,archRulesRuntimeClasspath,archRulesTestCompileClasspath,archRulesTestRuntimeClasspath
+com.netflix.nebula:nebula-archrules-core:0.5.3=archRulesCompileClasspath,archRulesRuntimeClasspath,archRulesTestCompileClasspath,archRulesTestRuntimeClasspath
 com.tngtech.archunit:archunit:1.4.1=archRulesCompileClasspath,archRulesRuntimeClasspath,archRulesTestCompileClasspath,archRulesTestRuntimeClasspath
 junit:junit:4.13.2=compileClasspath,integTestCompileClasspath,integTestRuntimeClasspath,testCompileClasspath,testRuntimeClasspath
 net.bytebuddy:byte-buddy-agent:1.11.13=integTestCompileClasspath,integTestRuntimeClasspath,testCompileClasspath,testRuntimeClasspath

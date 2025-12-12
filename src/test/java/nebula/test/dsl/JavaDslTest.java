@@ -11,7 +11,7 @@ import java.io.File;
 
 import static nebula.test.dsl.TestKitAssertions.assertThat;
 
-public class JavaDslTest {
+class JavaDslTest {
 
     @ParameterizedTest
     @EnumSource(SupportedGradleVersion.class)

@@ -1,6 +1,7 @@
 package nebula.test.dsl;
 
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @NebulaTestKitDsl
+@NullMarked
 public class ProjectProperties {
     private final File projectDir;
 
@@ -27,10 +29,27 @@ public class ProjectProperties {
         return this;
     }
 
+    /**
+     *
+     * @deprecated Use {@link #buildCache(boolean)} instead
+     */
     @NebulaTestKitDsl
     @Contract("_ -> this")
+    @Deprecated
     public ProjectProperties gradleCache(boolean enabled) {
         return property("org.gradle.caching", String.valueOf(enabled).toLowerCase());
+    }
+
+    @NebulaTestKitDsl
+    @Contract("_ -> this")
+    public ProjectProperties buildCache(boolean enabled) {
+        return property("org.gradle.caching", String.valueOf(enabled).toLowerCase());
+    }
+
+    @NebulaTestKitDsl
+    @Contract("_ -> this")
+    public ProjectProperties configurationCache(boolean enabled) {
+        return property("org.gradle.configuration-cache", String.valueOf(enabled).toLowerCase());
     }
 
     void build() {

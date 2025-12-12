@@ -71,10 +71,6 @@ class GroovyDsl {
         self.test().with(config)
     }
 
-    static void java(SourceSetBuilder self, String name, Supplier<String> source) {
-        self.java(name, source.get())
-    }
-
     /**
      * Run a build with expectation of success.
      * This method will throw an exception if the build fails.
