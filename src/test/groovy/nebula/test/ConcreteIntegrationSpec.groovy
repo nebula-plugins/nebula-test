@@ -2,8 +2,10 @@ package nebula.test
 
 import nebula.test.functional.ExecutionResult
 import nebula.test.functional.PreExecutionAction
+import spock.lang.Ignore
 import spock.lang.Unroll
 
+@Ignore("non-testkit tests don't work in github actions + setup-gradle")
 class ConcreteIntegrationSpec extends IntegrationSpec {
     def 'runs build'() {
         when:

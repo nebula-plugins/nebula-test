@@ -34,6 +34,7 @@ public class BuildTaskAssert extends AbstractAssert<BuildTaskAssert, @Nullable B
     /**
      * Assert that the task was run and resulted in the expected outcome
      * @param outcome the expected outcome
+     * @return the same instance of the task assertion for chaining
      */
     @Contract("_ -> this")
     public BuildTaskAssert hasOutcome(TaskOutcome outcome) {
@@ -48,6 +49,7 @@ public class BuildTaskAssert extends AbstractAssert<BuildTaskAssert, @Nullable B
     /**
      * Assert that the task was run and resulted in any of the expected outcomes
      * @param outcomes the expected possible outcomes
+     * @return the same instance of the task assertion for chaining
      */
     @Contract("_ -> this")
     public BuildTaskAssert hasOutcome(TaskOutcome... outcomes) {
