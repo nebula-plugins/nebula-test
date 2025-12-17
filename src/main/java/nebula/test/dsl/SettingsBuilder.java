@@ -1,5 +1,6 @@
 package nebula.test.dsl;
 
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.io.File;
@@ -10,6 +11,7 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
+@NullMarked
 public class SettingsBuilder {
     private final File projectDir;
     private final PluginManagementBuilder pluginManagement = new PluginManagementBuilder();
