@@ -4,9 +4,13 @@ package nebula.test.dsl;
 // public sealed class Repository permits BuiltIn, Maven {
 // }
 
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 public abstract class Repository {
 }
 
+@NullMarked
 final class BuiltIn extends Repository {
     public BuiltIn(String functionName) {
         this.functionName = functionName;
@@ -15,6 +19,7 @@ final class BuiltIn extends Repository {
     final String functionName;
 }
 
+@NullMarked
 final class Maven extends Repository {
     public Maven(String url) {
         this.url = url;

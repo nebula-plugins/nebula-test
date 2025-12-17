@@ -11,7 +11,7 @@ public class NebulaTestArchRulesTest {
 
     @Test
     public void testNebulaTestArchRule() {
-        EvaluationResult result = Runner.check(NebulaTestArchRules.noDeprecatedNebulaTest, Failing.class);
+        EvaluationResult result = Runner.check(NebulaTestArchRules.DEPRECATED, Failing.class);
         assertThat(result.hasViolation()).isTrue();
     }
 

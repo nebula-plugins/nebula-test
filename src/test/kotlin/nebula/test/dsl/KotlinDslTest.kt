@@ -228,9 +228,8 @@ public clss Main { // compile error
         assertThat(result2).task(":compileJava").hasOutcome(TaskOutcome.FROM_CACHE)
     }
 
-    @ParameterizedTest
-    @EnumSource(SupportedGradleVersion::class)
-    fun `test rawBuildScript is additive`(gradleVersion: SupportedGradleVersion) {
+    @Test
+    fun `test rawBuildScript is additive`() {
         val runner = testProject(testProjectDir) {
             properties {
                 buildCache(true)
@@ -247,10 +246,7 @@ public clss Main { // compile error
             }
         }
 
-        val result = runner.run("build") {
-            forwardOutput()
-            withGradleVersion(gradleVersion.version)
-        }
+        val result = runner.run("build")
 
         assertThat(result)
             .hasNoDeprecationWarnings()

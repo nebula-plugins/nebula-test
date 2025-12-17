@@ -1,10 +1,13 @@
 package nebula.test.dsl;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.io.File;
 
 /**
  * Represents the "src" directory of a project
  */
+@NullMarked
 public class SourcesBuilder {
     private final File sourcesDir;
 

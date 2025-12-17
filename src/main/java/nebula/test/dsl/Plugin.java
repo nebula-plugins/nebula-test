@@ -1,7 +1,9 @@
 package nebula.test.dsl;
 
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class Plugin {
     @Nullable
     private String builtIn;

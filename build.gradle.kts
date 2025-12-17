@@ -51,6 +51,7 @@ dependencies {
     testImplementation("uk.org.webcompere:system-stubs-junit4:2.0.1")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.13.4")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.13.4")
+    archRulesTestImplementation("org.spockframework:spock-junit4:2.3-groovy-4.0")
 }
 
 tasks.withType<Test> {
