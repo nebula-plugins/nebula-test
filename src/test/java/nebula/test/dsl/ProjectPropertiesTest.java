@@ -55,4 +55,16 @@ class ProjectPropertiesTest {
                 .content()
                 .contains("org.gradle.configuration-cache=true");
     }
+
+    @Test
+    public void testIsolatedProjects(@TempDir File testProjectDir) {
+        final var instance = new ProjectProperties(testProjectDir);
+        instance.isolatedProjects(true);
+        instance.build();
+
+        assertThat(testProjectDir.toPath().resolve("gradle.properties"))
+                .exists()
+                .content()
+                .contains("org.gradle.unsafe.isolated-projects=true");
+    }
 }

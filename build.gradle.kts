@@ -38,7 +38,7 @@ contacts {
 dependencies {
     compileOnly(localGroovy())
     api("org.jspecify:jspecify:1.0.0")
-    api("org.assertj:assertj-core:3.27.3")
+    api("org.assertj:assertj-core:3.27.7")
     compileOnly(gradleTestKit())
     compileOnly("org.spockframework:spock-core:2.3-groovy-4.0")
     compileOnly("org.spockframework:spock-junit4:2.3-groovy-4.0")
@@ -51,6 +51,8 @@ dependencies {
     testImplementation("uk.org.webcompere:system-stubs-junit4:2.0.1")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.13.4")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.13.4")
+
+    archRulesImplementation("com.netflix.nebula:archrules-common:0.+")
     archRulesTestImplementation("org.spockframework:spock-junit4:2.3-groovy-4.0")
 }
 
