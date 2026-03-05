@@ -52,6 +52,15 @@ public class ProjectProperties {
         return property("org.gradle.configuration-cache", String.valueOf(enabled).toLowerCase());
     }
 
+    /**
+     * Shortcut for enabling <a href="https://docs.gradle.org/current/userguide/isolated_projects.html">isolated projects</a>
+     */
+    @NebulaTestKitDsl
+    @Contract("_ -> this")
+    public ProjectProperties isolatedProjects(boolean enabled) {
+        return property("org.gradle.unsafe.isolated-projects", String.valueOf(enabled).toLowerCase());
+    }
+
     void build() {
         Path propsFile = projectDir.toPath().resolve("gradle.properties");
         String fileContents = String.join("\n", properties);
