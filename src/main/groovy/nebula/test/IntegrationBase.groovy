@@ -33,6 +33,7 @@ abstract trait IntegrationBase {
     LogLevel logLevel = LogLevel.LIFECYCLE
     List<File> initScripts = []
     boolean parallelEnabled = false
+    boolean buildCacheEnabled = false
 
     private static final String LOGGING_LEVEL_ENV_VARIABLE = "NEBULA_TEST_LOGGING_LEVEL"
 
@@ -209,6 +210,7 @@ abstract trait IntegrationBase {
         if (parallelEnabled) {
             arguments += '--parallel'
         }
+        arguments += "-Dorg.gradle.caching=$buildCacheEnabled".toString()
         arguments += '--stacktrace'
         arguments += '-Dorg.gradle.warning.mode=all'
         arguments.addAll(args)
