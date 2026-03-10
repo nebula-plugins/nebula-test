@@ -59,4 +59,10 @@ class IntegrationTestKitSpecSpec extends IntegrationTestKitSpec {
         dependencies(buildFile, 'testImplementation') == ['testjava:c:0.1.0']
         dependencies(buildFile) == ['testjava:a:0.1.0', 'testjava:b:0.1.0', 'testjava:c:0.1.0']
     }
+
+    def 'build caching is disabled by default'() {
+        expect:
+        calculateArguments().contains('-Dorg.gradle.caching=false')
+    }
+
 }
