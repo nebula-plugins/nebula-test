@@ -28,6 +28,7 @@ import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 
 /**
  * Base trait for implementing gradle integration tests using the {@code gradle-test-kit} runner.
+ * Prefer <a href="https://github.com/nebula-plugins/nebula-test/wiki/TestKit-DSL">TestKit DSL</a> instead
  */
 @CompileStatic
 abstract trait IntegrationTestKitBase extends IntegrationBase {

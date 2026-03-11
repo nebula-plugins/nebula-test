@@ -1,7 +1,7 @@
 package nebula.test;
 
 public enum SupportedGradleVersion {
-    MIN("8.14.3"), MAX("9.2.1");
+    MIN("9.0.0"), MAX("9.4.0");
     public final String version;
     SupportedGradleVersion(String version) {
         this.version = version;
