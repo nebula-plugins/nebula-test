@@ -30,7 +30,7 @@ import spock.lang.Specification
  *
  * This will be removed in the next nebula-test major version
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 abstract class BaseIntegrationSpec extends Specification implements IntegrationBase {
     @Rule
     TestName testName = new TestName()

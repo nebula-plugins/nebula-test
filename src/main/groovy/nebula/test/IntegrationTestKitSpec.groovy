@@ -20,6 +20,10 @@ import org.junit.Rule
 import org.junit.rules.TestName
 import spock.lang.Specification
 
+/**
+ *  Prefer <a href="https://github.com/nebula-plugins/nebula-test/wiki/TestKit-DSL">TestKit DSL</a> instead
+ */
+
 abstract class IntegrationTestKitSpec extends Specification implements IntegrationTestKitBase {
     @Rule
     TestName testName = new TestName()

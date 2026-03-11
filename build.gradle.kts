@@ -1,7 +1,5 @@
 import nebula.plugin.contacts.Contact
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 /*
  * Copyright 2014-2019 Netflix, Inc.
@@ -49,34 +47,26 @@ dependencies {
     testImplementation("org.spockframework:spock-core:2.3-groovy-4.0")
     testImplementation("org.spockframework:spock-junit4:2.3-groovy-4.0")
     testImplementation("uk.org.webcompere:system-stubs-junit4:2.0.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.13.4")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.13.4")
 
     archRulesImplementation("com.netflix.nebula:archrules-common:0.+")
     archRulesTestImplementation("org.spockframework:spock-junit4:2.3-groovy-4.0")
+    archRulesTestImplementation(gradleTestKit())
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-    maxParallelForks = 2
-    finalizedBy(tasks.named("jacocoTestReport"))
-    javaLauncher = javaToolchains.launcherFor {
-        languageVersion = JavaLanguageVersion.of(17)
+testing {
+    suites {
+        named<JvmTestSuite>("test") {
+            useJUnitJupiter()
+            targets {
+                all {
+                    testTask.configure {
+                        maxParallelForks = 3
+                        finalizedBy(tasks.named("jacocoTestReport"))
+                    }
+                }
+            }
+        }
     }
-}
-tasks.named<JavaCompile>("compileTestJava") {
-    javaCompiler.set(
-        javaToolchains.compilerFor {
-            languageVersion = JavaLanguageVersion.of(17)
-        }
-    )
-}
-tasks.named<KotlinCompile>("compileTestKotlin") {
-    kotlinJavaToolchain.toolchain.use(
-        javaToolchains.launcherFor {
-            languageVersion = JavaLanguageVersion.of(17)
-        }
-    )
 }
 
 tasks.named("build") {
@@ -85,13 +75,12 @@ tasks.named("build") {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(8)
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
 kotlin {
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_1_8)
         languageVersion.set(KotlinVersion.KOTLIN_2_0)
         apiVersion.set(KotlinVersion.KOTLIN_2_0)
     }

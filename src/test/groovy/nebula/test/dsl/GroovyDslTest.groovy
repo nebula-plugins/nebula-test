@@ -1,9 +1,12 @@
 package nebula.test.dsl
 
+import nebula.test.SupportedGradleVersion
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.EnumSource
 
 import static nebula.test.dsl.TestKitAssertions.assertThat
 
@@ -11,8 +14,9 @@ class GroovyDslTest {
     @TempDir
     File testProjectDir
 
-    @Test
-    void testGroovyDsl() {
+    @ParameterizedTest
+    @EnumSource(SupportedGradleVersion)
+    void testGroovyDsl(SupportedGradleVersion gradle) {
         final var runner = GroovyTestProjectBuilder.testProject(testProjectDir) {
             settings {
                 pluginManagement {
@@ -52,7 +56,7 @@ public class Main {
         }
 
         final var result = runner.run(["build"]) {
-            withGradleVersion("8.14.1")
+            withGradleVersion(gradle.version)
             forwardOutput()
         }
 
@@ -116,7 +120,7 @@ public class Main {
     void testPropertiesAndCaching() {
         final var runner = GroovyTestProjectBuilder.testProject(testProjectDir) {
             properties {
-                gradleCache(true)
+                buildCache(true)
                 property("org.gradle.caching.debug", "true")
             }
             rootProject {

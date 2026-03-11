@@ -25,6 +25,7 @@ import org.gradle.api.logging.LogLevel
  *
  * <p>This is testing framework agnostic and can be either extended (see {@link BaseIntegrationSpec}) or composed, by
  * including it inside a test class as field.
+ * Prefer <a href="https://github.com/nebula-plugins/nebula-test/wiki/TestKit-DSL">TestKit DSL</a> instead
  */
 @CompileStatic
 abstract trait IntegrationBase {

@@ -1,6 +1,7 @@
 package com.netflix.nebula.test.archrules;
 
 import com.netflix.nebula.archrules.core.ArchRulesService;
+import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.Priority;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
@@ -13,8 +14,7 @@ import static com.netflix.nebula.archrules.common.CanBeAnnotated.Predicates.depr
 import static com.netflix.nebula.archrules.common.CanBeAnnotated.Predicates.deprecatedForRemoval;
 import static com.tngtech.archunit.core.domain.JavaAccess.Predicates.target;
 import static com.tngtech.archunit.core.domain.JavaAccess.Predicates.targetOwner;
-import static com.tngtech.archunit.core.domain.JavaClass.Predicates.resideInAPackage;
-import static com.tngtech.archunit.core.domain.JavaClass.Predicates.resideOutsideOfPackages;
+import static com.tngtech.archunit.core.domain.JavaClass.Predicates.*;
 import static com.tngtech.archunit.lang.conditions.ArchPredicates.are;
 import static com.tngtech.archunit.lang.conditions.ArchPredicates.is;
 
@@ -38,11 +38,26 @@ public class NebulaTestArchRules implements ArchRulesService {
             .allowEmptyShould(true)
             .because("deprecated for removal APIs will be removed in the next major version of nebula-test");
 
+    static final ArchRule SPOCK = ArchRuleDefinition.priority(Priority.MEDIUM)
+            .noClasses().that(resideOutsideOfPackages("nebula.test.."))
+            .should()
+            .beAssignableTo("nebula.test.IntegrationBase")
+            .orShould().dependOnClassesThat(assignableTo("nebula.test.IntegrationBase"))
+            .orShould().beAssignableTo("nebula.test.IntegrationTestKitBase")
+            .orShould().dependOnClassesThat(assignableTo("nebula.test.IntegrationTestKitBase"))
+            .orShould().beAssignableTo("nebula.test.IntegrationTestKitSpec")
+            .orShould().dependOnClassesThat(assignableTo("nebula.test.IntegrationTestKitSpec"))
+            .orShould().beAssignableTo("nebula.test.AbstractIntegrationTestKitBase")
+            .orShould().dependOnClassesThat(assignableTo("nebula.test.AbstractIntegrationTestKitBase"))
+            .allowEmptyShould(true)
+            .because("spock base classes will eventually be deprecated in favor of TestKit DSL");
+
     @Override
     public Map<String, ArchRule> getRules() {
         Map<String, ArchRule> rules = new HashMap<>();
         rules.put("noDeprecatedNebulaTest", DEPRECATED);
         rules.put("noDeprecatedForRemovalNebulaTest", DEPRECATED_FOR_REMOVAL);
+        rules.put("don't use spock base classes", SPOCK);
         return rules;
     }
 }

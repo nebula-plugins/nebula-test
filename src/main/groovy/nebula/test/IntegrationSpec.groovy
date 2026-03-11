@@ -29,7 +29,7 @@ import groovy.transform.CompileStatic
 *
  * This will be removed in the next nebula-test major version
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 abstract class IntegrationSpec extends BaseIntegrationSpec implements Integration {
     def setup() {
         Integration.super.initialize(getClass(), testName.methodName)
