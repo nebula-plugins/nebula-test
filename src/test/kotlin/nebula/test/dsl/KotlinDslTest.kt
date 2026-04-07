@@ -256,6 +256,50 @@ public clss Main { // compile error
         assertThat(testProjectDir.resolve("build/libs/library-1.0.0.jar")).exists()
     }
 
+    @Test
+    fun `test multi project build with custom location`() {
+        val runner = testProject(testProjectDir) {
+            properties {
+                buildCache(true)
+            }
+            subProject("sub", "custom") {
+                plugins {
+                    java()
+                }
+                mainSource()
+            }
+        }
+
+        val result = runner.run("build")
+
+        assertThat(result.task(":sub:compileJava"))
+            .hasOutcome(TaskOutcome.SUCCESS, TaskOutcome.FROM_CACHE)
+        assertThat(result.task(":sub:build")).hasOutcome(TaskOutcome.SUCCESS)
+        assertThat(testProjectDir.resolve("custom/build")).exists()
+    }
+
+    @Test
+    fun `test multi project build with nested location`() {
+        val runner = testProject(testProjectDir) {
+            properties {
+                buildCache(true)
+            }
+            subProject("group:sub") {
+                plugins {
+                    java()
+                }
+                mainSource()
+            }
+        }
+
+        val result = runner.run("build")
+
+        assertThat(result.task(":group:sub:compileJava"))
+            .hasOutcome(TaskOutcome.SUCCESS, TaskOutcome.FROM_CACHE)
+        assertThat(result.task(":group:sub:build")).hasOutcome(TaskOutcome.SUCCESS)
+        assertThat(testProjectDir.resolve("group/sub/build")).exists()
+    }
+
     fun ProjectBuilder.mainSource() {
         src {
             main {

@@ -32,4 +32,27 @@ public class SettingsBuilderTest {
                         include(":sub")
                         """);
     }
+
+    @Test
+    public void test_custom_path() {
+        final var builder = new SettingsBuilder(testDir);
+        builder.includeProject("sub", "custom");
+        builder.build(BuildscriptLanguage.KOTLIN);
+        assertThat(testDir.toPath().resolve("settings.gradle.kts").toFile()).exists()
+                .content().isEqualTo("""
+                        include(":sub")
+                        project(":sub").projectDir = file("custom")
+                        """);
+    }
+
+    @Test
+    public void test_nested_path() {
+        final var builder = new SettingsBuilder(testDir);
+        builder.includeProject("group:sub");
+        builder.build(BuildscriptLanguage.KOTLIN);
+        assertThat(testDir.toPath().resolve("settings.gradle.kts").toFile()).exists()
+                .content().isEqualTo("""
+                        include(":group:sub")
+                        """);
+    }
 }

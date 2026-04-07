@@ -3,7 +3,14 @@ package nebula.test.multiproject
 import groovy.transform.CompileStatic
 import nebula.test.IntegrationSpec
 
+/**
+ * @deprecated this class is not recommended as it is not compatible with Gradle's instrumentation mechanisms
+ * ex. https://github.com/gradle/gradle/issues/27956 and https://github.com/gradle/gradle/issues/27639
+ *
+ * This will be removed in the next nebula-test major version
+ */
 @CompileStatic
+@Deprecated(forRemoval = true)
 class MultiProjectIntegrationHelper {
     static String lineEnd = System.getProperty('line.separator')
 

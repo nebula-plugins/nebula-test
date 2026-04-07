@@ -41,6 +41,10 @@ class GroovyDsl {
         self.subProject(name).with(config)
     }
 
+    static void subProject(TestProjectBuilder self, String name, String path, @DelegatesTo(ProjectBuilder) Closure config) {
+        self.subProject(name, path).with(config)
+    }
+
     static void repositories(ProjectBuilder self, @DelegatesTo(RepositoriesBuilder) Closure config) {
         self.repositories().with(config)
     }
