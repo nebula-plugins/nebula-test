@@ -84,8 +84,8 @@ fun SourcesBuilder.test(config: SourceSetBuilder.() -> Unit) {
 }
 
 @NebulaTestKitDsl
-fun TestProjectBuilder.subProject(name: String, config: ProjectBuilder.() -> Unit) {
-    subProject(name).apply(config)
+fun TestProjectBuilder.subProject(name: String, path: String? = null, config: ProjectBuilder.() -> Unit) {
+    subProject(name, path).apply(config)
 }
 
 /**

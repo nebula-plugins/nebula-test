@@ -3,7 +3,7 @@ Nebula Test
 
 ![Support Status](https://img.shields.io/badge/nebula-active-green.svg)
 [![Maven Central](https://img.shields.io/maven-central/v/com.netflix.nebula/nebula-test?style=for-the-badge&color=01AF01)](https://repo1.maven.org/maven2/com/netflix/nebula/nebula-test/)
-![Build](https://github.com/nebula-plugins/nebula-test/actions/workflows/nebula.yml/badge.svg)
+![Build](https://github.com/nebula-plugins/nebula-test/actions/workflows/build.yml/badge.svg)
 [![Apache 2.0](https://img.shields.io/github/license/nebula-plugins/nebula-test.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
 Classes specific to testing a Gradle project, leveraging [Spock](http://spockframework.org)

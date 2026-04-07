@@ -1,6 +1,7 @@
 package nebula.test.dsl;
 
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.io.File;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import java.util.Map;
  * See {@link GroovyTestProjectBuilder} and {@link KotlinTestProjectBuilderKt} for more information on the DSLs.
  */
 @NullMarked
+@NebulaTestKitDsl
 public class TestProjectBuilder {
 
     private final ProjectBuilder rootProject;
@@ -54,11 +56,25 @@ public class TestProjectBuilder {
     }
 
     public ProjectBuilder subProject(String name) {
-        final File subProjectDir = projectDir.toPath().resolve(name).toFile();
+        return subProject(name, null);
+    }
+
+    private String convertProjectNameToDefaultPath(String name) {
+        String namePathConvention = name;
+        if (namePathConvention.startsWith(":")) {
+            namePathConvention = namePathConvention.substring(1);
+        }
+        namePathConvention = namePathConvention.replace(":", "/");
+        return namePathConvention;
+    }
+
+    public ProjectBuilder subProject(String name, @Nullable String path) {
+        String projectPath = path == null ? convertProjectNameToDefaultPath(name) : path;
+        final File subProjectDir = projectDir.toPath().resolve(projectPath).toFile();
         subProjectDir.mkdirs();
         final ProjectBuilder project = new ProjectBuilder(subProjectDir);
         subProjects.put(name, project);
-        settings.includeProject(name);
+        settings.includeProject(name, path);
         return project;
     }
 
