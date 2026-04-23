@@ -83,9 +83,28 @@ fun SourcesBuilder.test(config: SourceSetBuilder.() -> Unit) {
     test().apply(config)
 }
 
-@NebulaTestKitDsl
 fun TestProjectBuilder.subProject(name: String, path: String? = null, config: ProjectBuilder.() -> Unit) {
     subProject(name, path).apply(config)
+}
+
+fun ProjectBuilder.testing(config: TestingBuilder.() -> Unit){
+    testing().apply(config)
+}
+
+fun TestingBuilder.suites(config: TestingSuitesBuilder.() -> Unit){
+    suites().apply(config)
+}
+
+fun TestingSuitesBuilder.test(config: JvmTestSuiteBuilder.() -> Unit){
+    test().apply(config)
+}
+
+fun TestingSuitesBuilder.create(name: String, config: JvmTestSuiteBuilder.() -> Unit){
+    create(name).apply(config)
+}
+
+fun TestingSuitesBuilder.named(name: String, config: JvmTestSuiteBuilder.() -> Unit){
+    named(name).apply(config)
 }
 
 /**

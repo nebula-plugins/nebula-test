@@ -300,6 +300,45 @@ public clss Main { // compile error
         assertThat(testProjectDir.resolve("group/sub/build")).exists()
     }
 
+    @ParameterizedTest
+    @EnumSource(SupportedGradleVersion::class)
+    fun `test test suites`(gradleVersion: SupportedGradleVersion) {
+        val runner = testProject(testProjectDir) {
+            properties {
+                buildCache(true)
+            }
+            rootProject {
+                plugins {
+                    java()
+                }
+                repositories {
+                    mavenCentral()
+                }
+                mainSource()
+                testSource()
+                testing {
+                    suites{
+                        test {
+                            useJUnitJupiter()
+                        }
+                    }
+                }
+            }
+        }
+
+        val result = runner.run("test") {
+            forwardOutput()
+            withGradleVersion(gradleVersion.version)
+        }
+
+        assertThat(result)
+            .hasNoDeprecationWarnings()
+            .hasNoMutableStateWarnings()
+
+        assertThat(result).task(":test")
+            .hasOutcome(TaskOutcome.SUCCESS, TaskOutcome.FROM_CACHE)
+    }
+
     fun ProjectBuilder.mainSource() {
         src {
             main {
@@ -308,6 +347,25 @@ public clss Main { // compile error
                     """
 public class Main {
     public static void main(String[] args) {
+    }
+}
+"""
+                }
+            }
+        }
+    }
+
+    fun ProjectBuilder.testSource() {
+        src {
+            test {
+                java("MainTest.java") {
+                    // language=java
+                    """
+import org.junit.jupiter.api.Test;
+public class MainTest {
+    
+    @Test
+    void test() {
     }
 }
 """

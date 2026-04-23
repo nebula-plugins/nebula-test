@@ -1,9 +1,8 @@
 package nebula.test.dsl
 
+
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
-
-import java.util.function.Supplier
 
 /**
  * Extension methods for idiomatic Groovy DSL usage.
@@ -72,6 +71,26 @@ class GroovyDsl {
     }
 
     static void test(SourcesBuilder self, @DelegatesTo(SourceSetBuilder) Closure config) {
+        self.test().with(config)
+    }
+
+    static void testing(ProjectBuilder self, @DelegatesTo(TestingBuilder) Closure config) {
+        self.testing().with(config)
+    }
+
+    static void suites(TestingBuilder self, @DelegatesTo(TestingSuitesBuilder) Closure config) {
+        self.suites().with(config)
+    }
+
+    static void create(TestingSuitesBuilder self, String name, @DelegatesTo(JvmTestSuiteBuilder) Closure config) {
+        self.create(name).with(config)
+    }
+
+    static void named(TestingSuitesBuilder self, String name, @DelegatesTo(JvmTestSuiteBuilder) Closure config) {
+        self.named(name).with(config)
+    }
+
+    static void test(TestingSuitesBuilder self, @DelegatesTo(JvmTestSuiteBuilder) Closure config) {
         self.test().with(config)
     }
 

@@ -1,7 +1,7 @@
 package nebula.test.dsl
 
 import nebula.test.SupportedGradleVersion
-import org.gradle.testkit.runner.BuildResult;
+import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -152,5 +152,70 @@ public class Main {
             forwardOutput()
         }
         assertThat(result2).task(":compileJava").hasOutcome(TaskOutcome.FROM_CACHE)
+    }
+
+    @ParameterizedTest
+    @EnumSource(SupportedGradleVersion)
+    void "test test suites"(SupportedGradleVersion gradleVersion) {
+        TestProjectRunner runner = GroovyTestProjectBuilder.testProject(testProjectDir) {
+            properties {
+                buildCache(true)
+            }
+            rootProject {
+                plugins {
+                    java()
+                }
+                repositories {
+                    mavenCentral()
+                }
+                src {
+                    main {
+                        java("Main.java") {
+                            // language=java
+                            """
+public class Main {
+    public static void main(String[] args) {
+    }
+}
+"""
+                        }
+                    }
+
+                    test {
+                        java("MainTest.java") {
+                            // language=java
+                            """
+import org.junit.jupiter.api.Test;
+public class MainTest {
+    
+    @Test
+    void test() {
+    }
+}
+"""
+                        }
+                    }
+                }
+                testing {
+                    suites {
+                        test {
+                            useJUnitJupiter()
+                        }
+                    }
+                }
+            }
+        }
+
+        BuildResult result = runner.run(["test"], {
+            forwardOutput()
+            withGradleVersion(gradleVersion.version)
+        })
+
+        assertThat(result)
+                .hasNoDeprecationWarnings()
+                .hasNoMutableStateWarnings()
+
+        assertThat(result).task(":test")
+                .hasOutcome(TaskOutcome.SUCCESS, TaskOutcome.FROM_CACHE)
     }
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import static nebula.test.dsl.StringUtils.repeat;
 
 @NullMarked
+@NebulaTestKitDsl
 public class RepositoriesBuilder {
     private final List<Repository> repositories = new ArrayList<>();
 
@@ -20,7 +21,6 @@ public class RepositoriesBuilder {
      *
      * @param url the url of the repository
      */
-    @NebulaTestKitDsl
     public void maven(String url) {
         repositories.add(new Maven(url));
     }
@@ -28,7 +28,6 @@ public class RepositoriesBuilder {
     /**
      * The built-in mavenCentral repository
      */
-    @NebulaTestKitDsl
     public void mavenCentral() {
         repositories.add(new BuiltIn("mavenCentral()"));
     }
