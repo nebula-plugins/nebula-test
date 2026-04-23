@@ -13,10 +13,12 @@ import java.util.Arrays;
 import java.util.List;
 
 @NullMarked
+@NebulaTestKitDsl
 public class ProjectBuilder {
     private final File projectDir;
     private final PluginsBuilder plugins = new PluginsBuilder();
     private final RepositoriesBuilder repositoriesBuilder = new RepositoriesBuilder();
+    private final TestingBuilder testingBuilder = new TestingBuilder();
     private final SourcesBuilder sources;
     private final List<String> dependencies = new ArrayList<>();
     @Nullable
@@ -50,6 +52,10 @@ public class ProjectBuilder {
     @NebulaTestKitDsl
     public void dependencies(String... dependencies) {
         this.dependencies.addAll(Arrays.asList(dependencies));
+    }
+
+    public TestingBuilder testing() {
+        return testingBuilder;
     }
 
     public void rawBuildScript(String buildScript) {
@@ -101,6 +107,7 @@ public class ProjectBuilder {
             buildFileText.append("        languageVersion = JavaLanguageVersion.of(").append(javaToolchain).append(")\n");
             buildFileText.append("    }\n}\n");
         }
+        buildFileText.append(testingBuilder.build(language, 0));
         buildFileText.append(String.join("\n", rawBuildScript));
         final String ext = language == BuildscriptLanguage.GROOVY ? "gradle" : "gradle.kts";
         final Path buildFile = projectDir.toPath().resolve("build." + ext);
