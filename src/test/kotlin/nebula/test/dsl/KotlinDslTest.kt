@@ -30,7 +30,7 @@ internal class KotlinDslTest {
 
         val result = runner.run("build") {
             forwardOutput()
-            withGradleVersion(gradleVersion.version)
+            withGradle(gradleVersion.version)
         }
 
         assertThat(result)
@@ -77,7 +77,7 @@ internal class KotlinDslTest {
 
         val result = runner.run("build") {
             forwardOutput()
-            withGradleVersion(gradleVersion.version)
+            withGradle(gradleVersion.version)
         }
 
         assertThat(result)
@@ -125,7 +125,7 @@ public class Main {
 
         val result = runner.run("build") {
             forwardOutput()
-            withGradleVersion(gradleVersion.version)
+            withGradle(gradleVersion.version)
         }
 
         assertThat(result.task(":sub1:compileJava"))
@@ -217,13 +217,13 @@ public clss Main { // compile error
 
         val result1 = runner.run("build", "--rerun-tasks") {
             forwardOutput()
-            withGradleVersion(gradleVersion.version)
+            withGradle(gradleVersion.version)
         }
 
         assertThat(result1).task(":compileJava").hasOutcome(TaskOutcome.SUCCESS)
         val result2 = runner.run("clean", "build") {
             forwardOutput()
-            withGradleVersion(gradleVersion.version)
+            withGradle(gradleVersion.version)
         }
         assertThat(result2).task(":compileJava").hasOutcome(TaskOutcome.FROM_CACHE)
     }
@@ -317,7 +317,7 @@ public clss Main { // compile error
                 mainSource()
                 testSource()
                 testing {
-                    suites{
+                    suites {
                         test {
                             useJUnitJupiter()
                         }
@@ -328,7 +328,7 @@ public clss Main { // compile error
 
         val result = runner.run("test") {
             forwardOutput()
-            withGradleVersion(gradleVersion.version)
+            withGradle(gradleVersion.version)
         }
 
         assertThat(result)

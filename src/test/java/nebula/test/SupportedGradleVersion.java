@@ -1,9 +1,13 @@
 package nebula.test;
 
+import nebula.test.dsl.Gradle;
+
 public enum SupportedGradleVersion {
-    MIN("9.0.0"), MAX("9.4.1");
-    public final String version;
-    SupportedGradleVersion(String version) {
+    MIN(Gradle.ofVersion("9.0.0")), CURRENT(Gradle.current());
+
+    public final Gradle version;
+
+    SupportedGradleVersion(Gradle version) {
         this.version = version;
     }
 }

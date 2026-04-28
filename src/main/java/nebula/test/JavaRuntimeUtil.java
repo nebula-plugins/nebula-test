@@ -1,9 +1,12 @@
 package nebula.test;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.List;
 
+@NullMarked
 public class JavaRuntimeUtil {
     private JavaRuntimeUtil() {
     }

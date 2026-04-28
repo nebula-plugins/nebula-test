@@ -90,6 +90,6 @@ tasks.named("publishPlugins") { enabled = false }
 
 tasks.wrapper {
     distributionType = Wrapper.DistributionType.BIN
-    gradleVersion = "9.0.0"
-    distributionSha256Sum = "8fad3d78296ca518113f3d29016617c7f9367dc005f932bd9d93bf45ba46072b"
+    gradleVersion = "9.5.0"
+    distributionSha256Sum = "a3c4ba4aca8f0075688b9c5b18939fd28e8cb4357c227da5c1d9f38343791439"
 }

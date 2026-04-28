@@ -94,6 +94,14 @@ class GroovyDsl {
         self.test().with(config)
     }
 
+    static void withGradle(GradleRunner self, Gradle gradleVersion) {
+        switch (gradleVersion) {
+            case Gradle.GradleVersion -> self.withGradleVersion(gradleVersion.version())
+            case Gradle.GradleDistribution -> self.withGradleDistribution(URI.create(gradleVersion.url()))
+            default -> {}
+        }
+    }
+
     /**
      * Run a build with expectation of success.
      * This method will throw an exception if the build fails.

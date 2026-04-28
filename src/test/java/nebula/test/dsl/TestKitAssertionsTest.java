@@ -1,6 +1,5 @@
 package nebula.test.dsl;
 
-import nebula.test.SupportedGradleVersion;
 import org.gradle.testkit.runner.GradleRunner;
 import org.gradle.testkit.runner.TaskOutcome;
 import org.junit.jupiter.api.Test;
@@ -19,9 +18,7 @@ public class TestKitAssertionsTest {
         builder.rootProject().plugins().java();
         final var runner = builder.build();
 
-        final var result = runner.run(
-                GradleRunner.create().withGradleVersion(SupportedGradleVersion.MIN.version),
-                "build");
+        final var result = runner.run("build");
 
         assertThat(result).hasNoDeprecationWarnings();
         assertThat(result).task(":compileJava").hasOutcome(TaskOutcome.NO_SOURCE);
@@ -34,9 +31,7 @@ public class TestKitAssertionsTest {
         builder.rootProject().plugins().java();
         final var runner = builder.build();
 
-        final var result = runner.run(
-                GradleRunner.create().withGradleVersion(SupportedGradleVersion.MIN.version),
-                "build");
+        final var result = runner.run("build");
         assertThatCode(() -> assertThat(result).task(":compileJava2").hasOutcome(TaskOutcome.NO_SOURCE))
                 .isInstanceOf(AssertionError.class);
     }
@@ -58,9 +53,7 @@ public class TestKitAssertionsTest {
                 """);
         final var runner = builder.build();
 
-        final var result = runner.run(
-                GradleRunner.create().withGradleVersion(SupportedGradleVersion.MAX.version).forwardOutput(),
-                "deprecate");
+        final var result = runner.run(GradleRunner.create().forwardOutput(), "deprecate");
         assertThatCode(() -> assertThat(result).hasNoDeprecationWarnings())
                 .isInstanceOf(AssertionError.class);
     }
