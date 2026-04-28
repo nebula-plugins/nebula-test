@@ -56,7 +56,7 @@ public class Main {
         }
 
         final var result = runner.run(["build"]) {
-            withGradleVersion(gradle.version)
+            withGradle(gradle.version)
             forwardOutput()
         }
 
@@ -208,7 +208,7 @@ public class MainTest {
 
         BuildResult result = runner.run(["test"], {
             forwardOutput()
-            withGradleVersion(gradleVersion.version)
+            withGradle(gradleVersion.version)
         })
 
         assertThat(result)

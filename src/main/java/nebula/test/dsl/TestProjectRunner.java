@@ -21,14 +21,34 @@ public class TestProjectRunner {
         this.projectDir = projectDir;
     }
 
+    /**
+     * runs given tasks using the standard runner, expecting a successful build
+     *
+     * @param args tasks to run
+     * @return the BuildResult
+     */
     public BuildResult run(String... args) {
         return run(GradleRunner.create().forwardOutput(), Arrays.asList(args));
     }
 
+    /**
+     * runs given tasks, expecting a successful build
+     *
+     * @param gradleRunner custom runner
+     * @param args         tasks to run
+     * @return the BuildResult
+     */
     public BuildResult run(GradleRunner gradleRunner, String... args) {
         return run(gradleRunner, Arrays.asList(args));
     }
 
+    /**
+     * runs given tasks, expecting a successful build
+     *
+     * @param gradleRunner custom runner
+     * @param args         tasks to run
+     * @return the BuildResult
+     */
     public BuildResult run(GradleRunner gradleRunner, List<String> args) {
         final List<String> fullArgsList = new ArrayList<>(args);
         fullArgsList.add("--warning-mode=all");
@@ -39,14 +59,34 @@ public class TestProjectRunner {
                 .build();
     }
 
+    /**
+     * runs given tasks using the standard runner, expecting a failed build
+     *
+     * @param args tasks to run
+     * @return the BuildResult
+     */
     public BuildResult runAndFail(String... args) {
         return runAndFail(GradleRunner.create().forwardOutput(), args);
     }
 
+    /**
+     * runs given tasks, expecting a failed build
+     *
+     * @param gradleRunner custom runner
+     * @param args         tasks to run
+     * @return the BuildResult
+     */
     public BuildResult runAndFail(GradleRunner gradleRunner, String... args) {
         return runAndFail(gradleRunner, Arrays.asList(args));
     }
 
+    /**
+     * runs given tasks, expecting a failed build
+     *
+     * @param gradleRunner custom runner
+     * @param args         tasks to run
+     * @return the BuildResult
+     */
     public BuildResult runAndFail(GradleRunner gradleRunner, List<String> args) {
         final List<String> fullArgsList = new ArrayList<>(args);
         fullArgsList.add("--warning-mode=all");

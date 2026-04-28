@@ -44,7 +44,7 @@ public class Main {
 
         when:
         final var result = runner.run(["build", "--stacktrace"]) {
-            withGradleVersion(gradle.version)
+            withGradle(gradle.version)
             forwardOutput()
         }
 
@@ -58,6 +58,6 @@ public class Main {
         where:
         javaVersion | gradle
         11          | SupportedGradleVersion.MIN
-        17          | SupportedGradleVersion.MAX
+        17          | SupportedGradleVersion.CURRENT
     }
 }

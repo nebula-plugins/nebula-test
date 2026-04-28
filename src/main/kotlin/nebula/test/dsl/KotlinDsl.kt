@@ -2,6 +2,7 @@ package nebula.test.dsl
 
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
+import java.net.URI
 
 /**
  * Marks a method as part of the Kotlin DSL for [TestProjectBuilder]
@@ -31,7 +32,7 @@ fun SettingsBuilder.pluginManagement(config: PluginManagementBuilder.() -> Unit)
 
 @NebulaTestKitDsl
 fun PluginManagementBuilder.repositories(config: RepositoriesBuilder.() -> Unit) {
-    repositories ().apply(config)
+    repositories().apply(config)
 }
 
 @NebulaTestKitDsl
@@ -43,6 +44,7 @@ fun PluginManagementBuilder.plugins(config: PluginsBuilder.() -> Unit) {
 fun SettingsBuilder.plugins(config: PluginsBuilder.() -> Unit) {
     plugins().apply(config)
 }
+
 @NebulaTestKitDsl
 fun ProjectBuilder.plugins(config: PluginsBuilder.() -> Unit) {
     plugins().apply(config)
@@ -87,23 +89,23 @@ fun TestProjectBuilder.subProject(name: String, path: String? = null, config: Pr
     subProject(name, path).apply(config)
 }
 
-fun ProjectBuilder.testing(config: TestingBuilder.() -> Unit){
+fun ProjectBuilder.testing(config: TestingBuilder.() -> Unit) {
     testing().apply(config)
 }
 
-fun TestingBuilder.suites(config: TestingSuitesBuilder.() -> Unit){
+fun TestingBuilder.suites(config: TestingSuitesBuilder.() -> Unit) {
     suites().apply(config)
 }
 
-fun TestingSuitesBuilder.test(config: JvmTestSuiteBuilder.() -> Unit){
+fun TestingSuitesBuilder.test(config: JvmTestSuiteBuilder.() -> Unit) {
     test().apply(config)
 }
 
-fun TestingSuitesBuilder.create(name: String, config: JvmTestSuiteBuilder.() -> Unit){
+fun TestingSuitesBuilder.create(name: String, config: JvmTestSuiteBuilder.() -> Unit) {
     create(name).apply(config)
 }
 
-fun TestingSuitesBuilder.named(name: String, config: JvmTestSuiteBuilder.() -> Unit){
+fun TestingSuitesBuilder.named(name: String, config: JvmTestSuiteBuilder.() -> Unit) {
     named(name).apply(config)
 }
 
@@ -121,4 +123,15 @@ fun TestProjectRunner.run(vararg args: String, customizer: GradleRunner.() -> Un
  */
 fun TestProjectRunner.runAndFail(vararg args: String, customizer: GradleRunner.() -> Unit): BuildResult {
     return runAndFail(GradleRunner.create().apply(customizer), args.asList())
+}
+
+/**
+ * Set the gradle distribution to use based on a [Gradle]
+ */
+fun GradleRunner.withGradle(gradleVersion: Gradle) {
+    when (gradleVersion) {
+        is Gradle.GradleVersion -> withGradleVersion(gradleVersion.version)
+        is Gradle.GradleDistribution -> withGradleDistribution(URI.create(gradleVersion.url))
+        else -> {}
+    }
 }
