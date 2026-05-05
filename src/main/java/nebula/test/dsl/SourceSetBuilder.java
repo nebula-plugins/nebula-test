@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.util.function.Supplier;
 
 @NullMarked
+@NebulaTestKitDsl
 public class SourceSetBuilder {
     private final File sourcesDir;
 
@@ -23,7 +24,6 @@ public class SourceSetBuilder {
      * @param file     the relative path to the java file
      * @param contents the contents of the file
      */
-    @NebulaTestKitDsl
     public void java(String file, String contents) {
         language("java", file, contents);
     }
@@ -34,9 +34,28 @@ public class SourceSetBuilder {
      * @param file     the relative path to the java file
      * @param contents the contents of the file. uses a supplier for more ideomatic DSL usage in groovy and kotlin
      */
-    @NebulaTestKitDsl
     public void java(String file, Supplier<String> contents) {
         language("java", file, contents.get());
+    }
+
+    /**
+     * write a scala file
+     *
+     * @param file     the relative path to the scala file
+     * @param contents the contents of the file
+     */
+    public void scala(String file, String contents) {
+        language("scala", file, contents);
+    }
+
+    /**
+     * write a scala file
+     *
+     * @param file     the relative path to the scala file
+     * @param contents the contents of the file. uses a supplier for more ideomatic DSL usage in groovy and kotlin
+     */
+    public void scala(String file, Supplier<String> contents) {
+        language("scala", file, contents.get());
     }
 
     /**
@@ -45,7 +64,6 @@ public class SourceSetBuilder {
      * @param file     the relative path to the groovy file
      * @param contents the contents of the file
      */
-    @NebulaTestKitDsl
     public void groovy(String file, String contents) {
         language("groovy", file, contents);
     }
@@ -56,7 +74,6 @@ public class SourceSetBuilder {
      * @param file     the relative path to the groovy file
      * @param contents the contents of the file. uses a supplier for more ideomatic DSL usage in groovy and kotlin
      */
-    @NebulaTestKitDsl
     public void groovy(String file, Supplier<String> contents) {
         language("groovy", file, contents.get());
     }
@@ -77,7 +94,6 @@ public class SourceSetBuilder {
      * @param file     the relative path to the kotlin file
      * @param contents the contents of the file. uses a supplier for more ideomatic DSL usage in groovy and kotlin
      */
-    @NebulaTestKitDsl
     public void kotlin(String file, Supplier<String> contents) {
         language("kotlin", file, contents.get());
     }
@@ -88,7 +104,6 @@ public class SourceSetBuilder {
      * @param file     the relative path to the java file
      * @param contents the contents of the file. uses a supplier for more ideomatic DSL usage in groovy and kotlin
      */
-    @NebulaTestKitDsl
     public void language(String language, String file, Supplier<String> contents) {
         language(language, file, contents.get());
     }
