@@ -11,7 +11,10 @@ public class JvmTestSuiteBuilder {
     @Nullable
     private String framework = null;
 
-    void useJUnitJupiter() {
+    /**
+     * Enables Jupiter on the test suite (w/ dependencies)
+     */
+    public void useJUnitJupiter() {
         framework = "useJUnitJupiter()";
     }
 
