@@ -195,10 +195,27 @@ public class MainTest {
 """
                         }
                     }
+                    sourceSet("customTest") {
+                        java("MainTest.java") {
+                            // language=java
+                            """
+import org.junit.jupiter.api.Test;
+public class MainTest {
+    
+    @Test
+    void test() {
+    }
+}
+"""
+                        }
+                    }
                 }
                 testing {
                     suites {
                         test {
+                            useJUnitJupiter()
+                        }
+                        create("customTest") {
                             useJUnitJupiter()
                         }
                     }
@@ -206,7 +223,7 @@ public class MainTest {
             }
         }
 
-        BuildResult result = runner.run(["test"], {
+        BuildResult result = runner.run(["test", "customTest"], {
             forwardOutput()
             withGradle(gradleVersion.version)
         })
@@ -216,6 +233,8 @@ public class MainTest {
                 .hasNoMutableStateWarnings()
 
         assertThat(result).task(":test")
+                .hasOutcome(TaskOutcome.SUCCESS, TaskOutcome.FROM_CACHE)
+        assertThat(result).task(":customTest")
                 .hasOutcome(TaskOutcome.SUCCESS, TaskOutcome.FROM_CACHE)
     }
 }

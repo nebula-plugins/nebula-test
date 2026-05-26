@@ -49,7 +49,7 @@ public class TestingSuitesBuilder {
                 createdSuites.forEach((key, value) -> {
                     stringBuilder.append(repeat(" ", baseIndentation + 4));
                     switch (buildscriptLanguage) {
-                        case GROOVY -> stringBuilder.append(key);
+                        case GROOVY -> stringBuilder.append(key + "(JvmTestSuite)");
                         case KOTLIN -> stringBuilder.append("create<JvmTestSuite>(\"").append(key).append("\")");
                     }
                     stringBuilder.append(" {\n");

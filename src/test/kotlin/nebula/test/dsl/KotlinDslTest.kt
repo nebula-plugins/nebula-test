@@ -315,10 +315,20 @@ public clss Main { // compile error
                     mavenCentral()
                 }
                 mainSource()
-                testSource()
+                src {
+                    test {
+                        mainTestClass()
+                    }
+                    sourceSet("customTest") {
+                        mainTestClass()
+                    }
+                }
                 testing {
                     suites {
                         test {
+                            useJUnitJupiter()
+                        }
+                        create("customTest") {
                             useJUnitJupiter()
                         }
                     }
@@ -326,7 +336,7 @@ public clss Main { // compile error
             }
         }
 
-        val result = runner.run("test") {
+        val result = runner.run("test", "customTest") {
             forwardOutput()
             withGradle(gradleVersion.version)
         }
@@ -336,6 +346,11 @@ public clss Main { // compile error
             .hasNoMutableStateWarnings()
 
         assertThat(result).task(":test")
+            .`as`("default suite runs")
+            .hasOutcome(TaskOutcome.SUCCESS, TaskOutcome.FROM_CACHE)
+
+        assertThat(result).task(":customTest")
+            .`as`("custom suite runs")
             .hasOutcome(TaskOutcome.SUCCESS, TaskOutcome.FROM_CACHE)
     }
 
@@ -355,12 +370,10 @@ public class Main {
         }
     }
 
-    fun ProjectBuilder.testSource() {
-        src {
-            test {
-                java("MainTest.java") {
-                    // language=java
-                    """
+    fun SourceSetBuilder.mainTestClass() {
+        java("MainTest.java") {
+            // language=java
+            """
 import org.junit.jupiter.api.Test;
 public class MainTest {
     
@@ -369,8 +382,6 @@ public class MainTest {
     }
 }
 """
-                }
-            }
         }
     }
 }
