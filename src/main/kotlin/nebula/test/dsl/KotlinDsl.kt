@@ -60,7 +60,6 @@ infix fun Plugin.version(version: String) {
     version(version)
 }
 
-@NebulaTestKitDsl
 fun ProjectBuilder.src(config: SourcesBuilder.() -> Unit) {
     src().apply(config)
 }
@@ -70,17 +69,14 @@ fun ProjectBuilder.src(config: SourcesBuilder.() -> Unit) {
  * @param name name of the source set
  * @param config closure for configuration of the source set
  */
-@NebulaTestKitDsl
 fun SourcesBuilder.sourceSet(name: String, config: SourceSetBuilder.() -> Unit) {
     sourceSet(name).apply(config)
 }
 
-@NebulaTestKitDsl
 fun SourcesBuilder.main(config: SourceSetBuilder.() -> Unit) {
     main().apply(config)
 }
 
-@NebulaTestKitDsl
 fun SourcesBuilder.test(config: SourceSetBuilder.() -> Unit) {
     test().apply(config)
 }
