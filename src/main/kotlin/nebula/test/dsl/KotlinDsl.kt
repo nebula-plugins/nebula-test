@@ -10,52 +10,42 @@ import java.net.URI
 @DslMarker
 annotation class NebulaTestKitDsl
 
-@NebulaTestKitDsl
 fun TestProjectBuilder.properties(config: ProjectProperties.() -> Unit) {
     properties().apply(config)
 }
 
-@NebulaTestKitDsl
 fun TestProjectBuilder.rootProject(config: ProjectBuilder.() -> Unit) {
     rootProject().apply(config)
 }
 
-@NebulaTestKitDsl
 fun TestProjectBuilder.settings(config: SettingsBuilder.() -> Unit) {
     settings().apply(config)
 }
 
-@NebulaTestKitDsl
 fun SettingsBuilder.pluginManagement(config: PluginManagementBuilder.() -> Unit) {
     pluginManagement().apply(config)
 }
 
-@NebulaTestKitDsl
 fun PluginManagementBuilder.repositories(config: RepositoriesBuilder.() -> Unit) {
     repositories().apply(config)
 }
 
-@NebulaTestKitDsl
 fun PluginManagementBuilder.plugins(config: PluginsBuilder.() -> Unit) {
     plugins().apply(config)
 }
 
-@NebulaTestKitDsl
 fun SettingsBuilder.plugins(config: PluginsBuilder.() -> Unit) {
     plugins().apply(config)
 }
 
-@NebulaTestKitDsl
 fun ProjectBuilder.plugins(config: PluginsBuilder.() -> Unit) {
     plugins().apply(config)
 }
 
-@NebulaTestKitDsl
 fun ProjectBuilder.repositories(config: RepositoriesBuilder.() -> Unit) {
     repositories().apply(config)
 }
 
-@NebulaTestKitDsl
 infix fun Plugin.version(version: String) {
     version(version)
 }

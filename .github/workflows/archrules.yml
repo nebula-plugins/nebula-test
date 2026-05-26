@@ -1,4 +1,4 @@
-# action for evaluating archrules on a multi project repo
+# action for evaluating archrules on a single project repo
 name: Nebula ArchRules
 on:
     push:
