@@ -47,6 +47,7 @@ dependencies {
     testImplementation("org.spockframework:spock-core:2.3-groovy-4.0")
     testImplementation("org.spockframework:spock-junit4:2.3-groovy-4.0")
     testImplementation("uk.org.webcompere:system-stubs-junit4:2.0.1")
+    testImplementation("org.junit.vintage:junit-vintage-engine")
 
     archRulesImplementation("com.netflix.nebula:archrules-common:0.+")
     archRulesTestImplementation("org.spockframework:spock-junit4:2.3-groovy-4.0")
