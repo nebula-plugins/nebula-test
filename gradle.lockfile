@@ -3,7 +3,7 @@
 # This file is expected to be part of source control.
 cglib:cglib-nodep:3.2.2=archRulesTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
 com.netflix.nebula:archrules-common:0.11.2=archRulesCompileClasspath,archRulesRuntimeClasspath,archRulesTestCompileClasspath,archRulesTestRuntimeClasspath
-com.netflix.nebula:nebula-archrules-core:1.1.1=archRulesCompileClasspath,archRulesRuntimeClasspath,archRulesTestCompileClasspath,archRulesTestRuntimeClasspath
+com.netflix.nebula:nebula-archrules-core:1.2.1=archRulesCompileClasspath,archRulesRuntimeClasspath,archRulesTestCompileClasspath,archRulesTestRuntimeClasspath
 com.tngtech.archunit:archunit:1.4.2=archRulesCompileClasspath,archRulesRuntimeClasspath,archRulesTestCompileClasspath,archRulesTestRuntimeClasspath
 junit:junit:4.13.2=archRulesTestCompileClasspath,archRulesTestRuntimeClasspath,compileClasspath,testCompileClasspath,testRuntimeClasspath
 net.bytebuddy:byte-buddy-agent:1.11.13=testCompileClasspath,testRuntimeClasspath
