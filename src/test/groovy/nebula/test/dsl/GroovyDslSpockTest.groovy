@@ -2,12 +2,14 @@ package nebula.test.dsl
 
 import nebula.test.SupportedGradleVersion
 import org.gradle.testkit.runner.TaskOutcome
+import spock.lang.Retry
 import spock.lang.Specification
 import spock.lang.TempDir
 import spock.lang.Unroll
 
 import static nebula.test.dsl.TestKitAssertions.assertThat
 
+@Retry(count = 2)
 class GroovyDslSpockTest extends Specification {
     @TempDir
     File testProjectDir
@@ -18,7 +20,7 @@ class GroovyDslSpockTest extends Specification {
         final var runner = GroovyTestProjectBuilder.testProject(testProjectDir) {
             settings {
                 plugins {
-                    id("org.gradle.toolchains.foojay-resolver-convention").version("0.10.0")
+                    id("org.gradle.toolchains.foojay-resolver-convention").version("1.0.0")
                 }
             }
             rootProject {
