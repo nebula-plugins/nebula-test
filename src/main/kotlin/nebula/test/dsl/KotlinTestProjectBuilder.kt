@@ -6,7 +6,6 @@ import java.io.File
  * Entry point for the Kotlin DSL for [TestProjectBuilder].
  * @param
  */
-@NebulaTestKitDsl
 fun testProject(
     testProjectDir: File,
     language: BuildscriptLanguage = BuildscriptLanguage.KOTLIN,

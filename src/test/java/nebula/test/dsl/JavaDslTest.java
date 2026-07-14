@@ -30,6 +30,7 @@ class JavaDslTest {
         final var result = runner.run(gradleRunner, "build");
 
         assertThat(result)
+                .hasNoProblemsReport()
                 .hasNoDeprecationWarnings()
                 .hasNoMutableStateWarnings();
         assertThat(result).task(":compileJava").hasOutcome(TaskOutcome.NO_SOURCE);

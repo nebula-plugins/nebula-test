@@ -37,6 +37,14 @@ public class BuildResultAssert extends AbstractAssert<BuildResultAssert, BuildRe
         return this;
     }
 
+    @Contract(" -> this")
+    public BuildResultAssert hasNoProblemsReport() {
+        if (actual.getOutput().contains("Problems report is available at:")) {
+            failWithMessage("Build has Problems reported: <%s>", actual.getOutput());
+        }
+        return this;
+    }
+
     public BuildTaskAssert task(String path) {
         return new BuildTaskAssert(actual.task(path));
     }
