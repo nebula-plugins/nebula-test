@@ -5,7 +5,7 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public enum SupportedGradleVersion {
-    MIN(Gradle.ofVersion("9.0.0")), CURRENT(Gradle.current());
+    MIN(Gradle.ofVersion("9.1.0")), CURRENT(Gradle.current());
 
     public final Gradle version;
 
