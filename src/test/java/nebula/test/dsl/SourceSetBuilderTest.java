@@ -28,4 +28,13 @@ public class SourceSetBuilderTest {
                 .exists()
                 .hasContent("class ScalaClass");
     }
+    
+    @Test
+    public void test_resources() {
+        SourceSetBuilder instance = new SourceSetBuilder(tempDir);
+        instance.resources("application.properties", "test=true");
+        assertThat(tempDir.toPath().resolve("resources").resolve("application.properties"))
+                .exists()
+                .hasContent("test=true");
+    }
 }

@@ -99,6 +99,26 @@ public class SourceSetBuilder {
     }
 
     /**
+     * write a resource file
+     *
+     * @param file     the relative path to the resource file
+     * @param contents the contents of the file
+     */
+    public void resources(String file, String contents) {
+        language("resources", file, contents);
+    }
+
+    /**
+     * write a resource file
+     *
+     * @param file     the relative path to the resource file
+     * @param contents the contents of the file. uses a supplier for more ideomatic DSL usage in groovy and kotlin
+     */
+    public void resources(String file, Supplier<String> contents) {
+        language("resources", file, contents.get());
+    }
+
+    /**
      * write a file for specified language
      *
      * @param file     the relative path to the java file
