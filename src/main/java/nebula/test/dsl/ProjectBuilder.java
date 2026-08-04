@@ -18,9 +18,10 @@ public class ProjectBuilder {
     private final File projectDir;
     private final PluginsBuilder plugins = new PluginsBuilder();
     private final RepositoriesBuilder repositoriesBuilder = new RepositoriesBuilder();
+    private final BuildscriptBuilder buildscriptBuilder = new BuildscriptBuilder();
     private final TestingBuilder testingBuilder = new TestingBuilder();
     private final SourcesBuilder sources;
-    private final List<String> dependencies = new ArrayList<>();
+    private final DependenciesBuilder dependenciesBuilder = new DependenciesBuilder();
     @Nullable
     private Integer javaToolchain = null;
     private final List<String> rawBuildScript = new ArrayList<>();
@@ -45,13 +46,23 @@ public class ProjectBuilder {
     }
 
     @NebulaTestKitDsl
+    public BuildscriptBuilder buildscript() {
+        return buildscriptBuilder;
+    }
+
+    @NebulaTestKitDsl
     public void javaToolchain(Integer javaToolchain) {
         this.javaToolchain = javaToolchain;
     }
 
     @NebulaTestKitDsl
     public void dependencies(String... dependencies) {
-        this.dependencies.addAll(Arrays.asList(dependencies));
+        Arrays.asList(dependencies).forEach(dependenciesBuilder::rawAdd$nebula_test);
+    }
+
+    @NebulaTestKitDsl
+    public DependenciesBuilder dependencies() {
+        return dependenciesBuilder;
     }
 
     public TestingBuilder testing() {
@@ -89,6 +100,7 @@ public class ProjectBuilder {
 
     void build(BuildscriptLanguage language) {
         StringBuilder buildFileText = new StringBuilder();
+        buildFileText.append(buildscriptBuilder.build(language, 0));
         buildFileText.append(plugins.build(language, 0));
         if (group != null) {
             buildFileText.append("group = \"").append(group).append("\"\n");
@@ -97,11 +109,7 @@ public class ProjectBuilder {
             buildFileText.append("version = \"").append(version).append("\"\n");
         }
         buildFileText.append(repositoriesBuilder.build(language, 0));
-        if (!dependencies.isEmpty()) {
-            buildFileText.append("dependencies {\n");
-            dependencies.forEach(dependency -> buildFileText.append("    ").append(dependency).append("\n"));
-            buildFileText.append("}\n");
-        }
+        buildFileText.append(dependenciesBuilder.build(language, 0));
         if (javaToolchain != null) {
             buildFileText.append("java {\n    toolchain {\n");
             buildFileText.append("        languageVersion = JavaLanguageVersion.of(").append(javaToolchain).append(")\n");

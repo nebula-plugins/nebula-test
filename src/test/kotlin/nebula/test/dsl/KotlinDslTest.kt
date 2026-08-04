@@ -62,6 +62,14 @@ internal class KotlinDslTest {
                 name("library")
             }
             rootProject {
+                buildscript {
+                    repositories {
+
+                    }
+                    dependencies {
+
+                    }
+                }
                 plugins {
                     java()
                 }
@@ -88,6 +96,44 @@ internal class KotlinDslTest {
         assertThat(testProjectDir.resolve("build/libs/library-1.0.0.jar")).exists()
     }
 
+    @ParameterizedTest
+    @EnumSource(SupportedGradleVersion::class)
+    fun `test dependencies dsl`(gradleVersion: SupportedGradleVersion) {
+        val runner = testProject(testProjectDir) {
+            properties {
+                buildCache(true)
+            }
+            settings {
+                name("library")
+            }
+            rootProject {
+                plugins {
+                    java()
+                }
+                repositories {
+                    mavenCentral()
+                }
+                group("com.example")
+                version("1.0.0")
+                dependencies {
+                    implementation("org.jspecify:jspecify:1.0.0")
+                }
+                mainSource()
+            }
+        }
+
+        val result = runner.run("build") {
+            forwardOutput()
+            withGradle(gradleVersion.version)
+        }
+
+        assertThat(result)
+            .hasNoDeprecationWarnings()
+            .hasNoMutableStateWarnings()
+        assertThat(result).task(":compileJava").hasOutcome(TaskOutcome.SUCCESS, TaskOutcome.FROM_CACHE)
+        assertThat(result).task(":build").hasOutcome(TaskOutcome.SUCCESS)
+        assertThat(testProjectDir.resolve("build/libs/library-1.0.0.jar")).exists()
+    }
 
     @ParameterizedTest
     @EnumSource(SupportedGradleVersion::class)

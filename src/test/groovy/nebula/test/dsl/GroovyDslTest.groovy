@@ -32,13 +32,23 @@ class GroovyDslTest {
                 }
             }
             rootProject {
+                buildscript {
+                    repositories {
+
+                    }
+                    dependencies {
+
+                    }
+                }
                 plugins {
                     java()
                 }
                 repositories {
                     mavenCentral()
                 }
-                dependencies("implementation 'org.jspecify:jspecify:1.0.0'")
+                dependencies {
+                    implementation("org.jspecify:jspecify:1.0.0")
+                }
                 src {
                     main {
                         java("Main.java") {
