@@ -38,12 +38,20 @@ fun SettingsBuilder.plugins(config: PluginsBuilder.() -> Unit) {
     plugins().apply(config)
 }
 
+fun ProjectBuilder.buildscript(config: BuildscriptBuilder.() -> Unit) {
+    buildscript().apply(config)
+}
+
 fun ProjectBuilder.plugins(config: PluginsBuilder.() -> Unit) {
     plugins().apply(config)
 }
 
 fun ProjectBuilder.repositories(config: RepositoriesBuilder.() -> Unit) {
     repositories().apply(config)
+}
+
+fun ProjectBuilder.dependencies(config: DependenciesBuilder.() -> Unit) {
+    dependencies().apply(config)
 }
 
 infix fun Plugin.version(version: String) {

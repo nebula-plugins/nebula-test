@@ -1,5 +1,6 @@
 import nebula.plugin.contacts.Contact
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 /*
  * Copyright 2014-2019 Netflix, Inc.
@@ -93,4 +94,9 @@ tasks.wrapper {
     distributionType = Wrapper.DistributionType.BIN
     gradleVersion = "9.6.1"
     distributionSha256Sum = "9c0f7faeeb306cb14e4279a3e084ca6b596894089a0638e68a07c945a32c9e14"
+}
+
+tasks.named<GroovyCompile>("compileGroovy") {
+    classpath = classpath.plus(tasks.named<KotlinCompile>("compileKotlin").get().outputs.files)
+    dependsOn(tasks.named("compileKotlin"))
 }
