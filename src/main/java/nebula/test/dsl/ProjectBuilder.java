@@ -100,7 +100,7 @@ public class ProjectBuilder {
 
     void build(BuildscriptLanguage language) {
         StringBuilder buildFileText = new StringBuilder();
-        buildFileText.append(buildscriptBuilder.build(language, 0));
+        buildFileText.append(buildscriptBuilder.build$nebula_test(language, 0));
         buildFileText.append(plugins.build(language, 0));
         if (group != null) {
             buildFileText.append("group = \"").append(group).append("\"\n");
