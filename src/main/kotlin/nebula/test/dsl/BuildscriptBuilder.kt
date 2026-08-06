@@ -4,6 +4,11 @@ package nebula.test.dsl
 class BuildscriptBuilder {
     private val repositoriesBuilder = RepositoriesBuilder()
     private val dependenciesBuilder = DependenciesBuilder()
+
+    fun hasContent(): Boolean {
+        return repositoriesBuilder.hasContent() || dependenciesBuilder.hasContent()
+    }
+
     fun repositories(): RepositoriesBuilder {
         return repositoriesBuilder
     }
@@ -20,12 +25,14 @@ class BuildscriptBuilder {
         dsl(dependenciesBuilder)
     }
 
-    fun build(language: BuildscriptLanguage, baseIndentation: Int): String {
-      return  buildString {
-            append("buildscript {\n")
-            append(repositoriesBuilder.build(language, baseIndentation+1))
-            append(dependenciesBuilder.build(language, baseIndentation+1))
-            append("}\n")
+    internal fun build(language: BuildscriptLanguage, baseIndentation: Int): String {
+        return buildString {
+            if (hasContent()) {
+                append("buildscript {\n")
+                append(repositoriesBuilder.build(language, baseIndentation + 1))
+                append(dependenciesBuilder.build(language, baseIndentation + 1))
+                append("}\n")
+            }
         }
     }
 }

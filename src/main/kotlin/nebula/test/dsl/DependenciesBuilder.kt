@@ -2,11 +2,19 @@ package nebula.test.dsl
 
 import java.util.function.Consumer
 
+
 @NebulaTestKitDsl
 class DependenciesBuilder {
+    @JvmInline
+    value class Project(val projectNotation: String)
+
     private val dependencies: MutableList<String> = mutableListOf()
 
-   internal fun rawAdd(notation: String) {
+    fun hasContent(): Boolean {
+        return dependencies.isNotEmpty()
+    }
+
+    internal fun rawAdd(notation: String) {
         dependencies.add(notation)
     }
 
@@ -14,16 +22,36 @@ class DependenciesBuilder {
         dependencies.add("""$configuration("$notation")""")
     }
 
+    fun add(configuration: String, projectDependency: Project) {
+        dependencies.add("""$configuration(${projectDependency.projectNotation})""")
+    }
+
+    fun project(projectPath: String): Project {
+        return Project("""project("$projectPath")""")
+    }
+
     fun implementation(notation: String) {
         add("implementation", notation)
+    }
+
+    fun implementation(projectDependency: Project) {
+        add("implementation", projectDependency)
     }
 
     fun api(notation: String) {
         add("api", notation)
     }
 
+    fun api(projectDependency: Project) {
+        add("api", projectDependency)
+    }
+
     fun testImplementation(notation: String) {
         add("testImplementation", notation)
+    }
+
+    fun testImplementation(projectDependency: Project) {
+        add("testImplementation", projectDependency)
     }
 
     fun classpath(notation: String) {

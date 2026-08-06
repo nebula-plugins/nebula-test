@@ -21,4 +21,17 @@ internal class DependenciesBuilderTest {
 """
         )
     }
+
+    @Test
+    fun `test project`() {
+        val actual = DependenciesBuilder().apply {
+            implementation(project(":projecta"))
+        }.build(BuildscriptLanguage.KOTLIN, 0)
+        assertThat(actual).isEqualTo(
+            """dependencies {
+    implementation(project(":projecta"))
+}
+"""
+        )
+    }
 }
