@@ -18,6 +18,7 @@ public class TestProjectBuilder {
 
     private final ProjectBuilder rootProject;
     private final Map<String, ProjectBuilder> subProjects = new HashMap<>();
+    private final Map<String, TestProjectBuilder> includedBuilds = new HashMap<>();
     private final File projectDir;
     private final SettingsBuilder settings;
     private final ProjectProperties properties;
@@ -78,6 +79,16 @@ public class TestProjectBuilder {
         return project;
     }
 
+    public TestProjectBuilder includedBuild(String name) {
+        String projectPath = convertProjectNameToDefaultPath(name);
+        final File subProjectDir = projectDir.toPath().resolve(projectPath).toFile();
+        subProjectDir.mkdirs();
+        final TestProjectBuilder includedBuild = new TestProjectBuilder(subProjectDir);
+        includedBuilds.put(name, includedBuild);
+        settings.includeBuild(name);
+        return includedBuild;
+    }
+
     public TestProjectRunner build() {
         return build(BuildscriptLanguage.KOTLIN);
     }
@@ -85,6 +96,7 @@ public class TestProjectBuilder {
     public TestProjectRunner build(BuildscriptLanguage language) {
         properties().build();
         settings.build(language);
+        includedBuilds.values().forEach(it -> it.build(language));
         rootProject.build(language);
         subProjects.values().forEach(subProject -> subProject.build(language));
         return new TestProjectRunner(projectDir);

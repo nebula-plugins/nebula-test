@@ -22,6 +22,14 @@ fun TestProjectBuilder.settings(config: SettingsBuilder.() -> Unit) {
     settings().apply(config)
 }
 
+fun TestProjectBuilder.subProject(name: String, path: String? = null, config: ProjectBuilder.() -> Unit) {
+    subProject(name, path).apply(config)
+}
+
+fun TestProjectBuilder.includedBuild(name: String, config: TestProjectBuilder.() -> Unit) {
+    includedBuild(name).apply(config)
+}
+
 fun SettingsBuilder.pluginManagement(config: PluginManagementBuilder.() -> Unit) {
     pluginManagement().apply(config)
 }
@@ -79,9 +87,6 @@ fun SourcesBuilder.test(config: SourceSetBuilder.() -> Unit) {
     test().apply(config)
 }
 
-fun TestProjectBuilder.subProject(name: String, path: String? = null, config: ProjectBuilder.() -> Unit) {
-    subProject(name, path).apply(config)
-}
 
 fun ProjectBuilder.testing(config: TestingBuilder.() -> Unit) {
     testing().apply(config)
