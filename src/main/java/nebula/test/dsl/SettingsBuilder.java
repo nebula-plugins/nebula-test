@@ -22,6 +22,7 @@ public class SettingsBuilder {
     @Nullable
     private String name;
     private final Set<SubProject> projects = new HashSet<>();
+    private final Set<SubProject> includedBuilds = new HashSet<>();
 
     SettingsBuilder(File projectDir) {
         this.projectDir = projectDir;
@@ -59,6 +60,20 @@ public class SettingsBuilder {
         projects.add(new SubProject(name, relativePath));
     }
 
+    /**
+     * add a build to this build as a <a href="https://docs.gradle.org/current/userguide/composite_builds.html">composite build</a>
+     * include statement along with a projectDir override.
+     * This is invoked automatically when adding projects via {@link TestProjectBuilder#includedBuild(String)}
+     *
+     * @param name the name of the project to include
+     */
+    public void includeBuild(String name, @Nullable String relativePath) {
+        includedBuilds.add(new SubProject(name, relativePath));
+    }
+    public void includeBuild(String name) {
+        includedBuilds.add(new SubProject(name, null));
+    }
+
     public void rawSettingsScript(String settingsScript) {
         rawSettingsScript = settingsScript;
     }
@@ -73,6 +88,13 @@ public class SettingsBuilder {
         if (rawSettingsScript != null) {
             textBuilder.append(rawSettingsScript);
         }
+        includedBuilds.forEach(includedBuild -> {
+            if (language == BuildscriptLanguage.KOTLIN) {
+                textBuilder.append("includeBuild(\"").append(includedBuild.name()).append("\")\n");
+            } else if (language == BuildscriptLanguage.GROOVY) {
+                textBuilder.append("includeBuild '").append(includedBuild.name()).append("'\n");
+            }
+        });
         projects.forEach(subProject -> {
             String fqn = ":" + subProject.name();
             if (language == BuildscriptLanguage.KOTLIN) {
