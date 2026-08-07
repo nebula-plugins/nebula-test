@@ -25,7 +25,8 @@ class BuildscriptBuilder {
         dsl(dependenciesBuilder)
     }
 
-    internal fun build(language: BuildscriptLanguage, baseIndentation: Int): String {
+    // TODO: once all callers are in kotlin, make this an internal method
+    fun build(language: BuildscriptLanguage, baseIndentation: Int): String {
         return buildString {
             if (hasContent()) {
                 append("buildscript {\n")

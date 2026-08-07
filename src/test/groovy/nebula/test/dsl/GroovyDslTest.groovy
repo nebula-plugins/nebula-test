@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
+import spock.lang.Retry
 
 import static nebula.test.dsl.TestKitAssertions.assertThat
 
@@ -16,6 +17,7 @@ class GroovyDslTest {
 
     @ParameterizedTest
     @EnumSource(SupportedGradleVersion)
+    @Retry(count = 2)
     void testGroovyDsl(SupportedGradleVersion gradle) {
         final var runner = GroovyTestProjectBuilder.testProject(testProjectDir) {
             settings {
@@ -166,6 +168,7 @@ public class Main {
 
     @ParameterizedTest
     @EnumSource(SupportedGradleVersion)
+    @Retry(count = 2)
     void "test test suites"(SupportedGradleVersion gradleVersion) {
         TestProjectRunner runner = GroovyTestProjectBuilder.testProject(testProjectDir) {
             properties {

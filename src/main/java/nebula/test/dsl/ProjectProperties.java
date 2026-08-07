@@ -53,12 +53,15 @@ public class ProjectProperties {
     }
 
     /**
-     * Shortcut for enabling <a href="https://docs.gradle.org/current/userguide/isolated_projects.html">isolated projects</a>
+     * Shortcut for enabling <a href="https://docs.gradle.org/current/userguide/isolated_projects.html">isolated projects</a>.
+     * This sets both the official `org.gradle.isolated-projects` property and the property used in Gradle prior to 9.7 for the incubating feature `org.gradle.unsafe.isolated-projects`
      */
     @NebulaTestKitDsl
     @Contract("_ -> this")
     public ProjectProperties isolatedProjects(boolean enabled) {
-        return property("org.gradle.unsafe.isolated-projects", String.valueOf(enabled).toLowerCase());
+        property("org.gradle.isolated-projects", String.valueOf(enabled).toLowerCase());
+        property("org.gradle.unsafe.isolated-projects", String.valueOf(enabled).toLowerCase());
+        return this;
     }
 
     void build() {

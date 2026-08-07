@@ -9,12 +9,12 @@ import spock.lang.Unroll
 
 import static nebula.test.dsl.TestKitAssertions.assertThat
 
-@Retry(count = 2)
 class GroovyDslSpockTest extends Specification {
     @TempDir
     File testProjectDir
 
     @Unroll
+    @Retry(count = 2)
     void "test groovy DSL with spock"() {
         setup:
         final var runner = GroovyTestProjectBuilder.testProject(testProjectDir) {
