@@ -92,8 +92,8 @@ tasks.named("publishPlugins") { enabled = false }
 
 tasks.wrapper {
     distributionType = Wrapper.DistributionType.BIN
-    gradleVersion = "9.6.1"
-    distributionSha256Sum = "9c0f7faeeb306cb14e4279a3e084ca6b596894089a0638e68a07c945a32c9e14"
+    gradleVersion = "9.7.0"
+    distributionSha256Sum = "84fbba45c7f4c64abc77460e1c00f541e9f960e3c7ed2538f1ede19eacd873ae"
 }
 
 tasks.named<GroovyCompile>("compileGroovy") {

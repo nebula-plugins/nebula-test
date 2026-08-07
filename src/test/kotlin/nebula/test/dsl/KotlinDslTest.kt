@@ -46,6 +46,8 @@ internal class KotlinDslTest {
         val runner = testProject(testProjectDir) {
             properties {
                 buildCache(true)
+                configurationCache(true)
+                isolatedProjects(true)
             }
             settings {
                 plugins {

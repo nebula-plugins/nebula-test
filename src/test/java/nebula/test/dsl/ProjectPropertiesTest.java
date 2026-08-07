@@ -65,6 +65,7 @@ class ProjectPropertiesTest {
         assertThat(testProjectDir.toPath().resolve("gradle.properties"))
                 .exists()
                 .content()
-                .contains("org.gradle.unsafe.isolated-projects=true");
+                .contains("org.gradle.unsafe.isolated-projects=true")
+                .contains("org.gradle.isolated-projects=true");
     }
 }

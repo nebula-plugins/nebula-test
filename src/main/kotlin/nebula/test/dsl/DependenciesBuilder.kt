@@ -14,7 +14,8 @@ class DependenciesBuilder {
         return dependencies.isNotEmpty()
     }
 
-    internal fun rawAdd(notation: String) {
+    // TODO: once all callers are in kotlin, make this an internal method
+    fun rawAdd(notation: String) {
         dependencies.add(notation)
     }
 
