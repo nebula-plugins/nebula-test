@@ -28,7 +28,7 @@ public class TestProjectRunner {
      * @return the BuildResult
      */
     public BuildResult run(String... args) {
-        return run(GradleRunner.create().forwardOutput(), Arrays.asList(args));
+        return run(GradleRunner.create(), Arrays.asList(args));
     }
 
     /**
