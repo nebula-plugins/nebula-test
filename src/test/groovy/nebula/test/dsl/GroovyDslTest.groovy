@@ -236,10 +236,10 @@ public class MainTest {
             }
         }
 
-        BuildResult result = runner.run(["test", "customTest"], {
+        BuildResult result = runner.run(["test", "customTest"]) {
             forwardOutput()
             withGradle(gradleVersion.version)
-        })
+        }
 
         assertThat(result)
                 .hasNoDeprecationWarnings()

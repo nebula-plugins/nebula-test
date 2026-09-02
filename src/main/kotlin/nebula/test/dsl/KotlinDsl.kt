@@ -113,7 +113,7 @@ fun TestingSuitesBuilder.named(name: String, config: JvmTestSuiteBuilder.() -> U
  * This method will throw an exception if the build fails.
  */
 fun TestProjectRunner.run(vararg args: String, customizer: GradleRunner.() -> Unit): BuildResult {
-    return run(GradleRunner.create().apply(customizer), args.asList())
+    return run(args.asList(), customizer)
 }
 
 /**
@@ -121,7 +121,7 @@ fun TestProjectRunner.run(vararg args: String, customizer: GradleRunner.() -> Un
  * This method will throw an exception if the build succeeds.
  */
 fun TestProjectRunner.runAndFail(vararg args: String, customizer: GradleRunner.() -> Unit): BuildResult {
-    return runAndFail(GradleRunner.create().apply(customizer), args.asList())
+    return runAndFail(args.asList(), customizer)
 }
 
 /**

@@ -1,8 +1,11 @@
 package nebula.test.dsl
 
-
+import groovy.transform.CompileStatic
+import org.codehaus.groovy.runtime.MethodClosure
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
+
+import java.util.function.Consumer
 
 /**
  * Extension methods for idiomatic Groovy DSL usage.
@@ -118,10 +121,13 @@ class GroovyDsl {
      * Run a build with expectation of success.
      * This method will throw an exception if the build fails.
      */
+    @CompileStatic
     static BuildResult run(TestProjectRunner self, List<String> args, @DelegatesTo(GradleRunner) Closure config) {
-        final var runner = GradleRunner.create()
-        runner.with(config)
-        return self.run(runner, args)
+        Consumer<GradleRunner> consumer = {
+            config.setDelegate(it)
+            config()
+        }
+        return self.run(args, consumer)
     }
 
     /**
@@ -129,8 +135,10 @@ class GroovyDsl {
      * This method will throw an exception if the build succeeds.
      */
     static BuildResult runAndFail(TestProjectRunner self, List<String> args, @DelegatesTo(GradleRunner) Closure config) {
-        final var runner = GradleRunner.create()
-        runner.with(config)
-        return self.runAndFail(runner, args)
+        Consumer<GradleRunner> consumer = {
+            config.setDelegate(it)
+            config()
+        }
+        return self.runAndFail(args, consumer)
     }
 }
