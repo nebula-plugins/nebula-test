@@ -34,4 +34,17 @@ internal class DependenciesBuilderTest {
 """
         )
     }
+
+    @Test
+    fun `test platform`() {
+        val actual = DependenciesBuilder().apply {
+            implementation(platform("com.example:my-bom:1.0.0"))
+        }.build(BuildscriptLanguage.KOTLIN, 0)
+        assertThat(actual).isEqualTo(
+            """dependencies {
+    implementation(platform("com.example:my-bom:1.0.0"))
+}
+"""
+        )
+    }
 }

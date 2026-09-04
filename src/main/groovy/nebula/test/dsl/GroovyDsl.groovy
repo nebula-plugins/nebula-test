@@ -1,7 +1,6 @@
 package nebula.test.dsl
 
 import groovy.transform.CompileStatic
-import org.codehaus.groovy.runtime.MethodClosure
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 
@@ -63,6 +62,14 @@ class GroovyDsl {
         self.dependencies().with(config)
     }
 
+    static DependenciesBuilder.SpecialDependency project(ProjectBuilder self, String projectPath) {
+        return self.dependencies().project(projectPath)
+    }
+
+    static DependenciesBuilder.SpecialDependency platform(ProjectBuilder self, String notation) {
+        return self.dependencies().platform(notation)
+    }
+
     static void plugins(ProjectBuilder self, @DelegatesTo(PluginsBuilder) Closure config) {
         self.plugins().with(config)
     }
@@ -113,7 +120,8 @@ class GroovyDsl {
         switch (gradleVersion) {
             case Gradle.GradleVersion -> self.withGradleVersion(gradleVersion.version())
             case Gradle.GradleDistribution -> self.withGradleDistribution(URI.create(gradleVersion.url()))
-            default -> {}
+            default -> {
+            }
         }
     }
 

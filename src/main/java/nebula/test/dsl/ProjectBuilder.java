@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 @NullMarked
 @NebulaTestKitDsl
@@ -58,13 +59,11 @@ public class ProjectBuilder {
     /**
      * @deprecated use {@link #dependencies()} instead
      */
-    @NebulaTestKitDsl
     @Deprecated
     public void dependencies(String... dependencies) {
         Arrays.asList(dependencies).forEach(dependenciesBuilder::rawAdd);
     }
 
-    @NebulaTestKitDsl
     public DependenciesBuilder dependencies() {
         return dependenciesBuilder;
     }
