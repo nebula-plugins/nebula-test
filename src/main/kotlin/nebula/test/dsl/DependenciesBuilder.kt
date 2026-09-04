@@ -5,8 +5,10 @@ import java.util.function.Consumer
 
 @NebulaTestKitDsl
 class DependenciesBuilder {
-    @JvmInline
-    value class Project(val projectNotation: String)
+    /**
+     * abstraction for project/platform dependencies
+     */
+    class SpecialDependency(val specialNotation: String)
 
     private val dependencies: MutableList<String> = mutableListOf()
 
@@ -23,19 +25,23 @@ class DependenciesBuilder {
         dependencies.add("""$configuration("$notation")""")
     }
 
-    fun add(configuration: String, projectDependency: Project) {
-        dependencies.add("""$configuration(${projectDependency.projectNotation})""")
+    fun add(configuration: String, dependency: SpecialDependency) {
+        dependencies.add("""$configuration(${dependency.specialNotation})""")
     }
 
-    fun project(projectPath: String): Project {
-        return Project("""project("$projectPath")""")
+    fun project(projectPath: String): SpecialDependency {
+        return SpecialDependency("""project("$projectPath")""")
+    }
+
+    fun platform(notation: String): SpecialDependency {
+        return SpecialDependency("""platform("$notation")""")
     }
 
     fun implementation(notation: String) {
         add("implementation", notation)
     }
 
-    fun implementation(projectDependency: Project) {
+    fun implementation(projectDependency: SpecialDependency) {
         add("implementation", projectDependency)
     }
 
@@ -43,7 +49,7 @@ class DependenciesBuilder {
         add("api", notation)
     }
 
-    fun api(projectDependency: Project) {
+    fun api(projectDependency: SpecialDependency) {
         add("api", projectDependency)
     }
 
@@ -51,7 +57,7 @@ class DependenciesBuilder {
         add("testImplementation", notation)
     }
 
-    fun testImplementation(projectDependency: Project) {
+    fun testImplementation(projectDependency: SpecialDependency) {
         add("testImplementation", projectDependency)
     }
 

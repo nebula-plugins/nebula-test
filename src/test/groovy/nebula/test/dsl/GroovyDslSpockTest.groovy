@@ -59,7 +59,7 @@ public class Main {
 
         where:
         javaVersion | gradle
-        11          | SupportedGradleVersion.MIN
-        17          | SupportedGradleVersion.CURRENT
+        17          | SupportedGradleVersion.MIN
+        21          | SupportedGradleVersion.CURRENT
     }
 }
