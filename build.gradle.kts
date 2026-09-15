@@ -21,7 +21,7 @@ plugins {
     id("com.netflix.nebula.plugin-plugin")
     id("com.netflix.nebula.archrules.library")
     id("java-library")
-    `kotlin-dsl`
+    kotlin("jvm")
     jacoco
 }
 
@@ -78,13 +78,6 @@ tasks.named("build") {
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
-    }
-}
-
-kotlin {
-    compilerOptions {
-        languageVersion.set(KotlinVersion.KOTLIN_2_0)
-        apiVersion.set(KotlinVersion.KOTLIN_2_0)
     }
 }
 

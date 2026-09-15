@@ -89,6 +89,16 @@ public class TestProjectBuilder {
         return includedBuild;
     }
 
+    public TestProjectBuilder includedPluginBuild(String name) {
+        String projectPath = convertProjectNameToDefaultPath(name);
+        final File subProjectDir = projectDir.toPath().resolve(projectPath).toFile();
+        subProjectDir.mkdirs();
+        final TestProjectBuilder includedBuild = new TestProjectBuilder(subProjectDir);
+        includedBuilds.put(name, includedBuild);
+        settings.pluginManagement().includeBuild(name);
+        return includedBuild;
+    }
+
     public TestProjectRunner build() {
         return build(BuildscriptLanguage.KOTLIN);
     }
