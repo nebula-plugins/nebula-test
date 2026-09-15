@@ -5,7 +5,7 @@ class BuildscriptBuilder {
     private val repositoriesBuilder = RepositoriesBuilder()
     private val dependenciesBuilder = DependenciesBuilder()
 
-    fun hasContent(): Boolean {
+    internal fun hasContent(): Boolean {
         return repositoriesBuilder.hasContent() || dependenciesBuilder.hasContent()
     }
 

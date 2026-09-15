@@ -30,16 +30,12 @@ fun TestProjectBuilder.includedBuild(name: String, config: TestProjectBuilder.()
     includedBuild(name).apply(config)
 }
 
+fun TestProjectBuilder.includedPluginBuild(name: String, config: TestProjectBuilder.() -> Unit) {
+    includedPluginBuild(name).apply(config)
+}
+
 fun SettingsBuilder.pluginManagement(config: PluginManagementBuilder.() -> Unit) {
     pluginManagement().apply(config)
-}
-
-fun PluginManagementBuilder.repositories(config: RepositoriesBuilder.() -> Unit) {
-    repositories().apply(config)
-}
-
-fun PluginManagementBuilder.plugins(config: PluginsBuilder.() -> Unit) {
-    plugins().apply(config)
 }
 
 fun SettingsBuilder.plugins(config: PluginsBuilder.() -> Unit) {
