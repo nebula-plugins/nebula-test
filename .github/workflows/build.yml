@@ -39,3 +39,14 @@ jobs:
         run: ./gradlew --stacktrace build
         env:
           JDK_VERSION_FOR_TESTS: ${{ matrix.java }}
+      - name: Add coverage to PR
+        id: jacoco
+        if: ${{ matrix.java==17 }}
+        uses: madrapps/jacoco-report@v1.8.0
+        with:
+          paths: |
+            ${{ github.workspace }}/**/build/reports/jacoco/**/*.xml
+          token: ${{ github.token }}
+          title: JaCoCo Code Coverage
+          update-comment: true
+          comment-type: 'both'

@@ -35,6 +35,9 @@ public class Plugin {
         return this;
     }
 
+    /**
+     * Set apply = false to skip plugin application on a project
+     */
     public Plugin apply(boolean apply) {
         this.apply = apply;
         return this;
@@ -73,6 +76,7 @@ public class Plugin {
                 stringBuilder.append(" version (\"").append(version).append("\")");
             }
         }
+
         if (apply != null) {
             if (language == BuildscriptLanguage.GROOVY) {
                 stringBuilder.append(" apply ").append(apply);
