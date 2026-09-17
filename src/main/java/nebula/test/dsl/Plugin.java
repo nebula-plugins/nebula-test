@@ -4,6 +4,7 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 @NullMarked
+@NebulaTestKitDsl
 public class Plugin {
     @Nullable
     private String builtIn;
@@ -12,6 +13,8 @@ public class Plugin {
     private final String id;
     @Nullable
     private String version;
+    @Nullable
+    private Boolean apply;
 
     Plugin(String id) {
         this.id = id;
@@ -23,13 +26,17 @@ public class Plugin {
      *
      * @param version the version of the plugin
      */
-    @NebulaTestKitDsl
     public void version(String version) {
         this.version = version;
     }
 
     public Plugin builtIn(String builtInName) {
         builtIn = builtInName;
+        return this;
+    }
+
+    public Plugin apply(boolean apply) {
+        this.apply = apply;
         return this;
     }
 
@@ -64,6 +71,13 @@ public class Plugin {
                 stringBuilder.append(" version '").append(version).append("'");
             } else if (language == BuildscriptLanguage.KOTLIN) {
                 stringBuilder.append(" version (\"").append(version).append("\")");
+            }
+        }
+        if (apply != null) {
+            if (language == BuildscriptLanguage.GROOVY) {
+                stringBuilder.append(" apply ").append(apply);
+            } else if (language == BuildscriptLanguage.KOTLIN) {
+                stringBuilder.append(" apply (").append(apply).append(")");
             }
         }
         return stringBuilder.toString();
