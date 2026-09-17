@@ -93,3 +93,8 @@ tasks.named<GroovyCompile>("compileGroovy") {
     classpath = classpath.plus(tasks.named<KotlinCompile>("compileKotlin").get().outputs.files)
     dependsOn(tasks.named("compileKotlin"))
 }
+tasks.jacocoTestReport {
+    reports {
+        xml.required = true
+    }
+}
