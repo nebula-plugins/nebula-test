@@ -23,6 +23,17 @@ public class PluginTest {
     }
 
     @Test
+    public void test_kotlin_version_apply_false_kotlin() {
+        String actual = new Plugin("org.jetbrains.kotlin.jvm")
+                .builtIn("kotlin")
+                .builtInParam("jvm")
+                .version("2.4.10")
+                .apply(false)
+                .render(BuildscriptLanguage.KOTLIN);
+        assertThat(actual).isEqualTo("kotlin(\"jvm\") version (\"2.4.10\") apply (false)");
+    }
+
+    @Test
     public void test_kotlin_apply_false_groovy() {
         String actual = new Plugin("org.jetbrains.kotlin.jvm")
                 .builtIn("kotlin")
