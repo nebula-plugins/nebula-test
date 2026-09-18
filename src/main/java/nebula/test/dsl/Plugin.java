@@ -26,8 +26,9 @@ public class Plugin {
      *
      * @param version the version of the plugin
      */
-    public void version(String version) {
+    public Plugin version(String version) {
         this.version = version;
+        return this;
     }
 
     public Plugin builtIn(String builtInName) {
@@ -48,7 +49,7 @@ public class Plugin {
         return this;
     }
 
-    public String render(BuildscriptLanguage language) {
+    String render(BuildscriptLanguage language) {
         final StringBuilder stringBuilder = new StringBuilder();
 
         if (language == BuildscriptLanguage.GROOVY) {
