@@ -50,6 +50,19 @@ public class RepositoriesBuilderTest {
     }
 
     @Test
+    public void testKotlinMavenLocal(){
+        final var builder = new RepositoriesBuilder();
+        builder.mavenLocal();
+        final var actual = builder.build(BuildscriptLanguage.KOTLIN,0);
+        //language=groovy
+        assertThat(actual).isEqualTo("""
+                repositories {
+                    mavenLocal()
+                }
+                """);
+    }
+
+    @Test
     public void testKotlinMaven(){
         final var builder = new RepositoriesBuilder();
         builder.maven("url");

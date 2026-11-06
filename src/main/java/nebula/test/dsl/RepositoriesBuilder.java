@@ -32,6 +32,13 @@ public class RepositoriesBuilder {
         repositories.add(new BuiltIn("mavenCentral()"));
     }
 
+    /**
+     * The built-in mavenLocal repository
+     */
+    public void mavenLocal() {
+        repositories.add(new BuiltIn("mavenLocal()"));
+    }
+
     String build(BuildscriptLanguage buildscriptLanguage, int baseIndentation) {
         final StringBuilder stringBuilder = new StringBuilder();
         if (hasContent()) {
